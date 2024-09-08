@@ -1,5 +1,15 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:notepada/core/routes/names.dart';
+import 'package:notepada/core/routes/routes.dart';
+import 'package:notepada/features/auth/presentation/bloc/login_cubit.dart';
 import 'package:notepada/features/intro/presentation/pages/intro.dart';
 import 'package:flutter/material.dart';
+import 'package:notepada/features/splash/presentation/bloc/splash_cubit.dart';
+import 'package:notepada/features/splash/presentation/bloc/splash_state.dart';
+import 'package:notepada/config/assets/vectors.dart';
+import 'package:notepada/config/theme/colors.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -11,22 +21,38 @@ class Splash extends StatefulWidget {
 class _SplashState extends State<Splash> {
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<SplashCubit>().checkSession();
+    });
     super.initState();
-    redirect();
+    // redirect();
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Splash'),
+    return Scaffold(
+      backgroundColor: AppColors.primary,
+      body: BlocConsumer<SplashCubit, SplashState>(
+        listener: (context, state) {
+          if (state is SplashSuccess) {
+            context.goNamed(RouteNames.home);
+          } else if (state is SplashError) {
+            context.goNamed(RouteNames.auth);
+          }
+        },
+        builder: (context, state) => Center(
+          child: SvgPicture.asset(
+            AppVectors.icon,
+            height: 80,
+            color: AppColors.bright,
+          ),
+        ),
       ),
     );
   }
 
   Future<void> redirect() async {
     await Future.delayed(const Duration(seconds: 2));
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (_) => const Intro()));
+    context.goNamed(RouteNames.intro);
   }
 }
