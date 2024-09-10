@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/config/assets/vectors.dart';
@@ -14,76 +15,99 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   elevation: 0,
-      //   title: SvgPicture.asset(
-      //     AppVectors.logo,
-      //     height: 40,
-      //     color: AppColors.primary,
-      //   ),
-      //   actions: [
-      //     IconButton(
-      //       onPressed: () {},
-      //       icon: const Icon(Icons.person_outlined),
-      //     ),
-      //   ],
-      // ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppGaps.v40,
+              AppGaps.v50,
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SvgPicture.asset(
-                    AppVectors.icon,
-                    height: 60,
-                    color: AppColors.primary,
+                  // SvgPicture.asset(
+                  //   AppVectors.icon,
+                  //   height: 40,
+                  //   color: AppColors.primary,
+                  // ),
+                  const Text(
+                    AppStrings.notes,
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                    ),
                   ),
                   Container(
-                    width: 50, height: 50,
+                    width: 30,
+                    height: 30,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(50),
+                      border: Border.all(
+                        color: AppColors.midGrey,
+                        width: 1,
+                      ),
                     ),
-                    child: SvgPicture.asset(
-                      AppVectors.profile,
-                      height: 60,
-                      color: AppColors.primary,
-                      fit: BoxFit.cover,
-                    ),
+                    child: const Icon(Icons.person),
                   )
                 ],
               ),
               AppGaps.v20,
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 15,
-                  horizontal: 20,
+              Dismissible(
+                key: UniqueKey(),
+                background: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 20),
+                  child: const Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                    size: 36,
+                  ),
                 ),
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  color: AppColors.grey.withOpacity(.2),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Write Chapter One of Book',
-                      style: AppStyles.noteListHeaderStyle,
-                    ),
-                    AppGaps.v10,
-                    const Text(
-                        'Need to write the first chapter of the book. I need to create characers and event timelines'),
-                    AppGaps.v10,
-                    const Text(
-                      '26/08/1990',
-                      style: TextStyle(color: AppColors.midGrey),
-                    ),
-                  ],
+                // secondaryBackground: const Icon(
+                //   Icons.delete,
+                //   color: AppColors.bright,
+                // ),
+                confirmDismiss: (DismissDirection direction) async {
+                  // Your confirmation logic goes here
+                  // Return true to allow dismissal, false to prevent it
+                  return true;
+                },
+                onDismissed: (DismissDirection direction) {},
+                onResize: () {},
+                direction: DismissDirection.endToStart,
+                dragStartBehavior: DragStartBehavior.start,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 15,
+                    horizontal: 20,
+                  ),
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: AppColors.grey.withOpacity(.2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Write Chapter One of Book',
+                        style: AppStyles.noteListHeaderStyle,
+                      ),
+                      AppGaps.v10,
+                      const Text(
+                          'Need to write the first chapter of the book. I need to create characers and event timelines'),
+                      AppGaps.v10,
+                      const Text(
+                        '26/08/1990',
+                        style: TextStyle(color: AppColors.midGrey),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -93,7 +117,7 @@ class Home extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.goNamed(RouteNames.newNote);
+          context.goNamed(RouteNames.editNote);
         },
         child: const Icon(
           Icons.mode_edit_outline_outlined,

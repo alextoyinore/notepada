@@ -68,7 +68,7 @@ class AppStyles {
       ),
     ),
     focusedBorder: UnderlineInputBorder(
-      borderSide: BorderSide(color: AppColors.darkGrey, width: 1),
+      borderSide: BorderSide(color: AppColors.primary, width: 1),
     ),
     border: UnderlineInputBorder(
       borderSide: BorderSide(
@@ -85,18 +85,18 @@ class AppStyles {
   static InputDecoration darkTextFieldTheme = const InputDecoration(
     filled: true,
     fillColor: Colors.transparent,
-    contentPadding: const EdgeInsets.all(20),
+    contentPadding: EdgeInsets.all(20),
     enabledBorder: UnderlineInputBorder(
-      borderSide: const BorderSide(
+      borderSide: BorderSide(
         color: AppColors.midGrey,
         width: 1,
       ),
     ),
     focusedBorder: UnderlineInputBorder(
-      borderSide: const BorderSide(color: AppColors.grey, width: 1),
+      borderSide: BorderSide(color: AppColors.primary, width: 1),
     ),
     border: UnderlineInputBorder(
-      borderSide: const BorderSide(
+      borderSide: BorderSide(
         color: AppColors.midGrey,
         width: 1,
       ),

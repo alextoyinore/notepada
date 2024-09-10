@@ -8,22 +8,8 @@ import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/core/error/failure.dart';
 import 'package:notepada/core/error/server_exception.dart';
 import 'package:notepada/service_locator.dart';
+import 'package:notepada/features/auth/domain/repositories/iauth.dart';
 
-abstract class IAuthRepository {
-  Future<Either<Failure, User>> register({
-    required String firstName,
-    required String lastName,
-    required String email,
-    required String password,
-  });
-
-  Future<Either<Failure, Session>> login({
-    required String email,
-    required String password,
-  });
-
-  Future<Either<Failure, Session>> checkSession();
-}
 
 class AuthRepository extends IAuthRepository {
   final _appwriteProvider = sl<AppwriteProvider>();

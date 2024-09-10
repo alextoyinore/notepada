@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notepada/core/error/failure.dart';
-import 'package:notepada/features/auth/data/repository/auth_repository.dart';
+import 'package:notepada/features/auth/data/repository/auth.dart';
 import 'package:notepada/features/splash/presentation/bloc/splash_state.dart';
 import 'package:notepada/service_locator.dart';
 

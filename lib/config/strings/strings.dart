@@ -1,5 +1,5 @@
 class AppStrings {
-  static const appName = 'BaseApp';
+  static const appName = 'Notepada';
   static const home = 'Home';
   static const login = 'Login';
   static const auth = 'Auth';
@@ -9,6 +9,8 @@ class AppStrings {
   static const lastName = 'Last Name';
   static const email = 'Email';
   static const password = 'Password';
+  static const introTitle = 'Ideas rule the world';
+  static const introDescription = 'Never loose an idea again. Note it, keep it, make it.';
   static const registerPolicyCheck = "By clicking 'Continue' you agree to the terms, conditions and policies of Notepada";
   static const registerDescription = 'Fill out the form below to create your Notepada account.';
   static const loginDescription = 'Fill out the form below to login to your Notepada account.';
@@ -22,5 +24,11 @@ class AppStrings {
   static const noteHintText = 'Note...';
   static const addNote = 'Add Note';
   static const cancel = 'Cancel';
+  static const themeSelectionTitle = 'Choose Theme';
+  static const themeSelectionDescription = 'Choose the best theme for your workflow';
+  static const light = 'Light';
+  static const dark = 'Dark';
+  static const system = 'System';
+  static const notes = 'Notes';
 }
 

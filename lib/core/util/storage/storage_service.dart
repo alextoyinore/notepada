@@ -14,6 +14,4 @@ class StorageService {
   void clearAll(){
     _box.erase();
   }
-
-  
 }

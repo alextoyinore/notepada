@@ -1,5 +1,6 @@
 import 'package:get_storage/get_storage.dart';
 import 'package:notepada/common/bloc/theme/theme_cubit.dart';
+import 'package:notepada/common/bloc/theme/theme_state.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/theme.dart';
 import 'package:notepada/core/routes/routes.dart';

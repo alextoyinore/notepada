@@ -6,14 +6,14 @@ import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/core/routes/routes.dart';
 
-class NewNote extends StatefulWidget {
-  const NewNote({super.key});
+class EditNote extends StatefulWidget {
+  const EditNote({super.key});
 
   @override
-  State<NewNote> createState() => _NewNoteState();
+  State<EditNote> createState() => _EditNoteState();
 }
 
-class _NewNoteState extends State<NewNote> {
+class _EditNoteState extends State<EditNote> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +28,13 @@ class _NewNoteState extends State<NewNote> {
             TextField(
               decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
                 hintText: AppStrings.titleHintText,
+                hintStyle: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
+              minLines: 1,
+              maxLines: 2,
             ),
             AppGaps.v10,
             TextField(
@@ -41,7 +47,7 @@ class _NewNoteState extends State<NewNote> {
               minLines: 25,
               maxLines: 120,
             ),
-            AppGaps.v10,
+            AppGaps.v20,
             Align(
               alignment: Alignment.bottomCenter,
               child: Column(
@@ -55,7 +61,8 @@ class _NewNoteState extends State<NewNote> {
                   TextButton(
                       onPressed: () {
                         context.goNamed(RouteNames.home);
-                      }, child: const Text(AppStrings.cancel))
+                      },
+                      child: const Text(AppStrings.cancel))
                 ],
               ),
             ),
@@ -65,3 +72,4 @@ class _NewNoteState extends State<NewNote> {
     );
   }
 }
+

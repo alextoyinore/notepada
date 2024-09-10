@@ -44,7 +44,7 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundLight,
+        backgroundColor: Colors.transparent,
         leading: GestureDetector(
           onTap: () {
             context.goNamed(RouteNames.auth);
