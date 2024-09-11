@@ -11,7 +11,7 @@ import 'package:notepada/config/assets/images.dart';
 import 'package:notepada/common/bloc/theme/theme_cubit.dart';
 
 class Intro extends StatelessWidget {
-  Intro({super.key});
+  const Intro({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class Intro extends StatelessWidget {
           Positioned(
             top: 10,
             left: MediaQuery.of(context).size.width / 2.5,
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width * .2,
               height: MediaQuery.of(context).size.height * .2,
               child: SvgPicture.asset(
@@ -49,7 +49,7 @@ class Intro extends StatelessWidget {
           ),
           Positioned(
             bottom: -500,
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: Column(

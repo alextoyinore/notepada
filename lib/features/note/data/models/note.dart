@@ -1,16 +1,14 @@
 import 'dart:convert';
 
 class NoteModel {
-  String id;
   String userID;
   String? text;
   String title;
   String? audio;
   String? image;
-  DateTime date;
+  String date;
 
   NoteModel({
-    required this.id,
     required this.userID,
     required this.date,
     required this.title,
@@ -19,29 +17,26 @@ class NoteModel {
     this.image,
   });
 
-  NoteModel copyWith(
-      {String? id,
-      String? userID,
-      String? text,
-      String? audio,
-      String? image,
-      DateTime? date,
-        String? title,
-      }) {
+  NoteModel copyWith({
+    String? userID,
+    String? text,
+    String? audio,
+    String? image,
+    String? date,
+    String? title,
+  }) {
     return NoteModel(
-        id: id ?? this.id,
-        userID: userID ?? this.userID,
-        title: title ?? this.title,
-        text: text ?? this.text,
-        audio: audio ?? this.audio,
-        image: image ?? this.image,
-        date: date ?? this.date,
+      userID: userID ?? this.userID,
+      title: title ?? this.title,
+      text: text ?? this.text,
+      audio: audio ?? this.audio,
+      image: image ?? this.image,
+      date: date ?? this.date,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
       'userID': userID,
       'title': title,
       'text': text,
@@ -53,18 +48,17 @@ class NoteModel {
 
   factory NoteModel.fromMap(Map<String, dynamic> map) {
     return NoteModel(
-      id: map['id'] as String,
       userID: map['userID'] as String,
       title: map['title'] as String,
-      text: map['text'] as String,
-      audio: map['audio'] as String,
-      image: map['image'] as String,
-      date: map['date'] as DateTime,
+      text: map['text'] != null ? map['text'] as String : '',
+      audio: map['audio'] != null ? map['audio'] as String : '',
+      image: map['image'] != null ? map['image'] as String : '',
+      date: map['date'] as String,
     );
   }
 
   String toJson() => jsonEncode(toMap());
 
-  factory NoteModel.fromJson(String source) => NoteModel.fromMap(jsonDecode(source) as Map<String, dynamic>);
+  factory NoteModel.fromJson(String source) =>
+      NoteModel.fromMap(jsonDecode(source) as Map<String, dynamic>);
 }
-

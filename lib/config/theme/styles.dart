@@ -101,7 +101,7 @@ class AppStyles {
         width: 1,
       ),
     ),
-    hintStyle: const TextStyle(
+    hintStyle: TextStyle(
       color: AppColors.midGrey,
       fontWeight: FontWeight.w500,
     ),

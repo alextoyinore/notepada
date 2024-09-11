@@ -1,11 +1,11 @@
 import 'package:get_storage/get_storage.dart';
 import 'package:notepada/common/bloc/theme/theme_cubit.dart';
-import 'package:notepada/common/bloc/theme/theme_state.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/theme.dart';
 import 'package:notepada/core/routes/routes.dart';
 import 'package:notepada/features/auth/presentation/bloc/login_cubit.dart';
 import 'package:notepada/features/auth/presentation/bloc/register_cubit.dart';
+import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
 import 'package:notepada/features/splash/presentation/bloc/splash_cubit.dart';
 import 'package:notepada/service_locator.dart';
 import 'package:flutter/foundation.dart';
@@ -44,6 +44,7 @@ class App extends StatelessWidget {
         BlocProvider(create: (_) => RegisterCubit()),
         BlocProvider(create: (_) => LoginCubit()),
         BlocProvider(create: (_) => SplashCubit()),
+        BlocProvider(create: (_) => NoteCubit()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, mode) => MaterialApp.router(
@@ -58,4 +59,3 @@ class App extends StatelessWidget {
     );
   }
 }
-

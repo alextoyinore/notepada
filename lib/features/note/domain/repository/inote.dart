@@ -4,14 +4,14 @@ import 'package:notepada/core/error/failure.dart';
 import 'package:notepada/features/note/data/models/note.dart';
 
 abstract class INoteRepository {
-  Future<Either<Failure, Document>> addNote({
-    required String id,
+  Future<Either<Failure, Document>> newNote({
     required String userID,
     required String title,
     required String text,
     required String audio,
     required String image,
-    required DateTime date,
+    required String date,
   });
-}
 
+  Future<Either<Failure, List<NoteModel>>> getNotes({required String userID});
+}

@@ -10,7 +10,6 @@ import 'package:notepada/core/error/server_exception.dart';
 import 'package:notepada/service_locator.dart';
 import 'package:notepada/features/auth/domain/repositories/iauth.dart';
 
-
 class AuthRepository extends IAuthRepository {
   final _appwriteProvider = sl<AppwriteProvider>();
   final _internetConnectionChecker = sl<InternetConnectionChecker>();
@@ -34,10 +33,9 @@ class AuthRepository extends IAuthRepository {
           collectionId: AppConstants.usersCollectionID,
           documentId: user.$id,
           data: {
-            'id': user.$id,
+            'email': email,
             'firstName': firstName,
             'lastName': lastName,
-            'email': email,
             'fullName': user.name,
           },
         );

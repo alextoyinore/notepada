@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 class UserModel {
-  String id;
   String email;
   String firstName;
   String lastName;
@@ -9,7 +8,6 @@ class UserModel {
   String? profileImage;
 
   UserModel({
-    required this.id,
     required this.email,
     required this.firstName,
     required this.lastName,
@@ -18,7 +16,6 @@ class UserModel {
   });
 
   UserModel copyWith({
-    String? id,
     String? email,
     String? firstName,
     String? lastName,
@@ -26,7 +23,6 @@ class UserModel {
     String? profileImage,
   }) {
     return UserModel(
-      id: id ?? this.id,
       email: email ?? this.email,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
@@ -36,7 +32,6 @@ class UserModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
       'email': email,
       'firstName': firstName,
       'lastName': lastName,
@@ -47,7 +42,6 @@ class UserModel {
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      id: map['id'] as String,
       email: map['email'] as String,
       firstName: map['firstName'] as String,
       lastName: map['lastName'] as String,

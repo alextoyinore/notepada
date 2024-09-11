@@ -90,7 +90,7 @@ class _LoginState extends State<Login> {
               closeIconColor: AppColors.bright,
               content: Text(
                 AppStrings.loginSuccessful,
-                style: const TextStyle(color: Colors.white),
+                style: TextStyle(color: Colors.white),
               ),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);

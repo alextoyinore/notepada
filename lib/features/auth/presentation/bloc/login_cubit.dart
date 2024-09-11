@@ -3,7 +3,6 @@ import 'package:notepada/features/auth/data/repository/auth.dart';
 import 'package:notepada/features/auth/presentation/bloc/login_state.dart';
 import 'package:notepada/service_locator.dart';
 
-import 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   LoginCubit() : super(LoginInitial());

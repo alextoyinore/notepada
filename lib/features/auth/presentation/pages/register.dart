@@ -5,7 +5,6 @@ import 'package:notepada/config/strings/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:notepada/config/theme/styles.dart';
 import 'package:notepada/config/theme/colors.dart';
-import 'package:notepada/core/routes/routes.dart';
 import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/features/auth/presentation/bloc/register_cubit.dart';
 import 'package:notepada/features/auth/presentation/bloc/register_state.dart';

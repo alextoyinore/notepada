@@ -2,11 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/core/routes/names.dart';
-import 'package:notepada/core/routes/routes.dart';
 import 'package:notepada/core/util/storage/storage_keys.dart';
 import 'package:notepada/core/util/storage/storage_service.dart';
-import 'package:notepada/features/auth/presentation/bloc/login_cubit.dart';
-import 'package:notepada/features/intro/presentation/pages/intro.dart';
 import 'package:flutter/material.dart';
 import 'package:notepada/features/splash/presentation/bloc/splash_cubit.dart';
 import 'package:notepada/features/splash/presentation/bloc/splash_state.dart';
@@ -26,7 +23,7 @@ class _SplashState extends State<Splash> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SplashCubit>().checkSession();
     });
-    StorageService storageService = StorageService();
+    // StorageService storageService = StorageService();
     // storageService.clearAll();
     super.initState();
     // redirect();
@@ -42,9 +39,9 @@ class _SplashState extends State<Splash> {
             context.goNamed(RouteNames.home);
           } else if (state is SplashError) {
             final storedUserID = StorageService().getValue(StorageKeys.userID);
-            if(storedUserID == null){
+            if (storedUserID == null) {
               context.goNamed(RouteNames.intro);
-            }else{
+            } else {
               context.goNamed(RouteNames.auth);
             }
           }
