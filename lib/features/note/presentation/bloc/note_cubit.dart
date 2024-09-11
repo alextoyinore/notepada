@@ -30,6 +30,27 @@ class NoteCubit extends Cubit<NoteState> {
     );
   }
 
+  void editNote({
+    String? title,
+    required String documentID,
+    String? text,
+    String? audio,
+    String? image,
+  }) async {
+    emit(NoteNewEditDeleteLoading());
+    final response = await _noteRepository.editNote(
+      title: title!,
+      text: text,
+      audio: audio,
+      image: image,
+      documentID: documentID,
+    );
+    response.fold(
+      (error) => emit(NoteNewEditDeleteError(error: error.message)),
+      (note) => emit(NoteNewEditDeleteSuccess(note: note)),
+    );
+  }
+
   void getNotes({required String userID}) async {
     emit(NoteFetchLoading());
 

@@ -1,13 +1,14 @@
 import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/features/auth/presentation/pages/auth.dart';
 import 'package:notepada/features/home/presentation/pages/home.dart';
+import 'package:notepada/features/note/data/models/note.dart';
 import 'package:notepada/features/note/presentation/pages/edit.dart';
+import 'package:notepada/features/note/presentation/pages/view_note.dart';
 import 'package:notepada/features/splash/presentation/pages/splash.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/features/auth/presentation/pages/login.dart';
 import 'package:notepada/features/auth/presentation/pages/register.dart';
 import 'package:notepada/features/intro/presentation/pages/intro.dart';
-
 
 final GoRouter router = GoRouter(
   routes: [
@@ -42,10 +43,18 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const Home(),
     ),
     GoRoute(
-      path: '/newNote',
+      path: '/editNote',
       name: RouteNames.editNote,
-      builder: (context, state) => const EditNote(),
+      builder: (context, state) => EditNote(
+        note: state.extra as NoteModel?,
+      ),
+    ),
+    GoRoute(
+      path: '/viewNote',
+      name: RouteNames.viewNote,
+      builder: (context, state) => ViewNote(
+        note: state.extra as NoteModel,
+      ),
     ),
   ],
 );
-

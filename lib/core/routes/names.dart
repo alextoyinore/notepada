@@ -6,5 +6,5 @@ class RouteNames {
   static const auth = 'auth';
   static const home = 'home';
   static const editNote = 'editNote';
+  static const viewNote = 'viewNote';
 }
-

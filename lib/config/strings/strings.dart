@@ -27,8 +27,9 @@ class AppStrings {
   static const loginSuccessful = 'Login Successful!';
   static const titleHintText = 'Note Title';
   static const noteHintText = 'Note...';
-  static const addNote = 'Add Note';
+  static const saveNote = 'Save Note';
   static const cancel = 'Cancel';
+  static const back = 'Back';
   static const themeSelectionTitle = 'Choose Theme';
   static const themeSelectionDescription =
       'Choose the best theme for your workflow';
@@ -40,4 +41,5 @@ class AppStrings {
   static const gettingNotes = 'Getting notes...';
   static const getNoteError =
       'We are having trouble getting your notes. Try closing and re-opening the app.';
+  static const noNotes = 'You have no notes';
 }

@@ -1,14 +1,16 @@
 import 'dart:convert';
 
 class NoteModel {
+  String id;
   String userID;
-  String? text;
   String title;
+  String? text;
   String? audio;
   String? image;
   String date;
 
   NoteModel({
+    required this.id,
     required this.userID,
     required this.date,
     required this.title,
@@ -18,6 +20,7 @@ class NoteModel {
   });
 
   NoteModel copyWith({
+    String? id,
     String? userID,
     String? text,
     String? audio,
@@ -26,6 +29,7 @@ class NoteModel {
     String? title,
   }) {
     return NoteModel(
+      id: id ?? this.id,
       userID: userID ?? this.userID,
       title: title ?? this.title,
       text: text ?? this.text,
@@ -37,6 +41,7 @@ class NoteModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'userID': userID,
       'title': title,
       'text': text,
@@ -48,6 +53,7 @@ class NoteModel {
 
   factory NoteModel.fromMap(Map<String, dynamic> map) {
     return NoteModel(
+      id: map['id'] as String,
       userID: map['userID'] as String,
       title: map['title'] as String,
       text: map['text'] != null ? map['text'] as String : '',

@@ -33,12 +33,50 @@ class NoteRepository extends INoteRepository {
           collectionId: AppConstants.notesCollectionID,
           documentId: id,
           data: {
+            'id': id,
             'userID': userID,
             'title': title,
             'text': text,
             'audio': audio,
             'image': image,
             'date': date,
+          },
+        );
+        return Right(document!);
+      } else {
+        return Left(
+          Failure(message: AppStrings.noInternetConnection),
+        );
+      }
+    } on AppwriteException catch (e) {
+      return Left(Failure(message: e.message!));
+    } on ServerException catch (e) {
+      return Left(Failure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Document>> editNote({
+    required String documentID,
+    String? title,
+    String? text,
+    String? audio,
+    String? image,
+  }) async {
+    final appwriteProvider = sl<AppwriteProvider>();
+    final internetConnectionChecker = sl<InternetConnectionChecker>();
+
+    try {
+      if (await internetConnectionChecker.hasConnection) {
+        final document = await appwriteProvider.database?.updateDocument(
+          databaseId: AppConstants.appwriteDatabaseID,
+          collectionId: AppConstants.notesCollectionID,
+          documentId: documentID,
+          data: {
+            'title': title,
+            'text': text,
+            'audio': audio,
+            'image': image,
           },
         );
         return Right(document!);

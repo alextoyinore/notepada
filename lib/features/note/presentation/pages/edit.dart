@@ -6,11 +6,13 @@ import 'package:notepada/config/theme/styles.dart';
 
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/core/routes/names.dart';
+import 'package:notepada/features/note/data/models/note.dart';
 import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
 import 'package:notepada/features/note/presentation/bloc/note_state.dart';
 
 class EditNote extends StatefulWidget {
-  const EditNote({super.key});
+  final NoteModel? note;
+  const EditNote({super.key, this.note});
 
   @override
   State<EditNote> createState() => _EditNoteState();
@@ -23,6 +25,15 @@ class _EditNoteState extends State<EditNote> {
   bool _sendingData = false;
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.note != null) {
+      _title.text = widget.note!.title;
+      _note.text = widget.note!.text!;
+    }
+  }
+
+  @override
   void dispose() {
     _title.clear();
     _note.clear();
@@ -33,15 +44,42 @@ class _EditNoteState extends State<EditNote> {
   }
 
   void _submit() {
-    context.read<NoteCubit>().newNote(
-          title: _title.text.toString(),
-          text: _note.text.toString(),
-        );
+    if (widget.note == null) {
+      context.read<NoteCubit>().newNote(
+            title: _title.text.toString(),
+            text: _note.text.toString(),
+          );
+    } else {
+      context.read<NoteCubit>().editNote(
+            documentID: widget.note!.id,
+            title: _title.text.toString(),
+            text: _note.text.toString(),
+          );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        titleSpacing: 0,
+        title: TextField(
+          controller: _title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: 20.0,
+          ),
+          decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
+            hintText: AppStrings.titleHintText,
+            hintStyle: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          minLines: 1,
+          maxLines: 2,
+        ),
+      ),
       body: BlocConsumer<NoteCubit, NoteState>(
         listener: (context, state) {
           if (state is NoteNewEditDeleteLoading) {
@@ -74,7 +112,7 @@ class _EditNoteState extends State<EditNote> {
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
             // Redirect to home
-            context.goNamed(RouteNames.home);
+            context.pop();
           }
         },
         builder: (context, state) => SingleChildScrollView(
@@ -84,20 +122,6 @@ class _EditNoteState extends State<EditNote> {
           ),
           child: Column(
             children: [
-              AppGaps.v20,
-              TextField(
-                controller: _title,
-                decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
-                  hintText: AppStrings.titleHintText,
-                  hintStyle: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                minLines: 1,
-                maxLines: 2,
-              ),
-              AppGaps.v10,
               TextField(
                 controller: _note,
                 decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
@@ -109,7 +133,7 @@ class _EditNoteState extends State<EditNote> {
                 minLines: 25,
                 maxLines: 120,
               ),
-              AppGaps.v20,
+              AppGaps.v40,
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -125,16 +149,22 @@ class _EditNoteState extends State<EditNote> {
                                 strokeWidth: 2,
                                 color: AppColors.bright,
                               )
-                            : const Text(AppStrings.addNote),
+                            : const Text(AppStrings.saveNote),
                       ),
                       AppGaps.v10,
                       TextButton(
                         onPressed: () {
-                          context.goNamed(RouteNames.home);
+                          if (_title.text != '') {
+                            _submit();
+                          } else {
+                            context.pop();
+                          }
                         },
-                        child: const Text(AppStrings.cancel),
+                        child: Text(_title.text != ''
+                            ? AppStrings.back
+                            : AppStrings.cancel),
                       ),
-                      AppGaps.v30,
+                      AppGaps.v10,
                     ],
                   ),
                 ),

@@ -13,5 +13,13 @@ abstract class INoteRepository {
     required String date,
   });
 
+  Future<Either<Failure, Document>> editNote({
+    required String documentID,
+    required String title,
+    required String text,
+    required String audio,
+    required String image,
+  });
+
   Future<Either<Failure, List<NoteModel>>> getNotes({required String userID});
 }
