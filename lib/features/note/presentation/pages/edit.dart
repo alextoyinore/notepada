@@ -63,21 +63,26 @@ class _EditNoteState extends State<EditNote> {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
-        title: TextField(
-          controller: _title,
-          style: const TextStyle(
-            fontWeight: FontWeight.w500,
-            fontSize: 20.0,
-          ),
-          decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
-            hintText: AppStrings.titleHintText,
-            hintStyle: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
+        title: Column(
+          children: [
+            AppGaps.v10,
+            TextField(
+              controller: _title,
+              style: const TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 20.0,
+              ),
+              decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
+                hintText: AppStrings.titleHintText,
+                hintStyle: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              minLines: 1,
+              maxLines: 2,
             ),
-          ),
-          minLines: 1,
-          maxLines: 2,
+          ],
         ),
       ),
       body: BlocConsumer<NoteCubit, NoteState>(
@@ -112,7 +117,11 @@ class _EditNoteState extends State<EditNote> {
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
             // Redirect to home
-            context.pop();
+            // if (widget.note != null) {
+            context.goNamed(RouteNames.home);
+            // } else {
+            //   context.goNamed(RouteNames.editNote, extra: widget.note);
+            // }
           }
         },
         builder: (context, state) => SingleChildScrollView(
@@ -157,7 +166,7 @@ class _EditNoteState extends State<EditNote> {
                           if (_title.text != '') {
                             _submit();
                           } else {
-                            context.pop();
+                            context.goNamed(RouteNames.home);
                           }
                         },
                         child: Text(_title.text != ''
