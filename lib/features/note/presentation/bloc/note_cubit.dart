@@ -1,5 +1,7 @@
+import 'package:appwrite/models.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notepada/core/util/storage/storage_service.dart';
+import 'package:notepada/features/note/data/models/note.dart';
 import 'package:notepada/features/note/data/repository/note.dart';
 import 'package:notepada/features/note/presentation/bloc/note_state.dart';
 import 'package:notepada/service_locator.dart';
@@ -47,7 +49,7 @@ class NoteCubit extends Cubit<NoteState> {
     );
     response.fold(
       (error) => emit(NoteNewEditDeleteError(error: error.message)),
-      (note) => emit(NoteNewEditDeleteSuccess(note: note)),
+      (note) => emit(NoteNewEditDeleteSuccess()),
     );
   }
 
@@ -59,6 +61,16 @@ class NoteCubit extends Cubit<NoteState> {
     response.fold(
       (error) => emit(NoteFetchError(error: error.message)),
       (notes) => emit(NoteFetchSuccess(notes: notes)),
+    );
+  }
+
+  void deleteNote({required String documentID}) async {
+    emit(NoteNewEditDeleteLoading());
+
+    final response = await _noteRepository.deleteNote(documentID: documentID);
+    response.fold(
+      (error) => emit(NoteNewEditDeleteError(error: error.message)),
+      (note) => emit(NoteNewEditDeleteSuccess()),
     );
   }
 }

@@ -46,11 +46,11 @@ dependencies:
 
   dartz: ^0.10.1                      # For Using Either
 
-  firebase_core: ^2.24.2
+  # firebase_core: ^2.24.2
 
-  firebase_auth: ^4.16.0
+  # firebase_auth: ^4.16.0
 
-  cloud_firestore: ^4.14.0
+  # cloud_firestore: ^4.14.0
 
   flutter_svg: ^2.0.10+1
 
@@ -63,6 +63,8 @@ dependencies:
   get_storage: ^2.1.1
 
   shimmer_animation: ^2.2.1
+
+  pull_to_refresh_flutter3: ^2.0.2
 
   # just_audio: ^0.9.37
 

@@ -105,12 +105,43 @@ class NoteRepository extends INoteRepository {
             ?.listDocuments(
                 databaseId: AppConstants.appwriteDatabaseID,
                 collectionId: AppConstants.notesCollectionID,
-                queries: [Query.equal('userID', userID)]);
+                queries: [
+              Query.equal('userID', userID),
+              Query.orderDesc('date'),
+            ]);
         Map<String, dynamic> data = documents!.toMap();
         List documentList = data['documents'].toList();
         List<NoteModel> noteList =
             documentList.map((e) => NoteModel.fromMap(e['data'])).toList();
         return Right(noteList);
+      } else {
+        return Left(
+          Failure(message: AppStrings.noInternetConnection),
+        );
+      }
+    } on AppwriteException catch (e) {
+      return Left(Failure(message: e.message!));
+    } on ServerException catch (e) {
+      return Left(Failure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, dynamic>> deleteNote({
+    required String documentID,
+  }) async {
+    final appwriteProvider = sl<AppwriteProvider>();
+    final internetConnectionChecker = sl<InternetConnectionChecker>();
+
+    try {
+      if (await internetConnectionChecker.hasConnection) {
+        await appwriteProvider.database?.deleteDocument(
+          databaseId: AppConstants.appwriteDatabaseID,
+          collectionId: AppConstants.notesCollectionID,
+          documentId: documentID,
+        );
+
+        return const Right(1);
       } else {
         return Left(
           Failure(message: AppStrings.noInternetConnection),

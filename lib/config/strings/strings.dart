@@ -42,4 +42,8 @@ class AppStrings {
   static const getNoteError =
       'We are having trouble getting your notes. Try closing and re-opening the app.';
   static const noNotes = 'You have no notes';
+  static const confirmDelete = 'Confirm Delete';
+  static const confirm = 'Confirm';
+  static const delete = 'Delete';
+  static const deleteDescription = 'Are you sure you want to delete this note?';
 }

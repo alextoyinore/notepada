@@ -22,4 +22,8 @@ abstract class INoteRepository {
   });
 
   Future<Either<Failure, List<NoteModel>>> getNotes({required String userID});
+
+  Future<Either<Failure, dynamic>> deleteNote({
+    required String documentID,
+  });
 }

@@ -63,9 +63,10 @@ class _EditNoteState extends State<EditNote> {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
+        automaticallyImplyLeading: false,
         title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppGaps.v10,
             TextField(
               controller: _title,
               style: const TextStyle(
@@ -84,6 +85,14 @@ class _EditNoteState extends State<EditNote> {
             ),
           ],
         ),
+        // leading: IconButton(
+        //   padding: const EdgeInsets.only(left: 20, right: 0),
+        //   onPressed: () => context.pop(),
+        //   icon: const Icon(
+        //     Icons.arrow_back_ios,
+        //     color: AppColors.darkGrey,
+        //   ),
+        // ),
       ),
       body: BlocConsumer<NoteCubit, NoteState>(
         listener: (context, state) {
@@ -116,12 +125,15 @@ class _EditNoteState extends State<EditNote> {
               ),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            // Redirect to home
-            // if (widget.note != null) {
-            context.goNamed(RouteNames.home);
-            // } else {
-            //   context.goNamed(RouteNames.editNote, extra: widget.note);
-            // }
+            // Back to previous page
+            if (widget.note != null) {
+              context.goNamed(
+                RouteNames.viewNote,
+                extra: widget.note,
+              );
+            } else {
+              context.goNamed(RouteNames.home);
+            }
           }
         },
         builder: (context, state) => SingleChildScrollView(
@@ -155,7 +167,7 @@ class _EditNoteState extends State<EditNote> {
                         },
                         child: _sendingData
                             ? const CircularProgressIndicator(
-                                strokeWidth: 2,
+                                strokeWidth: 3,
                                 color: AppColors.bright,
                               )
                             : const Text(AppStrings.saveNote),
@@ -163,10 +175,13 @@ class _EditNoteState extends State<EditNote> {
                       AppGaps.v10,
                       TextButton(
                         onPressed: () {
-                          if (_title.text != '') {
+                          if (widget.note == null && _title.text.isNotEmpty) {
                             _submit();
                           } else {
-                            context.goNamed(RouteNames.home);
+                            context.goNamed(
+                              RouteNames.viewNote,
+                              extra: widget.note,
+                            );
                           }
                         },
                         child: Text(_title.text != ''

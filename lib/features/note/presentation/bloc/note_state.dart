@@ -20,8 +20,8 @@ class NoteFetchError extends NoteState {
 class NoteNewEditDeleteLoading extends NoteState {}
 
 class NoteNewEditDeleteSuccess extends NoteState {
-  final Document note;
-  NoteNewEditDeleteSuccess({required this.note});
+  final Document? note;
+  NoteNewEditDeleteSuccess({this.note});
 }
 
 class NoteNewEditDeleteError extends NoteState {

@@ -16,6 +16,7 @@ class ViewNote extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
+        automaticallyImplyLeading: false,
         title: Text(
           note.title,
           style: const TextStyle(
@@ -27,15 +28,16 @@ class ViewNote extends StatelessWidget {
         leading: IconButton(
           padding: const EdgeInsets.only(left: 20),
           onPressed: () => context.goNamed(RouteNames.home),
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios,
-            color: AppColors.grey.withOpacity(.4),
+            color: AppColors.darkGrey,
           ),
         ),
         actions: [
           IconButton(
             padding: const EdgeInsets.only(right: 20),
-            onPressed: () => context.goNamed(RouteNames.editNote, extra: note),
+            onPressed: () =>
+                context.pushNamed(RouteNames.editNote, extra: note),
             icon: const Icon(
               Icons.edit_outlined,
               color: AppColors.primary,
@@ -46,26 +48,30 @@ class ViewNote extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              note.title,
-              style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w500,
+        child: GestureDetector(
+          onDoubleTap: () =>
+              context.pushNamed(RouteNames.editNote, extra: note),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                note.title,
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-            AppGaps.v10,
-            Text(
-              note.text!,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                color: AppColors.darkGrey,
-              ),
-            )
-          ],
+              AppGaps.v10,
+              Text(
+                note.text!,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.darkGrey,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

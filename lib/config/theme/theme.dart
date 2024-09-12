@@ -2,11 +2,15 @@ import 'package:notepada/config/theme/colors.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
-
   // LIGHT THEME
 
   static final lightTheme = ThemeData(
     primaryColor: AppColors.primary,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      brightness: Brightness.light,
+    ),
+    useMaterial3: true,
     scaffoldBackgroundColor: AppColors.backgroundLight,
     brightness: Brightness.light,
     fontFamily: 'Satoshi',
@@ -44,11 +48,14 @@ class AppTheme {
     ),
   );
 
-
   // DARK THEME
 
-
   static final darkTheme = ThemeData(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.primary,
+      brightness: Brightness.dark,
+    ),
+    useMaterial3: true,
     primaryColor: AppColors.primary,
     scaffoldBackgroundColor: AppColors.backgroundDark,
     brightness: Brightness.dark,
@@ -84,7 +91,7 @@ class AppTheme {
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.backgroundDark,
+      titleSpacing: 0,
     ),
   );
 }
-

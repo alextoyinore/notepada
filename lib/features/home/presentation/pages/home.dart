@@ -9,7 +9,6 @@ import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
 import 'package:notepada/features/note/presentation/bloc/note_state.dart';
-import 'package:shimmer_animation/shimmer_animation.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -23,14 +22,16 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    context.read<NoteCubit>().getNotes(userID: userID);
     super.initState();
+    context.read<NoteCubit>().getNotes(userID: userID);
+    // Try refreshing state
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text(
           AppStrings.notes,
           style: TextStyle(
@@ -40,18 +41,10 @@ class _HomeState extends State<Home> {
           ),
         ),
         actions: [
-          Container(
-            width: 30,
-            height: 30,
-            margin: const EdgeInsets.only(right: 16),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50),
-              border: Border.all(
-                color: AppColors.midGrey,
-                width: 1,
-              ),
-            ),
-            child: const Icon(Icons.person),
+          IconButton(
+            onPressed: () {},
+            padding: const EdgeInsets.only(right: 8),
+            icon: const Icon(Icons.person),
           )
         ],
       ),
@@ -71,12 +64,15 @@ class _HomeState extends State<Home> {
 
           if (state is NoteFetchError) {
             return const Center(
-              child: Text(
-                AppStrings.getNoteError,
-                style: TextStyle(
-                  color: AppColors.midGrey,
+              child: Padding(
+                padding: EdgeInsets.all(32.0),
+                child: Text(
+                  AppStrings.getNoteError,
+                  style: TextStyle(
+                    color: AppColors.midGrey,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
             );
           }
@@ -96,7 +92,7 @@ class _HomeState extends State<Home> {
               return ListView.separated(
                 itemBuilder: (_, index) {
                   return GestureDetector(
-                    onTap: () => context.goNamed(
+                    onTap: () => context.pushNamed(
                       RouteNames.viewNote,
                       extra: state.notes[index],
                     ),
@@ -122,11 +118,32 @@ class _HomeState extends State<Home> {
                         //   color: AppColors.primary,
                         // ),
                         confirmDismiss: (DismissDirection direction) async {
-                          // Your confirmation logic goes here
-                          // Return true to allow dismissal, false to prevent it
-                          return true;
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: const Text(AppStrings.confirmDelete),
+                              content: const Text(AppStrings.deleteDescription),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => context.pop(false),
+                                  child: const Text(AppStrings.cancel),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    context.read<NoteCubit>().deleteNote(
+                                        documentID: state.notes[index].id);
+                                    context
+                                        .read<NoteCubit>()
+                                        .getNotes(userID: userID);
+                                    context.pop(true);
+                                  },
+                                  child: const Text(AppStrings.continue_),
+                                )
+                              ],
+                            ),
+                          );
                         },
-                        onDismissed: (DismissDirection direction) {},
+                        onDismissed: (DismissDirection direction) async {},
                         onResize: () {},
                         direction: DismissDirection.endToStart,
                         dragStartBehavior: DragStartBehavior.start,
