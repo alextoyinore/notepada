@@ -1,6 +1,7 @@
 import 'package:appwrite/models.dart';
 import 'package:dartz/dartz.dart';
 import 'package:notepada/core/error/failure.dart';
+import 'package:notepada/features/auth/data/models/user.dart';
 
 abstract class IAuthRepository {
   Future<Either<Failure, User>> register({
@@ -17,7 +18,9 @@ abstract class IAuthRepository {
 
   Future<Either<Failure, Session>> checkSession();
 
-  Future<Either<Failure, User>> getUser({
+  Future<Either<Failure, UserModel>> getUser({
     required String userID,
   });
+
+  Future<Either<Failure, dynamic>> logout();
 }

@@ -1,4 +1,5 @@
 import 'package:appwrite/models.dart';
+import 'package:notepada/features/auth/data/models/user.dart';
 
 abstract class AuthState {}
 
@@ -37,11 +38,13 @@ class LoginError extends AuthState {
 class UserLoading extends AuthState {}
 
 class UserSuccess extends AuthState {
-  final User user;
-  UserSuccess({required this.user});
+  final UserModel? user;
+  UserSuccess({this.user});
 }
 
 class UserError extends AuthState {
   final String error;
   UserError({required this.error});
 }
+
+class LoggingOut extends AuthState {}

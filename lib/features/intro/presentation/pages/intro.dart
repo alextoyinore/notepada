@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/styles.dart';
-import 'package:notepada/config/assets/vectors.dart';
 import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/config/assets/images.dart';
 import 'package:notepada/common/bloc/theme/theme_cubit.dart';

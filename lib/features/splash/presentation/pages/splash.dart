@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/core/routes/names.dart';
@@ -18,6 +19,8 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
+  final _defaultColor = StorageService();
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -25,6 +28,11 @@ class _SplashState extends State<Splash> {
     });
     // StorageService storageService = StorageService();
     // storageService.clearAll();
+    _defaultColor.getValue(StorageKeys.defaultColor) == null
+        ? _defaultColor.setValue(
+            StorageKeys.defaultColor, '0x${AppColors.darkGrey.toHexString()}')
+        : null;
+    // print(_defaultColor.getValue(StorageKeys.defaultColor));
     super.initState();
     // redirect();
   }

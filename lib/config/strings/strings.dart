@@ -51,4 +51,12 @@ class AppStrings {
   static const welcome = 'Welcome';
   static const welcomeDescription =
       'Ideas are gems, in them holds the power to rule, to govern, to possess gold, silver, and diamonds but they are fickle and fleeting. The person who keeps, explores and bring ideas to life will have more of them. A good idea is a precious gift.\nThey are worth protecting.';
+  static const userLoading = 'We are loading your data';
+  static const userError =
+      'We are having trouble getting your data. It may help if you refresh your internet connection.';
+  static const setTheme = 'Theme';
+  static const defaultColor = 'Default Note Color';
+  static const logout = 'Logout';
+  static const about = 'About Notepada';
+  static const loggingout = 'Logging out!';
 }

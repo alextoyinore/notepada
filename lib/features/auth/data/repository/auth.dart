@@ -7,6 +7,7 @@ import 'package:notepada/config/constants/constants.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/core/error/failure.dart';
 import 'package:notepada/core/error/server_exception.dart';
+import 'package:notepada/features/auth/data/models/user.dart';
 import 'package:notepada/service_locator.dart';
 import 'package:notepada/features/auth/domain/repositories/iauth.dart';
 
@@ -97,7 +98,7 @@ class AuthRepository extends IAuthRepository {
   }
 
   @override
-  Future<Either<Failure, User>> getUser({required String userID}) async {
+  Future<Either<Failure, UserModel>> getUser({required String userID}) async {
     final appwriteProvider = sl<AppwriteProvider>();
     final internetConnectionChecker = sl<InternetConnectionChecker>();
     try {
@@ -107,9 +108,27 @@ class AuthRepository extends IAuthRepository {
           collectionId: AppConstants.usersCollectionID,
           documentId: userID,
         );
-        Map<String, dynamic> data = document!.toMap();
-        final user = User.fromMap(data);
+        // print(document!.data);
+        final user = UserModel.fromMap(document!.data);
         return Right(user);
+      } else {
+        return Left(
+          Failure(message: AppStrings.noInternetConnection),
+        );
+      }
+    } on AppwriteException catch (e) {
+      return Left(Failure(message: e.message!));
+    } on ServerException catch (e) {
+      return Left(Failure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, dynamic>> logout() async {
+    try {
+      if (await _internetConnectionChecker.hasConnection) {
+        await _appwriteProvider.account!.deleteSession(sessionId: 'current');
+        return const Right(1);
       } else {
         return Left(
           Failure(message: AppStrings.noInternetConnection),

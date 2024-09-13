@@ -40,7 +40,7 @@ class _HomeState extends State<Home> {
           style: TextStyle(
             color: AppColors.primary,
             fontWeight: FontWeight.bold,
-            fontSize: 25,
+            fontSize: 20,
           ),
         ),
         actions: [
@@ -48,8 +48,22 @@ class _HomeState extends State<Home> {
             onPressed: () {
               context.goNamed(RouteNames.profile);
             },
-            padding: const EdgeInsets.only(right: 8),
-            icon: const Icon(Icons.person),
+            padding: const EdgeInsets.only(right: 16),
+            icon: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(.1),
+                shape: BoxShape.circle,
+              ),
+              child: SvgPicture.asset(
+                AppVectors.profile,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.primary,
+                  BlendMode.srcATop,
+                ),
+                height: 16,
+              ),
+            ),
           )
         ],
       ),
@@ -207,7 +221,7 @@ class _HomeState extends State<Home> {
                             color: state.notes[index].color != null
                                 ? Color(int.tryParse(
                                         state.notes[index].color!)!)
-                                    .withOpacity(.05)
+                                    .withOpacity(.1)
                                 : AppColors.grey,
                             borderRadius: BorderRadius.circular(10),
                           ),

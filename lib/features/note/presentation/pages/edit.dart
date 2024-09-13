@@ -7,6 +7,8 @@ import 'package:notepada/config/theme/styles.dart';
 
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/core/routes/names.dart';
+import 'package:notepada/core/util/storage/storage_keys.dart';
+import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/note/data/models/note.dart';
 import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
 import 'package:notepada/features/note/presentation/bloc/note_state.dart';
@@ -52,9 +54,13 @@ class _EditNoteState extends State<EditNote> {
     }
   }
 
+  // StorageService
+  final _storedDefaultColor = StorageService();
+
   // some color values
   Color _pickerColor = AppColors.darkGrey;
   late Color _currentColor;
+  late Color _defaultColor;
 
 // ValueChanged<Color> callback
   void changeColor(Color color) {
@@ -65,8 +71,11 @@ class _EditNoteState extends State<EditNote> {
   void initState() {
     super.initState();
 
+    _defaultColor = Color(
+        int.tryParse(_storedDefaultColor.getValue(StorageKeys.defaultColor)!)!);
+
     _currentColor = widget.note == null
-        ? AppColors.darkGrey
+        ? _defaultColor
         : Color(int.tryParse(widget.note!.color!)!);
 
     if (widget.note != null) {
@@ -136,12 +145,13 @@ class _EditNoteState extends State<EditNote> {
                 width: 25,
                 height: 25,
                 decoration: BoxDecoration(
-                    color: _currentColor,
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(
-                      width: 2,
-                      color: AppColors.darkGrey.withOpacity(.1),
-                    )),
+                  color: _defaultColor,
+                  borderRadius: BorderRadius.circular(25),
+                  border: Border.all(
+                    width: 2,
+                    color: AppColors.darkGrey.withOpacity(.1),
+                  ),
+                ),
               ),
             ),
           ),
@@ -216,45 +226,42 @@ class _EditNoteState extends State<EditNote> {
                   ),
                 ),
                 // style: TextStyle(color: _currentColor),
-                minLines: 25,
+                minLines: 26,
                 maxLines: 1000,
               ),
-              AppGaps.v10,
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          _submit();
-                        },
-                        child: _sendingData
-                            ? const CircularProgressIndicator(
-                                strokeWidth: 3,
-                                color: AppColors.bright,
-                              )
-                            : const Text(AppStrings.saveNote),
-                      ),
-                      AppGaps.v10,
-                      TextButton(
-                        onPressed: () {
-                          if (widget.note == null) {
-                            // _submit();
-                            context.goNamed(RouteNames.home);
-                          } else {
-                            context.goNamed(
-                              RouteNames.viewNote,
-                              extra: widget.note,
-                            );
-                          }
-                        },
-                        child: const Text(AppStrings.cancel),
-                      ),
-                      AppGaps.v10,
-                    ],
-                  ),
+              AppGaps.v30,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        _submit();
+                      },
+                      child: _sendingData
+                          ? const CircularProgressIndicator(
+                              strokeWidth: 3,
+                              color: AppColors.bright,
+                            )
+                          : const Text(AppStrings.saveNote),
+                    ),
+                    AppGaps.v10,
+                    TextButton(
+                      onPressed: () {
+                        if (widget.note == null) {
+                          // _submit();
+                          context.goNamed(RouteNames.home);
+                        } else {
+                          context.goNamed(
+                            RouteNames.viewNote,
+                            extra: widget.note,
+                          );
+                        }
+                      },
+                      child: const Text(AppStrings.cancel),
+                    ),
+                    AppGaps.v10,
+                  ],
                 ),
               ),
             ],
