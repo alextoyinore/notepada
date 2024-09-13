@@ -95,4 +95,30 @@ class AuthRepository extends IAuthRepository {
       return Left(Failure(message: e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, User>> getUser({required String userID}) async {
+    final appwriteProvider = sl<AppwriteProvider>();
+    final internetConnectionChecker = sl<InternetConnectionChecker>();
+    try {
+      if (await internetConnectionChecker.hasConnection) {
+        Document? document = await appwriteProvider.database?.getDocument(
+          databaseId: AppConstants.appwriteDatabaseID,
+          collectionId: AppConstants.usersCollectionID,
+          documentId: userID,
+        );
+        Map<String, dynamic> data = document!.toMap();
+        final user = User.fromMap(data);
+        return Right(user);
+      } else {
+        return Left(
+          Failure(message: AppStrings.noInternetConnection),
+        );
+      }
+    } on AppwriteException catch (e) {
+      return Left(Failure(message: e.message!));
+    } on ServerException catch (e) {
+      return Left(Failure(message: e.message));
+    }
+  }
 }

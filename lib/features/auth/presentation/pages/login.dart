@@ -5,13 +5,11 @@ import 'package:notepada/config/strings/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:notepada/config/theme/styles.dart';
 import 'package:notepada/config/theme/colors.dart';
-import 'package:notepada/core/routes/routes.dart';
 import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/core/util/storage/storage_keys.dart';
 import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/auth/presentation/bloc/login_cubit.dart';
 import 'package:notepada/features/auth/presentation/bloc/login_state.dart';
-import 'package:notepada/main.dart';
 import 'package:notepada/service_locator.dart';
 
 class Login extends StatefulWidget {
@@ -75,9 +73,7 @@ class _LoginState extends State<Login> {
               ),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
           } else if (state is LoginSuccess) {
-
             _sendingData = false; // Remove circular progress indicator
             _storageService.setValue(StorageKeys.userID, state.session.userId);
             _storageService.setValue(StorageKeys.sessionID, state.session.$id);
@@ -129,7 +125,7 @@ class _LoginState extends State<Login> {
                   },
                   child: _sendingData
                       ? const CircularProgressIndicator(
-                          strokeWidth: 2,
+                          strokeWidth: 3,
                           color: AppColors.bright,
                         )
                       : const Text(AppStrings.continue_),
@@ -192,9 +188,7 @@ class _LoginState extends State<Login> {
         hintText: AppStrings.password,
         // contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         suffix: GestureDetector(
-          onTap: (){
-
-          },
+          onTap: () {},
           child: const Icon(Icons.remove_red_eye_outlined),
         ),
       ),

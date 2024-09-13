@@ -1,11 +1,12 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/config/theme/styles.dart';
 import 'package:notepada/core/routes/names.dart';
-import 'package:notepada/core/routes/routes.dart';
 import 'package:notepada/features/note/data/models/note.dart';
+import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
 
 class ViewNote extends StatelessWidget {
   final NoteModel note;
@@ -14,23 +15,31 @@ class ViewNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor:
+      //     Color.lerp(Color(int.tryParse(note.color!)!), Colors.white, .9),
       appBar: AppBar(
+        // backgroundColor:
+        //     Color.lerp(Color(int.tryParse(note.color!)!), Colors.white, .9),
         titleSpacing: 0,
         automaticallyImplyLeading: false,
         title: Text(
           note.title,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 13,
-            color: AppColors.primary,
+            color: Color(
+              int.tryParse(note.color!)!,
+            ),
           ),
           softWrap: true,
         ),
         leading: IconButton(
           padding: const EdgeInsets.only(left: 20),
           onPressed: () => context.goNamed(RouteNames.home),
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
-            color: AppColors.darkGrey,
+            color: Color(
+              int.tryParse(note.color!)!,
+            ).withOpacity(.4),
           ),
         ),
         actions: [
@@ -38,9 +47,51 @@ class ViewNote extends StatelessWidget {
             padding: const EdgeInsets.only(right: 20),
             onPressed: () =>
                 context.pushNamed(RouteNames.editNote, extra: note),
-            icon: const Icon(
+            icon: Icon(
               Icons.edit_outlined,
-              color: AppColors.primary,
+              color: Color(
+                int.tryParse(note.color!)!,
+              ),
+              size: 16,
+            ),
+          ),
+          IconButton(
+            padding: const EdgeInsets.only(right: 20),
+            onPressed: () => showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                title: const Text(
+                  AppStrings.confirmDelete,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                content: const Text(AppStrings.deleteDescription),
+                actions: [
+                  TextButton(
+                    onPressed: () => context.pop(false),
+                    child: const Text(AppStrings.cancel),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context.read<NoteCubit>().deleteNote(documentID: note.id);
+
+                      context.goNamed(RouteNames.home);
+                    },
+                    child: const Text(AppStrings.continue_),
+                  )
+                ],
+              ),
+            ),
+            icon: Icon(
+              Icons.delete,
+              color: Color(
+                int.tryParse(note.color!)!,
+              ),
               size: 16,
             ),
           ),
@@ -69,7 +120,8 @@ class ViewNote extends StatelessWidget {
                   fontWeight: FontWeight.w400,
                   color: AppColors.darkGrey,
                 ),
-              )
+              ),
+              AppGaps.v20,
             ],
           ),
         ),

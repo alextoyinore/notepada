@@ -21,13 +21,11 @@ class Auth extends StatelessWidget {
             AppGaps.v40,
             SvgPicture.asset(
               AppVectors.icon,
-              color: AppColors.primary,
+              colorFilter: const ColorFilter.mode(
+                AppColors.primary,
+                BlendMode.srcATop,
+              ),
               height: 50,
-            ),
-            AppGaps.v40,
-            Image.asset(
-              AppImages.onboard3,
-              fit: BoxFit.cover,
             ),
             AppGaps.v40,
             Text(
@@ -40,28 +38,38 @@ class Auth extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 color: AppColors.midGrey,
+                height: 1.6,
               ),
               textAlign: TextAlign.center,
             ),
-            AppGaps.v20,
+            AppGaps.v40,
+            Image.asset(
+              AppImages.tree,
+              height: 300,
+              fit: BoxFit.cover,
+            ),
+            AppGaps.v40,
             Align(
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  AppGaps.v40,
+                  AppGaps.v30,
                   ElevatedButton(
                     onPressed: () {
                       context.goNamed(RouteNames.register);
                     },
                     child: const Text(AppStrings.register),
                   ),
-                  AppGaps.v20,
-                  ElevatedButton(
+                  AppGaps.v10,
+                  TextButton(
                     onPressed: () {
                       context.goNamed(RouteNames.login);
                     },
-                    child: const Text(AppStrings.login),
+                    child: const Text(
+                      AppStrings.login,
+                      style: TextStyle(fontSize: 16),
+                    ),
                   ),
                 ],
               ),
@@ -72,4 +80,3 @@ class Auth extends StatelessWidget {
     );
   }
 }
-

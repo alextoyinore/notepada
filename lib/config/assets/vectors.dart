@@ -12,5 +12,6 @@ class AppVectors {
   static const String onboard4 = '${vectorBaseURL}onboard4$vectorExtension';
   static const String moon = '${vectorBaseURL}moon$vectorExtension';
   static const String sun = '${vectorBaseURL}sun$vectorExtension';
+  static const String warning = '${vectorBaseURL}warning$vectorExtension';
+  static const String download = '${vectorBaseURL}download$vectorExtension';
 }
-

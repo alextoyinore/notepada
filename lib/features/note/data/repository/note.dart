@@ -16,6 +16,7 @@ class NoteRepository extends INoteRepository {
   Future<Either<Failure, Document>> newNote({
     required String userID,
     required String title,
+    String? color,
     String? text,
     String? audio,
     String? image,
@@ -37,6 +38,7 @@ class NoteRepository extends INoteRepository {
             'userID': userID,
             'title': title,
             'text': text,
+            'color': color,
             'audio': audio,
             'image': image,
             'date': date,
@@ -60,6 +62,7 @@ class NoteRepository extends INoteRepository {
     required String documentID,
     String? title,
     String? text,
+    String? color,
     String? audio,
     String? image,
   }) async {
@@ -75,6 +78,7 @@ class NoteRepository extends INoteRepository {
           data: {
             'title': title,
             'text': text,
+            'color': color,
             'audio': audio,
             'image': image,
           },

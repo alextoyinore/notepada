@@ -5,6 +5,7 @@ class NoteModel {
   String userID;
   String title;
   String? text;
+  String? color;
   String? audio;
   String? image;
   String date;
@@ -14,6 +15,7 @@ class NoteModel {
     required this.userID,
     required this.date,
     required this.title,
+    this.color,
     this.text,
     this.audio,
     this.image,
@@ -23,6 +25,7 @@ class NoteModel {
     String? id,
     String? userID,
     String? text,
+    String? color,
     String? audio,
     String? image,
     String? date,
@@ -33,6 +36,7 @@ class NoteModel {
       userID: userID ?? this.userID,
       title: title ?? this.title,
       text: text ?? this.text,
+      color: color ?? this.color,
       audio: audio ?? this.audio,
       image: image ?? this.image,
       date: date ?? this.date,
@@ -45,6 +49,7 @@ class NoteModel {
       'userID': userID,
       'title': title,
       'text': text,
+      'color': color,
       'audio': audio,
       'image': image,
       'date': date,
@@ -57,6 +62,7 @@ class NoteModel {
       userID: map['userID'] as String,
       title: map['title'] as String,
       text: map['text'] != null ? map['text'] as String : '',
+      color: map['color'] != null ? map['color'] as String : '',
       audio: map['audio'] != null ? map['audio'] as String : '',
       image: map['image'] != null ? map['image'] as String : '',
       date: map['date'] as String,

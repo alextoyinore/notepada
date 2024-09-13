@@ -66,6 +66,8 @@ dependencies:
 
   pull_to_refresh_flutter3: ^2.0.2
 
+  flutter_colorpicker: ^1.1.0
+
   # just_audio: ^0.9.37
 
   # just_audio_windows: ^0.2.1

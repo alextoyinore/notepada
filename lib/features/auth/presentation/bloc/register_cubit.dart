@@ -29,4 +29,3 @@ class RegisterCubit extends Cubit<RegisterState> {
     );
   }
 }
-

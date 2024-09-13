@@ -9,9 +9,9 @@ class AppStrings {
   static const lastName = 'Last Name';
   static const email = 'Email';
   static const password = 'Password';
-  static const introTitle = 'Ideas rule the world';
+  static const introTitle = 'Ideas rule the world.';
   static const introDescription =
-      'Never loose an idea again. Note it, keep it, make it.';
+      'Ideas are seeds, the moment you store them, you have planted them. Never loose an idea again.\nStore it, keep it, make it!';
   static const registerPolicyCheck =
       "By clicking 'Continue' you agree to the terms, conditions and policies of Notepada";
   static const registerDescription =
@@ -40,10 +40,12 @@ class AppStrings {
   static const noteSaved = 'Your note has been saved successfully.';
   static const gettingNotes = 'Getting notes...';
   static const getNoteError =
-      'We are having trouble getting your notes. Try closing and re-opening the app.';
+      'We are having trouble getting your notes.\nTry closing and reopening the app. Thank you!';
   static const noNotes = 'You have no notes';
   static const confirmDelete = 'Confirm Delete';
   static const confirm = 'Confirm';
   static const delete = 'Delete';
-  static const deleteDescription = 'Are you sure you want to delete this note?';
+  static const deleteDescription =
+      'Are you sure you want to delete this note? Note that this action cannot be reversed.';
+  static const chooseNoteColor = 'Choose note color';
 }

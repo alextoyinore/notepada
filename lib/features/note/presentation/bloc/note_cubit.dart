@@ -1,7 +1,5 @@
-import 'package:appwrite/models.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notepada/core/util/storage/storage_service.dart';
-import 'package:notepada/features/note/data/models/note.dart';
 import 'package:notepada/features/note/data/repository/note.dart';
 import 'package:notepada/features/note/presentation/bloc/note_state.dart';
 import 'package:notepada/service_locator.dart';
@@ -15,6 +13,7 @@ class NoteCubit extends Cubit<NoteState> {
   void newNote({
     required String title,
     String? text,
+    String? color,
     String? audio,
     String? image,
   }) async {
@@ -24,6 +23,7 @@ class NoteCubit extends Cubit<NoteState> {
         title: title,
         date: DateTime.now().toIso8601String(),
         text: text,
+        color: color,
         audio: audio,
         image: image);
     response.fold(
@@ -36,6 +36,7 @@ class NoteCubit extends Cubit<NoteState> {
     String? title,
     required String documentID,
     String? text,
+    String? color,
     String? audio,
     String? image,
   }) async {
@@ -43,6 +44,7 @@ class NoteCubit extends Cubit<NoteState> {
     final response = await _noteRepository.editNote(
       title: title!,
       text: text,
+      color: color,
       audio: audio,
       image: image,
       documentID: documentID,

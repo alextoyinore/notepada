@@ -8,6 +8,7 @@ abstract class INoteRepository {
     required String userID,
     required String title,
     required String text,
+    required String color,
     required String audio,
     required String image,
     required String date,
@@ -17,6 +18,7 @@ abstract class INoteRepository {
     required String documentID,
     required String title,
     required String text,
+    required String color,
     required String audio,
     required String image,
   });

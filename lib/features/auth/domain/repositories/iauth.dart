@@ -16,4 +16,8 @@ abstract class IAuthRepository {
   });
 
   Future<Either<Failure, Session>> checkSession();
+
+  Future<Either<Failure, User>> getUser({
+    required String userID,
+  });
 }

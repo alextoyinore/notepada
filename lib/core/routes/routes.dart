@@ -4,6 +4,7 @@ import 'package:notepada/features/home/presentation/pages/home.dart';
 import 'package:notepada/features/note/data/models/note.dart';
 import 'package:notepada/features/note/presentation/pages/edit.dart';
 import 'package:notepada/features/note/presentation/pages/view_note.dart';
+import 'package:notepada/features/auth/presentation/pages/profile.dart';
 import 'package:notepada/features/splash/presentation/pages/splash.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/features/auth/presentation/pages/login.dart';
@@ -20,7 +21,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/intro',
       name: RouteNames.intro,
-      builder: (context, state) => Intro(),
+      builder: (context, state) => const Intro(),
     ),
     GoRoute(
       path: '/auth',
@@ -55,6 +56,11 @@ final GoRouter router = GoRouter(
       builder: (context, state) => ViewNote(
         note: state.extra as NoteModel,
       ),
+    ),
+    GoRoute(
+      path: '/profile',
+      name: RouteNames.profile,
+      builder: (context, state) => const Profile(),
     ),
   ],
 );

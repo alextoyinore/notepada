@@ -1,7 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notepada/config/assets/images.dart';
+import 'package:notepada/config/assets/vectors.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/config/theme/styles.dart';
@@ -42,7 +45,9 @@ class _HomeState extends State<Home> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              context.goNamed(RouteNames.profile);
+            },
             padding: const EdgeInsets.only(right: 8),
             icon: const Icon(Icons.person),
           )
@@ -51,27 +56,53 @@ class _HomeState extends State<Home> {
       body: BlocBuilder<NoteCubit, NoteState>(
         builder: (context, state) {
           if (state is NoteFetchLoading) {
-            return const Center(
-              child: Text(
-                AppStrings.gettingNotes,
-                style: TextStyle(
-                  color: AppColors.midGrey,
-                ),
-                textAlign: TextAlign.center,
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    AppImages.gettingNotes,
+                    height: 150,
+                  ),
+                  AppGaps.v10,
+                  const Text(
+                    AppStrings.gettingNotes,
+                    style: TextStyle(
+                      color: AppColors.midGrey,
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             );
           }
 
           if (state is NoteFetchError) {
-            return const Center(
+            return Center(
               child: Padding(
-                padding: EdgeInsets.all(32.0),
-                child: Text(
-                  AppStrings.getNoteError,
-                  style: TextStyle(
-                    color: AppColors.midGrey,
-                  ),
-                  textAlign: TextAlign.center,
+                padding: const EdgeInsets.all(32.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SvgPicture.asset(
+                      AppVectors.warning,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.grey,
+                        BlendMode.srcATop,
+                      ),
+                      height: 100,
+                    ),
+                    AppGaps.v20,
+                    const Text(
+                      AppStrings.getNoteError,
+                      style: TextStyle(
+                        color: AppColors.midGrey,
+                        fontSize: 16,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               ),
             );
@@ -79,20 +110,29 @@ class _HomeState extends State<Home> {
 
           if (state is NoteFetchSuccess) {
             if (state.notes.isEmpty) {
-              return const Center(
-                child: Text(
-                  AppStrings.noNotes,
-                  style: TextStyle(
-                    color: AppColors.midGrey,
-                  ),
-                  textAlign: TextAlign.center,
+              return Center(
+                child: Column(
+                  children: [
+                    Image.asset(
+                      AppImages.empty,
+                      height: 200,
+                    ),
+                    AppGaps.v10,
+                    const Text(
+                      AppStrings.noNotes,
+                      style: TextStyle(
+                        color: AppColors.midGrey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
               );
             } else {
               return ListView.separated(
                 itemBuilder: (_, index) {
                   return GestureDetector(
-                    onTap: () => context.pushNamed(
+                    onTap: () => context.goNamed(
                       RouteNames.viewNote,
                       extra: state.notes[index],
                     ),
@@ -121,7 +161,16 @@ class _HomeState extends State<Home> {
                           showDialog(
                             context: context,
                             builder: (_) => AlertDialog(
-                              title: const Text(AppStrings.confirmDelete),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              title: const Text(
+                                AppStrings.confirmDelete,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                               content: const Text(AppStrings.deleteDescription),
                               actions: [
                                 TextButton(
@@ -142,6 +191,7 @@ class _HomeState extends State<Home> {
                               ],
                             ),
                           );
+                          return null;
                         },
                         onDismissed: (DismissDirection direction) async {},
                         onResize: () {},
@@ -154,7 +204,11 @@ class _HomeState extends State<Home> {
                           ),
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
-                            color: AppColors.grey.withOpacity(.2),
+                            color: state.notes[index].color != null
+                                ? Color(int.tryParse(
+                                        state.notes[index].color!)!)
+                                    .withOpacity(.05)
+                                : AppColors.grey,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Column(
@@ -162,7 +216,11 @@ class _HomeState extends State<Home> {
                             children: [
                               Text(
                                 state.notes[index].title,
-                                style: AppStyles.noteListHeaderStyle,
+                                style: AppStyles.noteListHeaderStyle.copyWith(
+                                    color: state.notes[index].color != null
+                                        ? Color(int.tryParse(
+                                            state.notes[index].color!)!)
+                                        : AppColors.darkGrey),
                               ),
                               state.notes[index].text! != ''
                                   ? state.notes[index].text!.length >= 96
@@ -170,13 +228,38 @@ class _HomeState extends State<Home> {
                                           children: [
                                             AppGaps.v10,
                                             Text(
-                                                '${state.notes[index].text!.substring(0, 95)}...'),
+                                              '${state.notes[index].text!.substring(0, 95)}...',
+                                              style: TextStyle(
+                                                color:
+                                                    state.notes[index].color !=
+                                                            null
+                                                        ? Color(
+                                                            int.tryParse(state
+                                                                .notes[index]
+                                                                .color!)!,
+                                                          )
+                                                        : AppColors.darkGrey,
+                                              ),
+                                            ),
                                           ],
                                         )
                                       : Column(
                                           children: [
                                             AppGaps.v10,
-                                            Text(state.notes[index].text!),
+                                            Text(
+                                              state.notes[index].text!,
+                                              style: TextStyle(
+                                                color:
+                                                    state.notes[index].color !=
+                                                            null
+                                                        ? Color(
+                                                            int.tryParse(state
+                                                                .notes[index]
+                                                                .color!)!,
+                                                          )
+                                                        : AppColors.darkGrey,
+                                              ),
+                                            ),
                                           ],
                                         )
                                   : const SizedBox(
@@ -186,8 +269,13 @@ class _HomeState extends State<Home> {
                               AppGaps.v10,
                               Text(
                                 state.notes[index].date.toString(),
-                                style: const TextStyle(
-                                  color: AppColors.midGrey,
+                                style: TextStyle(
+                                  color: state.notes[index].color != null
+                                      ? Color(
+                                          int.tryParse(
+                                              state.notes[index].color!)!,
+                                        ).withOpacity(.5)
+                                      : AppColors.midGrey,
                                 ),
                               ),
                             ],
@@ -207,6 +295,9 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+        ),
         onPressed: () {
           context.goNamed(RouteNames.editNote);
         },

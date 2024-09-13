@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/config/theme/styles.dart';
@@ -25,15 +26,6 @@ class _EditNoteState extends State<EditNote> {
   bool _sendingData = false;
 
   @override
-  void initState() {
-    super.initState();
-    if (widget.note != null) {
-      _title.text = widget.note!.title;
-      _note.text = widget.note!.text!;
-    }
-  }
-
-  @override
   void dispose() {
     _title.clear();
     _note.clear();
@@ -48,13 +40,38 @@ class _EditNoteState extends State<EditNote> {
       context.read<NoteCubit>().newNote(
             title: _title.text.toString(),
             text: _note.text.toString(),
+            color: '0x${_currentColor.toHexString()}',
           );
     } else {
       context.read<NoteCubit>().editNote(
             documentID: widget.note!.id,
             title: _title.text.toString(),
             text: _note.text.toString(),
+            color: '0x${_currentColor.toHexString()}',
           );
+    }
+  }
+
+  // some color values
+  Color _pickerColor = AppColors.darkGrey;
+  late Color _currentColor;
+
+// ValueChanged<Color> callback
+  void changeColor(Color color) {
+    setState(() => _pickerColor = color);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _currentColor = widget.note == null
+        ? AppColors.darkGrey
+        : Color(int.tryParse(widget.note!.color!)!);
+
+    if (widget.note != null) {
+      _title.text = widget.note!.title;
+      _note.text = widget.note!.text!;
     }
   }
 
@@ -72,19 +89,63 @@ class _EditNoteState extends State<EditNote> {
               style: const TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 20.0,
+                // color: _currentColor,
               ),
               decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
                 hintText: AppStrings.titleHintText,
                 hintStyle: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w500,
+                  // color: _currentColor,
                 ),
               ),
               minLines: 1,
-              maxLines: 2,
+              maxLines: 1,
             ),
           ],
         ),
+
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: GestureDetector(
+              onTap: () => // raise the [showDialog] widget
+                  showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text(AppStrings.chooseNoteColor),
+                  content: SingleChildScrollView(
+                    child: BlockPicker(
+                      pickerColor: _currentColor,
+                      onColorChanged: changeColor,
+                    ),
+                  ),
+                  actions: <Widget>[
+                    ElevatedButton(
+                      child: const Text(AppStrings.confirm),
+                      onPressed: () {
+                        setState(() => _currentColor = _pickerColor);
+                        Navigator.of(context).pop();
+                        // print(_currentColor.toHexString());
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              child: Container(
+                width: 25,
+                height: 25,
+                decoration: BoxDecoration(
+                    color: _currentColor,
+                    borderRadius: BorderRadius.circular(25),
+                    border: Border.all(
+                      width: 2,
+                      color: AppColors.darkGrey.withOpacity(.1),
+                    )),
+              ),
+            ),
+          ),
+        ],
         // leading: IconButton(
         //   padding: const EdgeInsets.only(left: 20, right: 0),
         //   onPressed: () => context.pop(),
@@ -147,14 +208,18 @@ class _EditNoteState extends State<EditNote> {
                 controller: _note,
                 decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
                   hintText: AppStrings.noteHintText,
+                  // hintStyle: TextStyle(
+                  //   color: _currentColor,
+                  // ),
                   border: const UnderlineInputBorder(
                     borderSide: BorderSide.none,
                   ),
                 ),
+                // style: TextStyle(color: _currentColor),
                 minLines: 25,
-                maxLines: 120,
+                maxLines: 1000,
               ),
-              AppGaps.v40,
+              AppGaps.v10,
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Padding(
@@ -175,8 +240,9 @@ class _EditNoteState extends State<EditNote> {
                       AppGaps.v10,
                       TextButton(
                         onPressed: () {
-                          if (widget.note == null && _title.text.isNotEmpty) {
-                            _submit();
+                          if (widget.note == null) {
+                            // _submit();
+                            context.goNamed(RouteNames.home);
                           } else {
                             context.goNamed(
                               RouteNames.viewNote,
@@ -184,9 +250,7 @@ class _EditNoteState extends State<EditNote> {
                             );
                           }
                         },
-                        child: Text(_title.text != ''
-                            ? AppStrings.back
-                            : AppStrings.cancel),
+                        child: const Text(AppStrings.cancel),
                       ),
                       AppGaps.v10,
                     ],

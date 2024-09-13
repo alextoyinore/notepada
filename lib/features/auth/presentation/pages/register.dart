@@ -118,7 +118,7 @@ class _RegisterState extends State<Register> {
                   },
                   child: _sendingData
                       ? const CircularProgressIndicator(
-                          strokeWidth: 2,
+                          strokeWidth: 3,
                           color: AppColors.bright,
                         )
                       : const Text(AppStrings.continue_),

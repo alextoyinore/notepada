@@ -7,4 +7,5 @@ class RouteNames {
   static const home = 'home';
   static const editNote = 'editNote';
   static const viewNote = 'viewNote';
+  static const profile = 'profile';
 }
