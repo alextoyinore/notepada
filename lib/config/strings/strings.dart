@@ -11,7 +11,7 @@ class AppStrings {
   static const password = 'Password';
   static const introTitle = 'Ideas rule the world.';
   static const introDescription =
-      'Ideas are seeds, the moment you store them, you have planted them. Never loose an idea again.\nStore it, keep it, make it!';
+      'Ideas are seeds, the moment you store them, you have planted them. Never loose an idea again. Store it, keep it, make it happen!';
   static const registerPolicyCheck =
       "By clicking 'Continue' you agree to the terms, conditions and policies of Notepada";
   static const registerDescription =
@@ -38,7 +38,7 @@ class AppStrings {
   static const system = 'System';
   static const notes = 'Notes';
   static const noteSaved = 'Your note has been saved successfully.';
-  static const gettingNotes = 'Getting notes...';
+  static const gettingNotes = 'Getting your notes...';
   static const getNoteError =
       'We are having trouble getting your notes.\nTry closing and reopening the app. Thank you!';
   static const noNotes = 'You have no notes';
@@ -48,4 +48,7 @@ class AppStrings {
   static const deleteDescription =
       'Are you sure you want to delete this note? Note that this action cannot be reversed.';
   static const chooseNoteColor = 'Choose note color';
+  static const welcome = 'Welcome';
+  static const welcomeDescription =
+      'Ideas are gems, in them holds the power to rule, to govern, to possess gold, silver, and diamonds but they are fickle and fleeting. The person who keeps, explores and bring ideas to life will have more of them. A good idea is a precious gift.\nThey are worth protecting.';
 }

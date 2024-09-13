@@ -47,11 +47,11 @@ class _LoginState extends State<Login> {
           onTap: () {
             context.goNamed(RouteNames.auth);
           },
-          child: Padding(
-            padding: const EdgeInsets.only(left: 32.0),
+          child: const Padding(
+            padding: EdgeInsets.only(left: 32.0),
             child: Icon(
               Icons.arrow_back_ios,
-              color: AppColors.grey.withOpacity(.3),
+              color: AppColors.primary,
             ),
           ),
         ),
@@ -101,20 +101,20 @@ class _LoginState extends State<Login> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppGaps.v50,
+                AppGaps.v20,
                 Text(
                   AppStrings.login,
                   style: AppStyles.headerStyle,
                 ),
                 AppGaps.v10,
                 const Text(
-                  AppStrings.registerDescription,
+                  AppStrings.loginDescription,
                   // textAlign: TextAlign.center,
                   style: TextStyle(
                     color: AppColors.midGrey,
                   ),
                 ),
-                AppGaps.v50,
+                AppGaps.v40,
                 email(),
                 AppGaps.v20,
                 password(),

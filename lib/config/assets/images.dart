@@ -8,6 +8,7 @@ class AppImages {
   static const String lady = '${vectorBaseURL}lady$vectorExtension';
   static const String tree = '${vectorBaseURL}tree$vectorExtension';
   static const String empty = '${vectorBaseURL}empty$vectorExtension';
+  static const String box = '${vectorBaseURL}box$vectorExtension';
   static const String gettingNotes =
       '${vectorBaseURL}getting_notes$vectorExtension';
 }

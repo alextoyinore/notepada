@@ -10,81 +10,65 @@ import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/config/assets/images.dart';
 import 'package:notepada/common/bloc/theme/theme_cubit.dart';
 
-class Intro extends StatelessWidget {
+class Intro extends StatefulWidget {
   const Intro({super.key});
 
   @override
+  State<Intro> createState() => _IntroState();
+}
+
+class _IntroState extends State<Intro> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.primary,
-      body: Stack(
+      // backgroundColor: AppColors.primary,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  AppImages.lady,
+          // AppGaps.v50,
+          // SvgPicture.asset(
+          //   AppVectors.icon,
+          //   colorFilter: const ColorFilter.mode(
+          //     AppColors.primary,
+          //     BlendMode.srcATop,
+          //   ),
+          //   height: 50,
+          // ),
+          // AppGaps.v20,
+          Image.asset(
+            AppImages.box,
+            height: 200,
+            fit: BoxFit.cover,
+          ),
+          AppGaps.v50,
+          Text(
+            AppStrings.welcome,
+            style: AppStyles.headerStyle.copyWith(
+                // color: AppColors.darkGrey,
                 ),
-                fit: BoxFit.cover,
+          ),
+          AppGaps.v10,
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 32.0),
+            child: Text(
+              AppStrings.welcomeDescription,
+              style: TextStyle(
+                fontSize: 18,
+                color: AppColors.midGrey,
               ),
+              textAlign: TextAlign.center,
             ),
           ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            color: Colors.black.withOpacity(.2),
-          ),
-          Positioned(
-            top: 10,
-            left: MediaQuery.of(context).size.width / 2.5,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * .2,
-              height: MediaQuery.of(context).size.height * .2,
-              child: SvgPicture.asset(
-                AppVectors.icon,
-                color: AppColors.bright,
-                height: 50,
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -500,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                // mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    AppStrings.themeSelectionTitle,
-                    style: AppStyles.headerStyle.copyWith(
-                      color: AppColors.bright,
-                    ),
-                  ),
-                  // AppGaps.v10,
-                  const Text(
-                    AppStrings.themeSelectionDescription,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.grey,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  AppGaps.v50,
-                  _themeRow(context),
-                  AppGaps.v20,
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.goNamed(RouteNames.auth);
-                      },
-                      child: const Text(AppStrings.continue_),
-                    ),
-                  ),
-                ],
-              ),
+          AppGaps.v20,
+          _themeRow(context),
+          AppGaps.v20,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32.0),
+            child: ElevatedButton(
+              onPressed: () {
+                context.goNamed(RouteNames.auth);
+              },
+              child: const Text(AppStrings.continue_),
             ),
           ),
         ],
@@ -97,13 +81,13 @@ class Intro extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height / 7.5,
       margin: const EdgeInsets.symmetric(horizontal: 32),
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: AppColors.bright.withOpacity(.8),
+        // color: AppColors.bright.withOpacity(.9),
         borderRadius: BorderRadius.circular(25),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _themeChooser(
               icon: Icons.sunny,
@@ -112,7 +96,9 @@ class Intro extends StatelessWidget {
                   ? true
                   : false,
               onTap: () {
-                context.read<ThemeCubit>().updateTheme(ThemeMode.light);
+                setState(() {
+                  context.read<ThemeCubit>().updateTheme(ThemeMode.light);
+                });
               }),
           _themeChooser(
               icon: Icons.nightlight,
@@ -121,7 +107,9 @@ class Intro extends StatelessWidget {
                   ? true
                   : false,
               onTap: () {
-                context.read<ThemeCubit>().updateTheme(ThemeMode.dark);
+                setState(() {
+                  context.read<ThemeCubit>().updateTheme(ThemeMode.dark);
+                });
               }),
           _themeChooser(
             icon: Icons.computer,
@@ -130,7 +118,9 @@ class Intro extends StatelessWidget {
                 ? true
                 : false,
             onTap: () {
-              context.read<ThemeCubit>().updateTheme(ThemeMode.system);
+              setState(() {
+                context.read<ThemeCubit>().updateTheme(ThemeMode.system);
+              });
             },
           ),
         ],
@@ -148,12 +138,13 @@ class Intro extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 100,
-        height: 100,
+        width: 80,
+        height: 80,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          // borderRadius: BorderRadius.circular(20),
           color: isSelected ? color : color.withOpacity(.02),
           border: Border.all(color: color),
+          shape: BoxShape.circle,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -161,7 +152,7 @@ class Intro extends StatelessWidget {
             Icon(
               icon,
               color: isSelected ? AppColors.bright : color,
-              size: 35,
+              size: 20,
             ),
             AppGaps.v10,
             Text(

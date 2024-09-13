@@ -43,13 +43,14 @@ class _SplashState extends State<Splash> {
               context.goNamed(RouteNames.intro);
             } else {
               context.goNamed(RouteNames.auth);
+              // context.goNamed(RouteNames.intro);
             }
           }
         },
         builder: (context, state) => Center(
           child: SvgPicture.asset(
             AppVectors.icon,
-            height: 80,
+            height: 60,
             color: AppColors.bright,
           ),
         ),

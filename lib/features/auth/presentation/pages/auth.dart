@@ -45,10 +45,10 @@ class Auth extends StatelessWidget {
             AppGaps.v40,
             Image.asset(
               AppImages.tree,
-              height: 300,
+              height: 250,
               fit: BoxFit.cover,
             ),
-            AppGaps.v40,
+            AppGaps.v20,
             Align(
               alignment: Alignment.bottomCenter,
               child: Column(

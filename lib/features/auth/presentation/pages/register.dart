@@ -35,11 +35,11 @@ class _RegisterState extends State<Register> {
           onTap: () {
             context.goNamed(RouteNames.auth);
           },
-          child: Padding(
-            padding: const EdgeInsets.only(left: 32.0),
+          child: const Padding(
+            padding: EdgeInsets.only(left: 32.0),
             child: Icon(
               Icons.arrow_back_ios,
-              color: AppColors.grey.withOpacity(.3),
+              color: AppColors.primary,
             ),
           ),
         ),

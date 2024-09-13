@@ -68,7 +68,7 @@ class _HomeState extends State<Home> {
                   const Text(
                     AppStrings.gettingNotes,
                     style: TextStyle(
-                      color: AppColors.midGrey,
+                      color: AppColors.darkGrey,
                       fontSize: 16,
                     ),
                     textAlign: TextAlign.center,
@@ -88,7 +88,7 @@ class _HomeState extends State<Home> {
                     SvgPicture.asset(
                       AppVectors.warning,
                       colorFilter: const ColorFilter.mode(
-                        AppColors.grey,
+                        AppColors.primary,
                         BlendMode.srcATop,
                       ),
                       height: 100,
@@ -97,7 +97,7 @@ class _HomeState extends State<Home> {
                     const Text(
                       AppStrings.getNoteError,
                       style: TextStyle(
-                        color: AppColors.midGrey,
+                        color: AppColors.darkGrey,
                         fontSize: 16,
                       ),
                       textAlign: TextAlign.center,
