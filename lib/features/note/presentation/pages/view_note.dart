@@ -21,24 +21,18 @@ class ViewNote extends StatefulWidget {
 
 class _ViewNoteState extends State<ViewNote> {
   bool _isDarkTheme = false;
-  final brightness = PlatformDispatcher.instance.platformBrightness;
 
   @override
   void initState() {
-    print(brightness.name);
-    _isDarkTheme = brightness.name == 'dark' ? true : false;
-    print(context.read<ThemeCubit>().state.name);
+    _isDarkTheme =
+        context.read<ThemeCubit>().state.name == 'dark' ? true : false;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor:
-      //     Color.lerp(Color(int.tryParse(note.color!)!), Colors.white, .9),
       appBar: AppBar(
-        // backgroundColor:
-        //     Color.lerp(Color(int.tryParse(note.color!)!), Colors.white, .9),
         titleSpacing: 0,
         automaticallyImplyLeading: false,
         title: Text(
@@ -58,7 +52,7 @@ class _ViewNoteState extends State<ViewNote> {
             Icons.arrow_back_ios,
             color: Color(
               int.tryParse(widget.note.color!)!,
-            ).withOpacity(.4),
+            ).withOpacity(.7),
           ),
         ),
         actions: [
@@ -133,7 +127,7 @@ class _ViewNoteState extends State<ViewNote> {
                   fontWeight: FontWeight.w500,
                   color: _isDarkTheme
                       ? Color(int.tryParse(widget.note.color!)!)
-                      : AppColors.backgroundDark,
+                      : AppColors.midGrey,
                 ),
               ),
               AppGaps.v10,
@@ -144,7 +138,7 @@ class _ViewNoteState extends State<ViewNote> {
                   fontWeight: FontWeight.w400,
                   color: _isDarkTheme
                       ? Color(int.tryParse(widget.note.color!)!)
-                      : AppColors.backgroundDark,
+                      : AppColors.midGrey,
                 ),
               ),
               AppGaps.v20,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notepada/common/helpers/extensions.dart';
 import 'package:notepada/config/assets/images.dart';
 import 'package:notepada/config/assets/vectors.dart';
 import 'package:notepada/config/strings/strings.dart';
@@ -35,15 +36,12 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Padding(
-          padding: EdgeInsets.only(left: 16.0),
-          child: Text(
-            AppStrings.notes,
-            style: TextStyle(
-              color: AppColors.primary,
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
+        title: const Text(
+          AppStrings.notes,
+          style: TextStyle(
+            color: AppColors.primary,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
         ),
         actions: [
@@ -220,7 +218,7 @@ class _HomeState extends State<Home> {
                             color: state.notes[index].color != null
                                 ? Color(int.tryParse(
                                         state.notes[index].color!)!)
-                                    .withOpacity(.1)
+                                    .withOpacity(.07)
                                 : AppColors.grey,
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -231,8 +229,8 @@ class _HomeState extends State<Home> {
                                 state.notes[index].title,
                                 style: AppStyles.noteListHeaderStyle.copyWith(
                                     color: state.notes[index].color != null
-                                        ? Color(int.tryParse(
-                                            state.notes[index].color!)!)
+                                        ? darken(Color(int.tryParse(
+                                            state.notes[index].color!)!))
                                         : AppColors.darkGrey),
                               ),
                               state.notes[index].text! != ''
@@ -243,15 +241,15 @@ class _HomeState extends State<Home> {
                                             Text(
                                               '${state.notes[index].text!.substring(0, 95)}...',
                                               style: TextStyle(
-                                                color:
-                                                    state.notes[index].color !=
-                                                            null
-                                                        ? Color(
-                                                            int.tryParse(state
-                                                                .notes[index]
-                                                                .color!)!,
-                                                          )
-                                                        : AppColors.darkGrey,
+                                                color: state.notes[index]
+                                                            .color !=
+                                                        null
+                                                    ? darken(
+                                                        Color(int.tryParse(state
+                                                            .notes[index]
+                                                            .color!)!),
+                                                      )
+                                                    : AppColors.darkGrey,
                                               ),
                                             ),
                                           ],
@@ -265,11 +263,11 @@ class _HomeState extends State<Home> {
                                                 color:
                                                     state.notes[index].color !=
                                                             null
-                                                        ? Color(
+                                                        ? darken(Color(
                                                             int.tryParse(state
                                                                 .notes[index]
                                                                 .color!)!,
-                                                          )
+                                                          ))
                                                         : AppColors.darkGrey,
                                               ),
                                             ),
