@@ -36,11 +36,14 @@ class _ProfileState extends State<Profile> {
     setState(() => _pickerColor = color);
   }
 
+  String _selectedTheme = '';
+
   @override
   void initState() {
     _defaultColor = Color(
         int.tryParse(_storageService.getValue(StorageKeys.defaultColor)!)!);
     _currentColor = _defaultColor;
+    _selectedTheme = context.read<ThemeCubit>().state.name;
     super.initState();
   }
 
@@ -146,6 +149,7 @@ class _ProfileState extends State<Profile> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     AppGaps.v10,
+
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -173,6 +177,8 @@ class _ProfileState extends State<Profile> {
                       style: const TextStyle(color: AppColors.midGrey),
                     ),
                     AppGaps.v50,
+
+                    //THEME
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -188,7 +194,83 @@ class _ProfileState extends State<Profile> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Text(context.read<ThemeCubit>().state.name)
+                          Row(
+                            children: [
+                              // LIGHT THEME CHOOSER
+                              GestureDetector(
+                                onTap: () => setState(() {
+                                  context
+                                      .read<ThemeCubit>()
+                                      .updateTheme(ThemeMode.light);
+                                }),
+                                child: Container(
+                                  width: 28,
+                                  height: 28,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: _selectedTheme == 'light'
+                                        ? AppColors.primary
+                                        : AppColors.grey.withOpacity(.2),
+                                  ),
+                                  child: const Icon(
+                                    Icons.sunny,
+                                    size: 18,
+                                  ),
+                                ),
+                              ),
+
+                              AppGaps.h10,
+
+                              // DARK THEME CHOOSER
+                              GestureDetector(
+                                onTap: () => setState(() {
+                                  context
+                                      .read<ThemeCubit>()
+                                      .updateTheme(ThemeMode.dark);
+                                }),
+                                child: Container(
+                                  width: 28,
+                                  height: 28,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: _selectedTheme == 'dark'
+                                        ? AppColors.primary
+                                        : AppColors.grey.withOpacity(.2),
+                                  ),
+                                  child: const Icon(
+                                    Icons.nightlight,
+                                    size: 18,
+                                  ),
+                                ),
+                              ),
+
+                              AppGaps.h10,
+
+                              // SYSTEM THEME CHOOSER
+                              GestureDetector(
+                                onTap: () => setState(() {
+                                  context
+                                      .read<ThemeCubit>()
+                                      .updateTheme(ThemeMode.system);
+                                }),
+                                child: Container(
+                                  width: 28,
+                                  height: 28,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: _selectedTheme == 'system'
+                                        ? AppColors.primary
+                                        : AppColors.grey.withOpacity(.2),
+                                  ),
+                                  child: const Icon(
+                                    Icons.computer,
+                                    size: 18,
+                                  ),
+                                ),
+                              ),
+                              // Text(context.read<ThemeCubit>().state.name),
+                            ],
+                          )
                         ],
                       ),
                     ),
@@ -285,11 +367,9 @@ class _ProfileState extends State<Profile> {
                     AppGaps.v30,
                     GestureDetector(
                       onTap: () {
-                        setState(() {
-                          context.read<UserCubit>().logout();
-                          _storageService.clear(StorageKeys.sessionID);
-                          context.goNamed(RouteNames.auth);
-                        });
+                        context.read<UserCubit>().logout();
+                        _storageService.clear(StorageKeys.sessionID);
+                        context.goNamed(RouteNames.auth);
                       },
                       child: Container(
                         padding: const EdgeInsets.all(10),

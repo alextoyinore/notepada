@@ -127,6 +127,7 @@ class _EditNoteState extends State<EditNote> {
                     child: BlockPicker(
                       pickerColor: _currentColor,
                       onColorChanged: changeColor,
+                      // availableColors: [],
                     ),
                   ),
                   actions: <Widget>[
@@ -145,7 +146,7 @@ class _EditNoteState extends State<EditNote> {
                 width: 25,
                 height: 25,
                 decoration: BoxDecoration(
-                  color: _defaultColor,
+                  color: _currentColor,
                   borderRadius: BorderRadius.circular(25),
                   border: Border.all(
                     width: 2,

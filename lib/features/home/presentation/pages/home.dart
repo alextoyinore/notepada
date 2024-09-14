@@ -35,12 +35,15 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text(
-          AppStrings.notes,
-          style: TextStyle(
-            color: AppColors.primary,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+        title: const Padding(
+          padding: EdgeInsets.only(left: 16.0),
+          child: Text(
+            AppStrings.notes,
+            style: TextStyle(
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
         ),
         actions: [
@@ -82,7 +85,6 @@ class _HomeState extends State<Home> {
                   const Text(
                     AppStrings.gettingNotes,
                     style: TextStyle(
-                      color: AppColors.darkGrey,
                       fontSize: 16,
                     ),
                     textAlign: TextAlign.center,
@@ -111,7 +113,6 @@ class _HomeState extends State<Home> {
                     const Text(
                       AppStrings.getNoteError,
                       style: TextStyle(
-                        color: AppColors.darkGrey,
                         fontSize: 16,
                       ),
                       textAlign: TextAlign.center,
@@ -134,9 +135,7 @@ class _HomeState extends State<Home> {
                     AppGaps.v10,
                     const Text(
                       AppStrings.noNotes,
-                      style: TextStyle(
-                        color: AppColors.midGrey,
-                      ),
+                      style: TextStyle(),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -299,7 +298,7 @@ class _HomeState extends State<Home> {
                     ),
                   );
                 },
-                separatorBuilder: (context, index) => AppGaps.v10,
+                separatorBuilder: (context, index) => AppGaps.v15,
                 itemCount: state.notes.length,
               );
             }
