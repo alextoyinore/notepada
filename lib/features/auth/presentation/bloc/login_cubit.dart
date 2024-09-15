@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notepada/features/auth/data/repository/auth.dart';
+import 'package:notepada/features/auth/presentation/bloc/auth_state.dart';
 import 'package:notepada/features/auth/presentation/bloc/login_state.dart';
 import 'package:notepada/service_locator.dart';
 
-
-class LoginCubit extends Cubit<LoginState> {
-  LoginCubit() : super(LoginInitial());
+class LoginCubit extends Cubit<AuthState> {
+  LoginCubit() : super(AuthInitial());
 
   final AuthRepository _authRepository = sl<AuthRepository>();
 

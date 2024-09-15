@@ -1,3 +1,4 @@
+import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart';
 import 'package:dartz/dartz.dart';
 import 'package:notepada/core/error/failure.dart';
@@ -23,4 +24,6 @@ abstract class IAuthRepository {
   });
 
   Future<Either<Failure, dynamic>> logout();
+
+  Future<Either<Failure, dynamic>> oauth2({required OAuthProvider provider});
 }

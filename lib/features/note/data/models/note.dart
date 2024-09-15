@@ -9,12 +9,14 @@ class NoteModel {
   String? audio;
   String? image;
   String date;
+  String dateModified;
 
   NoteModel({
     required this.id,
     required this.userID,
     required this.date,
     required this.title,
+    required this.dateModified,
     this.color,
     this.text,
     this.audio,
@@ -29,6 +31,7 @@ class NoteModel {
     String? audio,
     String? image,
     String? date,
+    String? dateModified,
     String? title,
   }) {
     return NoteModel(
@@ -40,6 +43,7 @@ class NoteModel {
       audio: audio ?? this.audio,
       image: image ?? this.image,
       date: date ?? this.date,
+      dateModified: dateModified ?? this.dateModified,
     );
   }
 
@@ -53,6 +57,7 @@ class NoteModel {
       'audio': audio,
       'image': image,
       'date': date,
+      'dateModified': dateModified,
     };
   }
 
@@ -66,6 +71,7 @@ class NoteModel {
       audio: map['audio'] != null ? map['audio'] as String : '',
       image: map['image'] != null ? map['image'] as String : '',
       date: map['date'] as String,
+      dateModified: map['dateModified'] as String,
     );
   }
 

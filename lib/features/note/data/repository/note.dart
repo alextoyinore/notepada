@@ -21,6 +21,7 @@ class NoteRepository extends INoteRepository {
     String? audio,
     String? image,
     required String date,
+    required String dateModified,
   }) async {
     final appwriteProvider = sl<AppwriteProvider>();
     final internetConnectionChecker = sl<InternetConnectionChecker>();
@@ -42,6 +43,7 @@ class NoteRepository extends INoteRepository {
             'audio': audio,
             'image': image,
             'date': date,
+            'dateModified': dateModified,
           },
         );
         return Right(document!);
@@ -65,6 +67,7 @@ class NoteRepository extends INoteRepository {
     String? color,
     String? audio,
     String? image,
+    required String dateModified,
   }) async {
     final appwriteProvider = sl<AppwriteProvider>();
     final internetConnectionChecker = sl<InternetConnectionChecker>();
@@ -81,6 +84,7 @@ class NoteRepository extends INoteRepository {
             'color': color,
             'audio': audio,
             'image': image,
+            'dateModified': dateModified,
           },
         );
         return Right(document!);
@@ -111,7 +115,7 @@ class NoteRepository extends INoteRepository {
                 collectionId: AppConstants.notesCollectionID,
                 queries: [
               Query.equal('userID', userID),
-              Query.orderDesc('date'),
+              Query.orderDesc('dateModified'),
             ]);
         Map<String, dynamic> data = documents!.toMap();
         List documentList = data['documents'].toList();

@@ -12,6 +12,7 @@ abstract class INoteRepository {
     required String audio,
     required String image,
     required String date,
+    required String dateModified,
   });
 
   Future<Either<Failure, Document>> editNote({
@@ -21,6 +22,7 @@ abstract class INoteRepository {
     required String color,
     required String audio,
     required String image,
+    required String dateModified,
   });
 
   Future<Either<Failure, List<NoteModel>>> getNotes({required String userID});

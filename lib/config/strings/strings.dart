@@ -59,4 +59,5 @@ class AppStrings {
   static const logout = 'Logout';
   static const about = 'About Notepada';
   static const loggingout = 'Logging out...';
+  static const oauthDescription = 'Or sign in with your socials';
 }

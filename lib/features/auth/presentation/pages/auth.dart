@@ -33,11 +33,13 @@ class Auth extends StatelessWidget {
               style: AppStyles.headerStyle,
             ),
             // AppGaps.v10,
-            const Text(
+            Text(
               AppStrings.introDescription,
               style: TextStyle(
                 fontSize: 16,
-                color: AppColors.midGrey,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.midGrey
+                    : AppColors.darkGrey,
                 height: 1.6,
               ),
               textAlign: TextAlign.center,

@@ -22,6 +22,7 @@ class NoteCubit extends Cubit<NoteState> {
         userID: _storageService.getValue('userID'),
         title: title,
         date: DateTime.now().toIso8601String(),
+        dateModified: DateTime.now().toIso8601String(),
         text: text,
         color: color,
         audio: audio,
@@ -39,6 +40,7 @@ class NoteCubit extends Cubit<NoteState> {
     String? color,
     String? audio,
     String? image,
+    required String dateModified,
   }) async {
     emit(NoteNewEditDeleteLoading());
     final response = await _noteRepository.editNote(
@@ -47,6 +49,7 @@ class NoteCubit extends Cubit<NoteState> {
       color: color,
       audio: audio,
       image: image,
+      dateModified: dateModified,
       documentID: documentID,
     );
     response.fold(

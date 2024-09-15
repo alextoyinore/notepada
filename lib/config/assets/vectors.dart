@@ -14,4 +14,8 @@ class AppVectors {
   static const String sun = '${vectorBaseURL}sun$vectorExtension';
   static const String warning = '${vectorBaseURL}warning$vectorExtension';
   static const String download = '${vectorBaseURL}download$vectorExtension';
+  static const String google = '${vectorBaseURL}google$vectorExtension';
+  static const String facebook = '${vectorBaseURL}facebook$vectorExtension';
+  static const String apple = '${vectorBaseURL}apple$vectorExtension';
+  static const String twitter = '${vectorBaseURL}twitter$vectorExtension';
 }

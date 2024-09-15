@@ -5,6 +5,18 @@ abstract class AuthState {}
 
 class AuthInitial extends AuthState {}
 
+class OAuthLoading extends AuthState {}
+
+class OAuthSuccess extends AuthState {
+  final User user;
+  OAuthSuccess({required this.user});
+}
+
+class OAuthError extends AuthState {
+  final String error;
+  OAuthError({required this.error});
+}
+
 // REGISTER STATES
 
 class RegisterLoading extends AuthState {}
@@ -48,3 +60,8 @@ class UserError extends AuthState {
 }
 
 class LoggingOut extends AuthState {}
+
+class OAuth2Success extends AuthState {
+  final Session? session;
+  OAuth2Success({this.session});
+}

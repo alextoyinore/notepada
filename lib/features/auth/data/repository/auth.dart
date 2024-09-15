@@ -1,4 +1,5 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:appwrite/enums.dart';
 import 'package:appwrite/models.dart';
 import 'package:dartz/dartz.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
@@ -129,6 +130,40 @@ class AuthRepository extends IAuthRepository {
       if (await _internetConnectionChecker.hasConnection) {
         await _appwriteProvider.account!.deleteSession(sessionId: 'current');
         return const Right(1);
+      } else {
+        return Left(
+          Failure(message: AppStrings.noInternetConnection),
+        );
+      }
+    } on AppwriteException catch (e) {
+      return Left(Failure(message: e.message!));
+    } on ServerException catch (e) {
+      return Left(Failure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, dynamic>> oauth2(
+      {required OAuthProvider provider}) async {
+    try {
+      if (await _internetConnectionChecker.hasConnection) {
+        Session session = await _appwriteProvider.account!
+            .createOAuth2Session(provider: provider);
+
+        // await _appwriteProvider.database?.createDocument(
+        //   databaseId: AppConstants.appwriteDatabaseID,
+        //   collectionId: AppConstants.usersCollectionID,
+        //   documentId: user.$id,
+        //   data: {
+        //     'id': user.$id,
+        //     'email': user.email,
+        //     'firstName': user.name.split(' ')[0],
+        //     'lastName': user.name.split(' ')[1],
+        //     'fullName': user.name,
+        //   },
+        // );
+
+        return Right(session);
       } else {
         return Left(
           Failure(message: AppStrings.noInternetConnection),

@@ -56,9 +56,11 @@ class _ProfileState extends State<Profile> {
         leading: IconButton(
           padding: const EdgeInsets.only(left: 20),
           onPressed: () => context.goNamed(RouteNames.home),
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back_ios,
-            color: AppColors.darkGrey,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? AppColors.grey
+                : AppColors.darkGrey,
           ),
         ),
       ),
@@ -76,10 +78,12 @@ class _ProfileState extends State<Profile> {
                       height: 150,
                     ),
                     AppGaps.v10,
-                    const Text(
+                    Text(
                       AppStrings.userLoading,
                       style: TextStyle(
-                        color: AppColors.darkGrey,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? AppColors.grey
+                            : AppColors.darkGrey,
                         fontSize: 16,
                       ),
                       textAlign: TextAlign.center,
@@ -105,10 +109,12 @@ class _ProfileState extends State<Profile> {
                         height: 100,
                       ),
                       AppGaps.v20,
-                      const Text(
+                      Text(
                         AppStrings.userError,
                         style: TextStyle(
-                          color: AppColors.darkGrey,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? AppColors.grey
+                              : AppColors.darkGrey,
                           fontSize: 16,
                         ),
                         textAlign: TextAlign.center,
@@ -129,10 +135,12 @@ class _ProfileState extends State<Profile> {
                       height: 150,
                     ),
                     AppGaps.v10,
-                    const Text(
+                    Text(
                       AppStrings.loggingout,
                       style: TextStyle(
-                        color: AppColors.darkGrey,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? AppColors.grey
+                            : AppColors.darkGrey,
                         fontSize: 16,
                       ),
                       textAlign: TextAlign.center,
@@ -369,6 +377,7 @@ class _ProfileState extends State<Profile> {
                       onTap: () {
                         context.read<UserCubit>().logout();
                         _storageService.clear(StorageKeys.sessionID);
+                        _storageService.clear(StorageKeys.userID);
                         context.goNamed(RouteNames.auth);
                       },
                       child: Container(

@@ -28,7 +28,6 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     context.read<NoteCubit>().getNotes(userID: userID);
-    // Try refreshing state
   }
 
   @override
@@ -36,12 +35,17 @@ class _HomeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text(
-          AppStrings.notes,
-          style: TextStyle(
-            color: AppColors.primary,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
+        title: Padding(
+          padding: Theme.of(context).brightness == Brightness.dark
+              ? const EdgeInsets.only(left: 16.0)
+              : EdgeInsets.zero,
+          child: const Text(
+            AppStrings.notes,
+            style: TextStyle(
+              color: AppColors.primary,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
         ),
         actions: [

@@ -19,20 +19,18 @@ class Splash extends StatefulWidget {
 }
 
 class _SplashState extends State<Splash> {
-  final _defaultColor = StorageService();
+  final _storageService = StorageService();
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SplashCubit>().checkSession();
     });
-    // StorageService storageService = StorageService();
-    // storageService.clearAll();
-    _defaultColor.getValue(StorageKeys.defaultColor) == null
-        ? _defaultColor.setValue(
+    _storageService.getValue(StorageKeys.defaultColor) == null
+        ? _storageService.setValue(
             StorageKeys.defaultColor, '0x${AppColors.darkGrey.toHexString()}')
         : null;
-    // print(_defaultColor.getValue(StorageKeys.defaultColor));
+    // print(storageService.getValue(StorageKeys.defaultColor));
     super.initState();
     // redirect();
   }
@@ -46,7 +44,7 @@ class _SplashState extends State<Splash> {
           if (state is SplashSuccess) {
             context.goNamed(RouteNames.home);
           } else if (state is SplashError) {
-            final storedUserID = StorageService().getValue(StorageKeys.userID);
+            final storedUserID = _storageService.getValue(StorageKeys.userID);
             if (storedUserID == null) {
               context.goNamed(RouteNames.intro);
             } else {
@@ -59,7 +57,10 @@ class _SplashState extends State<Splash> {
           child: SvgPicture.asset(
             AppVectors.icon,
             height: 60,
-            color: AppColors.bright,
+            colorFilter: const ColorFilter.mode(
+              AppColors.bright,
+              BlendMode.srcATop,
+            ),
           ),
         ),
       ),

@@ -1,18 +1,18 @@
-import 'package:appwrite/models.dart';
+// import 'package:appwrite/models.dart';
 
-abstract class LoginState{}
+// abstract class LoginState{}
 
-class LoginInitial extends LoginState{}
+// class LoginInitial extends LoginState{}
 
-class LoginLoading extends LoginState{}
+// class LoginLoading extends LoginState{}
 
-class LoginSuccess extends LoginState{
-  final Session session;
-  LoginSuccess({required this.session});
-}
+// class LoginSuccess extends LoginState{
+//   final Session session;
+//   LoginSuccess({required this.session});
+// }
 
-class LoginError extends LoginState{
-  late final String error;
-  LoginError({required this.error});
-}
+// class LoginError extends LoginState{
+//   late final String error;
+//   LoginError({required this.error});
+// }
 

@@ -46,6 +46,7 @@ class _EditNoteState extends State<EditNote> {
           );
     } else {
       context.read<NoteCubit>().editNote(
+            dateModified: DateTime.now().toIso8601String(),
             documentID: widget.note!.id,
             title: _title.text.toString(),
             text: _note.text.toString(),
@@ -198,14 +199,14 @@ class _EditNoteState extends State<EditNote> {
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
             // Back to previous page
-            if (widget.note != null) {
-              context.goNamed(
-                RouteNames.viewNote,
-                extra: widget.note,
-              );
-            } else {
-              context.goNamed(RouteNames.home);
-            }
+            // if (widget.note != null) {
+            //   context.goNamed(
+            //     RouteNames.viewNote,
+            //     extra: widget.note,
+            //   );
+            // } else {
+            context.goNamed(RouteNames.home);
+            // }
           }
         },
         builder: (context, state) => SingleChildScrollView(
