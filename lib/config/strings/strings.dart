@@ -60,4 +60,7 @@ class AppStrings {
   static const about = 'About Notepada';
   static const loggingout = 'Logging out...';
   static const oauthDescription = 'Or sign in with your socials';
+  static const fontSettings = 'Text Settings';
+  static const listTextSize = 'List Text';
+  static const viewTextSize = 'View Text';
 }

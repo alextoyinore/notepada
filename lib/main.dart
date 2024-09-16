@@ -1,4 +1,5 @@
 import 'package:get_storage/get_storage.dart';
+import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 import 'package:notepada/common/bloc/theme/theme_cubit.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/theme.dart';
@@ -45,6 +46,8 @@ class App extends StatelessWidget {
         BlocProvider(create: (_) => LoginCubit()),
         BlocProvider(create: (_) => SplashCubit()),
         BlocProvider(create: (_) => NoteCubit()),
+        BlocProvider(create: (_) => NoteListFontCubit()),
+        BlocProvider(create: (_) => NoteViewFontCubit()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, mode) => MaterialApp.router(

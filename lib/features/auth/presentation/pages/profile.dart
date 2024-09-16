@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 import 'package:notepada/common/bloc/theme/theme_cubit.dart';
 import 'package:notepada/config/assets/images.dart';
 import 'package:notepada/config/assets/vectors.dart';
@@ -36,14 +37,11 @@ class _ProfileState extends State<Profile> {
     setState(() => _pickerColor = color);
   }
 
-  String _selectedTheme = '';
-
   @override
   void initState() {
     _defaultColor = Color(
         int.tryParse(_storageService.getValue(StorageKeys.defaultColor)!)!);
     _currentColor = _defaultColor;
-    _selectedTheme = context.read<ThemeCubit>().state.name;
     super.initState();
   }
 
@@ -216,13 +214,21 @@ class _ProfileState extends State<Profile> {
                                   height: 28,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: _selectedTheme == 'light'
+                                    color: context.read<ThemeCubit>().state ==
+                                            ThemeMode.light
                                         ? AppColors.primary
                                         : AppColors.grey.withOpacity(.2),
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.sunny,
                                     size: 18,
+                                    color: context.read<ThemeCubit>().state ==
+                                            ThemeMode.light
+                                        ? AppColors.bright
+                                        : Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? AppColors.bright
+                                            : AppColors.darkGrey,
                                   ),
                                 ),
                               ),
@@ -241,13 +247,21 @@ class _ProfileState extends State<Profile> {
                                   height: 28,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: _selectedTheme == 'dark'
+                                    color: context.read<ThemeCubit>().state ==
+                                            ThemeMode.dark
                                         ? AppColors.primary
                                         : AppColors.grey.withOpacity(.2),
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.nightlight,
                                     size: 18,
+                                    color: context.read<ThemeCubit>().state ==
+                                            ThemeMode.dark
+                                        ? AppColors.bright
+                                        : Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? AppColors.bright
+                                            : AppColors.darkGrey,
                                   ),
                                 ),
                               ),
@@ -266,13 +280,21 @@ class _ProfileState extends State<Profile> {
                                   height: 28,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: _selectedTheme == 'system'
+                                    color: context.read<ThemeCubit>().state ==
+                                            ThemeMode.system
                                         ? AppColors.primary
                                         : AppColors.grey.withOpacity(.2),
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.computer,
                                     size: 18,
+                                    color: context.read<ThemeCubit>().state ==
+                                            ThemeMode.system
+                                        ? AppColors.bright
+                                        : Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? AppColors.bright
+                                            : AppColors.darkGrey,
                                   ),
                                 ),
                               ),
@@ -349,8 +371,125 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
 
-                    // ABOUT
                     AppGaps.v10,
+
+                    // FONT SETTINGS
+                    AppGaps.v10,
+                    Text(
+                      AppStrings.fontSettings.toUpperCase(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+
+                    // LIST FONT SETTING
+                    AppGaps.v10,
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: AppColors.grey.withOpacity(.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            AppStrings.listTextSize,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    context
+                                        .read<NoteListFontCubit>()
+                                        .decrement();
+                                  });
+                                },
+                                icon: const Icon(Icons.remove),
+                              ),
+                              Text(
+                                context
+                                    .read<NoteListFontCubit>()
+                                    .state
+                                    .toString(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    context
+                                        .read<NoteListFontCubit>()
+                                        .increment();
+                                  });
+                                },
+                                icon: const Icon(Icons.add),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // VIEW FONT
+                    AppGaps.v10,
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: AppColors.grey.withOpacity(.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            AppStrings.viewTextSize,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    context
+                                        .read<NoteViewFontCubit>()
+                                        .decrement();
+                                  });
+                                },
+                                icon: const Icon(Icons.remove),
+                              ),
+                              Text(
+                                context
+                                    .read<NoteViewFontCubit>()
+                                    .state
+                                    .toString(),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    context
+                                        .read<NoteViewFontCubit>()
+                                        .increment();
+                                  });
+                                },
+                                icon: const Icon(Icons.add),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // ABOUT
+                    AppGaps.v40,
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -372,7 +511,7 @@ class _ProfileState extends State<Profile> {
 
                     // LOGOUT
 
-                    AppGaps.v30,
+                    AppGaps.v10,
                     GestureDetector(
                       onTap: () {
                         context.read<UserCubit>().logout();

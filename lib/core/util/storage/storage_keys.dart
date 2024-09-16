@@ -4,4 +4,6 @@ class StorageKeys {
   static const profileImageID = 'profileImageID';
   static const defaultColor = 'defaultColor';
   static const firstName = 'firstName';
+  static const viewFontSize = 'viewFontSize';
+  static const listFontSize = 'listFontSize';
 }

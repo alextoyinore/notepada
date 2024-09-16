@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/core/util/storage/storage_keys.dart';
 import 'package:notepada/core/util/storage/storage_service.dart';
@@ -26,11 +27,20 @@ class _SplashState extends State<Splash> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SplashCubit>().checkSession();
     });
+
+    // Check Default Color
     _storageService.getValue(StorageKeys.defaultColor) == null
         ? _storageService.setValue(
             StorageKeys.defaultColor, '0x${AppColors.darkGrey.toHexString()}')
         : null;
-    // print(storageService.getValue(StorageKeys.defaultColor));
+
+    // Check FontSizes
+
+    // Note View
+    context.read<NoteViewFontCubit>().state;
+    // Note View
+    context.read<NoteListFontCubit>().state;
+
     super.initState();
     // redirect();
   }
@@ -67,8 +77,8 @@ class _SplashState extends State<Splash> {
     );
   }
 
-  Future<void> redirect() async {
-    await Future.delayed(const Duration(seconds: 2));
-    context.goNamed(RouteNames.intro);
-  }
+  // Future<void> redirect() async {
+  //   await Future.delayed(const Duration(seconds: 2));
+  //   context.goNamed(RouteNames.intro);
+  // }
 }

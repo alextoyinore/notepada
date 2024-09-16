@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 import 'package:notepada/common/helpers/extensions.dart';
 import 'package:notepada/config/assets/images.dart';
 import 'package:notepada/config/assets/vectors.dart';
@@ -10,6 +11,7 @@ import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/config/theme/styles.dart';
 import 'package:notepada/core/routes/names.dart';
+import 'package:notepada/core/util/storage/storage_keys.dart';
 import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
 import 'package:notepada/features/note/presentation/bloc/note_state.dart';
@@ -23,11 +25,14 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final userID = StorageService().getValue('userID');
+  final StorageService _storageService = StorageService();
+  late double _listFontSize;
 
   @override
   void initState() {
     super.initState();
     context.read<NoteCubit>().getNotes(userID: userID);
+    _listFontSize = context.read<NoteListFontCubit>().state.toDouble();
   }
 
   @override
@@ -39,10 +44,12 @@ class _HomeState extends State<Home> {
           padding: Theme.of(context).brightness == Brightness.dark
               ? const EdgeInsets.only(left: 16.0)
               : EdgeInsets.zero,
-          child: const Text(
+          child: Text(
             AppStrings.notes,
             style: TextStyle(
-              color: AppColors.primary,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.bright
+                  : AppColors.primary,
               fontWeight: FontWeight.bold,
               fontSize: 20,
             ),
@@ -212,6 +219,8 @@ class _HomeState extends State<Home> {
                         onResize: () {},
                         direction: DismissDirection.endToStart,
                         dragStartBehavior: DragStartBehavior.start,
+
+                        // Note List Container Widget
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             vertical: 15,
@@ -232,6 +241,7 @@ class _HomeState extends State<Home> {
                               Text(
                                 state.notes[index].title,
                                 style: AppStyles.noteListHeaderStyle.copyWith(
+                                    fontSize: (_listFontSize * 1.25),
                                     color: state.notes[index].color != null
                                         ? darken(Color(int.tryParse(
                                             state.notes[index].color!)!))
@@ -245,6 +255,7 @@ class _HomeState extends State<Home> {
                                             Text(
                                               '${state.notes[index].text!.substring(0, 95)}...',
                                               style: TextStyle(
+                                                fontSize: _listFontSize,
                                                 color: state.notes[index]
                                                             .color !=
                                                         null
