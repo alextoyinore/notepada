@@ -384,7 +384,7 @@ class _ProfileState extends State<Profile> {
                     ),
 
                     // LIST FONT SETTING
-                    AppGaps.v10,
+                    AppGaps.v20,
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
@@ -489,24 +489,113 @@ class _ProfileState extends State<Profile> {
                       ),
                     ),
 
-                    // ABOUT
-                    AppGaps.v40,
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: AppColors.grey.withOpacity(.1),
-                        borderRadius: BorderRadius.circular(10),
+                    AppGaps.v10,
+
+                    // FONT SETTINGS
+                    AppGaps.v10,
+                    Text(
+                      AppStrings.information.toUpperCase(),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
                       ),
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            AppStrings.about,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                    ),
+
+                    // ABOUT
+                    AppGaps.v20,
+                    GestureDetector(
+                      onTap: () {
+                        appAlert(
+                          context: context,
+                          title: AppStrings.aboutNotepada,
+                          message: AppStrings.aboutNotepadaDescription,
+                          continue_: () {
+                            context.pop(true);
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.grey.withOpacity(.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              AppStrings.about,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // PRIVACY POLICY
+                    AppGaps.v10,
+                    GestureDetector(
+                      onTap: () {
+                        appAlert(
+                          context: context,
+                          title: AppStrings.privacyPolicy,
+                          message: AppStrings.privacyPolicyDescription,
+                          continue_: () {
+                            context.pop(true);
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.grey.withOpacity(.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              AppStrings.privacyPolicy,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    // TERMS AND CONDITIONS
+                    AppGaps.v10,
+                    GestureDetector(
+                      onTap: () {
+                        appAlert(
+                          context: context,
+                          title: AppStrings.termsAndConditions,
+                          message: AppStrings.termsAndConditionsDescription,
+                          continue_: () {
+                            context.pop(true);
+                          },
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.grey.withOpacity(.1),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              AppStrings.termsAndConditions,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
 

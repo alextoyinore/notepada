@@ -105,29 +105,37 @@ class _HomeState extends State<Home> {
           }
 
           if (state is NoteFetchError) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      AppVectors.warning,
-                      colorFilter: const ColorFilter.mode(
-                        AppColors.primary,
-                        BlendMode.srcATop,
+            return RefreshIndicator(
+              color: AppColors.primary,
+              onRefresh: () async {
+                setState(() {
+                  context.read<NoteCubit>().getNotes(userID: userID);
+                });
+              },
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(32.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        AppVectors.warning,
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.primary,
+                          BlendMode.srcATop,
+                        ),
+                        height: 100,
                       ),
-                      height: 100,
-                    ),
-                    AppGaps.v20,
-                    const Text(
-                      AppStrings.getNoteError,
-                      style: TextStyle(
-                        fontSize: 16,
+                      AppGaps.v20,
+                      const Text(
+                        AppStrings.getNoteError,
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
@@ -135,172 +143,190 @@ class _HomeState extends State<Home> {
 
           if (state is NoteFetchSuccess) {
             if (state.notes.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      AppImages.empty,
-                      height: 150,
-                    ),
-                    AppGaps.v10,
-                    const Text(
-                      AppStrings.noNotes,
-                      style: TextStyle(),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+              return RefreshIndicator(
+                color: AppColors.primary,
+                onRefresh: () async {
+                  setState(() {
+                    context.read<NoteCubit>().getNotes(userID: userID);
+                  });
+                },
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        AppImages.empty,
+                        height: 150,
+                      ),
+                      AppGaps.v10,
+                      const Text(
+                        AppStrings.noNotes,
+                        style: TextStyle(),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 ),
               );
             } else {
-              return ListView.builder(
-                itemBuilder: (_, index) {
-                  return GestureDetector(
-                    onTap: () => context.goNamed(
-                      RouteNames.editNote,
-                      extra: state.notes[index],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Dismissible(
-                        key: UniqueKey(),
-                        background: Container(
-                          decoration: BoxDecoration(
-                            color: AppColors.primary,
-                            borderRadius: BorderRadius.circular(5),
+              return RefreshIndicator(
+                color: AppColors.primary,
+                onRefresh: () async {
+                  setState(() {
+                    context.read<NoteCubit>().getNotes(userID: userID);
+                  });
+                },
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemBuilder: (_, index) {
+                    return GestureDetector(
+                      onTap: () => context.goNamed(
+                        RouteNames.editNote,
+                        extra: state.notes[index],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Dismissible(
+                          key: UniqueKey(),
+                          background: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.only(right: 20),
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.white,
+                              size: 36,
+                            ),
                           ),
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(right: 20),
-                          child: const Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                            size: 36,
-                          ),
-                        ),
-                        // secondaryBackground: const Icon(
-                        //   Icons.delete,
-                        //   color: AppColors.primary,
-                        // ),
-                        confirmDismiss: (DismissDirection direction) async {
-                          // deleteAlert(context, state, index);
-                          appAlert(
-                              context: context,
-                              title: AppStrings.delete,
-                              message: AppStrings.deleteDescription,
-                              // cancel: () => context.pop(false),
-                              continue_: () {
-                                context.read<NoteCubit>().deleteNote(
-                                    documentID: state.notes[index].id);
-                                appSnackBar(
-                                    text: AppStrings.deleted, context: context);
-                                setState(() {
-                                  context
-                                      .read<NoteCubit>()
-                                      .getNotes(userID: userID);
+                          // secondaryBackground: const Icon(
+                          //   Icons.delete,
+                          //   color: AppColors.primary,
+                          // ),
+                          confirmDismiss: (DismissDirection direction) async {
+                            // deleteAlert(context, state, index);
+                            appAlert(
+                                context: context,
+                                title: AppStrings.delete,
+                                message: AppStrings.deleteDescription,
+                                // cancel: () => context.pop(false),
+                                continue_: () {
+                                  context.read<NoteCubit>().deleteNote(
+                                      documentID: state.notes[index].id);
+                                  appSnackBar(
+                                      text: AppStrings.deleted,
+                                      context: context);
+                                  setState(() {
+                                    context
+                                        .read<NoteCubit>()
+                                        .getNotes(userID: userID);
+                                  });
                                 });
-                              });
-                          return null;
-                        },
-                        onDismissed: (DismissDirection direction) async {},
-                        onResize: () {},
-                        direction: DismissDirection.endToStart,
-                        dragStartBehavior: DragStartBehavior.start,
+                            return null;
+                          },
+                          onDismissed: (DismissDirection direction) async {},
+                          onResize: () {},
+                          direction: DismissDirection.endToStart,
+                          dragStartBehavior: DragStartBehavior.start,
 
-                        // Note List Container Widget
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 15,
-                            horizontal: 20,
-                          ),
-                          margin: const EdgeInsets.only(bottom: 15),
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                            color: state.notes[index].color != null
-                                ? Color(int.tryParse(
-                                        state.notes[index].color!)!)
-                                    .withOpacity(.07)
-                                : AppColors.grey,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                state.notes[index].title,
-                                style: AppStyles.noteListHeaderStyle.copyWith(
-                                    fontSize: (_listFontSize * 1.25),
-                                    color: state.notes[index].color != null
-                                        ? darken(Color(int.tryParse(
-                                            state.notes[index].color!)!))
-                                        : AppColors.darkGrey),
-                              ),
-                              state.notes[index].plainText! != ''
-                                  ? state.notes[index].plainText!.length >= 61
-                                      ? Column(
-                                          children: [
-                                            AppGaps.v10,
-                                            Text(
-                                              '${state.notes[index].plainText!.substring(0, 60)}...',
-                                              style: TextStyle(
-                                                fontSize: _listFontSize,
-                                                color: state.notes[index]
-                                                            .color !=
-                                                        null
-                                                    ? darken(
-                                                        Color(int.tryParse(state
-                                                            .notes[index]
-                                                            .color!)!),
-                                                      )
-                                                    : AppColors.darkGrey,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      : Column(
-                                          children: [
-                                            AppGaps.v10,
-                                            Text(
-                                              state.notes[index].plainText!,
-                                              style: TextStyle(
-                                                fontSize: _listFontSize,
-                                                color:
-                                                    state.notes[index].color !=
-                                                            null
-                                                        ? darken(Color(
-                                                            int.tryParse(state
-                                                                .notes[index]
-                                                                .color!)!,
-                                                          ))
-                                                        : AppColors.darkGrey,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                  : const SizedBox(
-                                      width: 0,
-                                      height: 0,
-                                    ),
-                              AppGaps.v10,
-                              Text(
-                                state.notes[index].date.toString(),
-                                style: TextStyle(
-                                  color: state.notes[index].color != null
-                                      ? Color(
-                                          int.tryParse(
-                                              state.notes[index].color!)!,
-                                        ).withOpacity(.5)
-                                      : AppColors.midGrey,
+                          // Note List Container Widget
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 15,
+                              horizontal: 20,
+                            ),
+                            margin: const EdgeInsets.only(bottom: 15),
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              color: state.notes[index].color != null
+                                  ? Color(int.tryParse(
+                                          state.notes[index].color!)!)
+                                      .withOpacity(.07)
+                                  : AppColors.grey,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  state.notes[index].title,
+                                  style: AppStyles.noteListHeaderStyle.copyWith(
+                                      fontSize: (_listFontSize * 1.25),
+                                      color: state.notes[index].color != null
+                                          ? darken(Color(int.tryParse(
+                                              state.notes[index].color!)!))
+                                          : AppColors.darkGrey),
                                 ),
-                              ),
-                            ],
+                                state.notes[index].plainText! != ''
+                                    ? state.notes[index].plainText!.length >= 61
+                                        ? Column(
+                                            children: [
+                                              AppGaps.v10,
+                                              Text(
+                                                '${state.notes[index].plainText!.substring(0, 60)}...',
+                                                style: TextStyle(
+                                                  fontSize: _listFontSize,
+                                                  color: state.notes[index]
+                                                              .color !=
+                                                          null
+                                                      ? darken(
+                                                          Color(int.tryParse(
+                                                              state.notes[index]
+                                                                  .color!)!),
+                                                        )
+                                                      : AppColors.darkGrey,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        : Column(
+                                            children: [
+                                              AppGaps.v10,
+                                              Text(
+                                                state.notes[index].plainText!,
+                                                style: TextStyle(
+                                                  fontSize: _listFontSize,
+                                                  color: state.notes[index]
+                                                              .color !=
+                                                          null
+                                                      ? darken(Color(
+                                                          int.tryParse(state
+                                                              .notes[index]
+                                                              .color!)!,
+                                                        ))
+                                                      : AppColors.darkGrey,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                    : const SizedBox(
+                                        width: 0,
+                                        height: 0,
+                                      ),
+                                AppGaps.v10,
+                                Text(
+                                  state.notes[index].date.toString(),
+                                  style: TextStyle(
+                                    color: state.notes[index].color != null
+                                        ? Color(
+                                            int.tryParse(
+                                                state.notes[index].color!)!,
+                                          ).withOpacity(.5)
+                                        : AppColors.midGrey,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                },
-                // separatorBuilder: (context, index) => AppGaps.v15,
-                itemCount: state.notes.length,
+                    );
+                  },
+                  // separatorBuilder: (context, index) => AppGaps.v15,
+                  itemCount: state.notes.length,
+                ),
               );
             }
           }

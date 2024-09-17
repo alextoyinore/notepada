@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/note/data/repository/note.dart';
 import 'package:notepada/features/note/presentation/bloc/note_state.dart';
@@ -18,19 +19,24 @@ class NoteCubit extends Cubit<NoteState> {
     bool? isSecret,
   }) async {
     emit(NoteNewEditDeleteLoading());
-    final response = await _noteRepository.newNote(
-        userID: _storageService.getValue('userID'),
-        title: title,
-        date: DateTime.now().toIso8601String(),
-        dateModified: DateTime.now().toIso8601String(),
-        formattedText: formattedText,
-        color: color,
-        plainText: plainText,
-        isSecret: isSecret);
-    response.fold(
-      (error) => emit(NoteNewEditDeleteError(error: error.message)),
-      (note) => emit(NoteNewEditDeleteSuccess(note: note)),
-    );
+
+    if (title.isEmpty) {
+      emit(NoteNewEditDeleteError(error: AppStrings.noEmptyTitle));
+    } else {
+      final response = await _noteRepository.newNote(
+          userID: _storageService.getValue('userID'),
+          title: title,
+          date: DateTime.now().toIso8601String(),
+          dateModified: DateTime.now().toIso8601String(),
+          formattedText: formattedText,
+          color: color,
+          plainText: plainText,
+          isSecret: isSecret);
+      response.fold(
+        (error) => emit(NoteNewEditDeleteError(error: error.message)),
+        (note) => emit(NoteNewEditDeleteSuccess(note: note)),
+      );
+    }
   }
 
   void editNote({

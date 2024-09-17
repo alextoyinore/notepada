@@ -68,4 +68,14 @@ class AppStrings {
   static const fontSettings = 'Text Settings';
   static const listTextSize = 'List Text';
   static const viewTextSize = 'View Text';
+  static const noEmptyTitle = 'Title cannot be empty';
+  static const aboutNotepada = 'About Notepada';
+  static const aboutNotepadaDescription =
+      'Notepada is a productivity tool for taking notes. With Notepada, your notes are stored online so you can access them from anywhere in the world as long as you have access to smartphone and internet. Built by Wise Technology Company. Wiseco is based in Lagos Nigeria.';
+  static const privacyPolicy = 'Privacy Policy';
+  static const privacyPolicyDescription =
+      'We take our users privacy seriously. We do not sell or leverage user data under any circumstances';
+  static const termsAndConditions = 'Terms and Conditions';
+  static const termsAndConditionsDescription = 'Terms and Conditions';
+  static const information = 'Information';
 }

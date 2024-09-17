@@ -109,6 +109,16 @@ class _EditNoteState extends State<EditNote> {
   final _editorFocusNode = FocusNode();
   final _editorScrollController = ScrollController();
 
+  final _fontSizeValues = {
+    'Smallest': '16',
+    'Smaller': '24',
+    'Small': '32',
+    'Medium': '40',
+    'Large': '48',
+    'Larger': '56',
+    'Largest': '64',
+  };
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -234,6 +244,7 @@ class _EditNoteState extends State<EditNote> {
                   decoration: BoxDecoration(
                     color: _currentColor.withOpacity(.08),
                   ),
+                  fontSizesValues: _fontSizeValues,
                   toolbarSize: 35,
                   color: _currentColor,
                   dialogTheme: QuillDialogTheme(
@@ -241,20 +252,6 @@ class _EditNoteState extends State<EditNote> {
                   ),
                 ),
               ),
-              // TextField(
-              //   style: TextStyle(
-              //     fontSize: context.read<NoteViewFontCubit>().state.toDouble(),
-              //   ),
-              //   controller: _note,
-              //   decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
-              //     hintText: AppStrings.noteHintText,
-              //     border: const UnderlineInputBorder(
-              //       borderSide: BorderSide.none,
-              //     ),
-              //   ),
-              //   minLines: 26,
-              //   maxLines: 1000,
-              // ),
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * .70,
@@ -278,36 +275,24 @@ class _EditNoteState extends State<EditNote> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
         elevation: 0,
         onPressed: () {
           _submit();
         },
-        label: Row(
-          children: [
-            const Text(
-              AppStrings.saveNote,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-            AppGaps.h15,
-            _sendingData
-                ? const SizedBox(
-                    height: 20,
-                    width: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3,
-                      color: AppColors.bright,
-                    ),
-                  )
-                : const Icon(Icons.send),
-          ],
-        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(50),
         ),
+        child: _sendingData
+            ? const SizedBox(
+                height: 25,
+                width: 25,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  color: AppColors.bright,
+                ),
+              )
+            : const Icon(Icons.save),
       ),
     );
   }
