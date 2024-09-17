@@ -1,13 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/config/theme/styles.dart';
 import 'package:notepada/core/routes/names.dart';
-import 'package:notepada/core/util/storage/storage_keys.dart';
-import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/note/data/models/note.dart';
 import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
 
@@ -23,7 +24,24 @@ class _ViewNoteState extends State<ViewNote> {
   @override
   void initState() {
     super.initState();
+    var originalText = widget.note.formattedText!;
+    final truncatedText = originalText.substring(1, originalText.length - 1);
+
+    _quillController.document =
+        Document.fromJson(jsonDecode(widget.note.formattedText!));
   }
+
+  @override
+  void dispose() {
+    // _editorFocusNode.dispose();
+    _editorScrollController.dispose();
+    _quillController.dispose();
+    super.dispose();
+  }
+
+  final _quillController = QuillController.basic();
+  // final _editorFocusNode = FocusNode();
+  final _editorScrollController = ScrollController();
 
   // final StorageService _storageService = StorageService();
 
@@ -62,11 +80,21 @@ class _ViewNoteState extends State<ViewNote> {
                     context.read<NoteViewFontCubit>().decrement();
                   });
                 },
-                icon: const Icon(Icons.remove),
+                icon: Icon(
+                  Icons.remove,
+                  color: Color(
+                    int.tryParse(widget.note.color!)!,
+                  ),
+                ),
               ),
               Text(
                 context.read<NoteViewFontCubit>().state.toString(),
-                style: const TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Color(
+                    int.tryParse(widget.note.color!)!,
+                  ),
+                ),
               ),
               IconButton(
                 onPressed: () {
@@ -74,7 +102,12 @@ class _ViewNoteState extends State<ViewNote> {
                     context.read<NoteViewFontCubit>().increment();
                   });
                 },
-                icon: const Icon(Icons.add),
+                icon: Icon(
+                  Icons.add,
+                  color: Color(
+                    int.tryParse(widget.note.color!)!,
+                  ),
+                ),
               ),
             ],
           ),
@@ -154,8 +187,26 @@ class _ViewNoteState extends State<ViewNote> {
                 ),
               ),
               AppGaps.v10,
+
+              // SizedBox(
+              //   width: MediaQuery.of(context).size.width,
+              //   // height: MediaQuery.of(context).size.height * .70,
+              //   child: QuillEditor.basic(
+              //     controller: _quillController,
+              //     // focusNode: _editorFocusNode,
+              //     scrollController: _editorScrollController,
+              //     configurations: QuillEditorConfigurations(
+              //       checkBoxReadOnly: false,
+              //       keyboardAppearance:
+              //           Theme.of(context).brightness == Brightness.dark
+              //               ? Brightness.dark
+              //               : Brightness.light,
+              //     ),
+              //   ),
+              // ),
+
               Text(
-                widget.note.text!,
+                _quillController.document.toPlainText(),
                 style: TextStyle(
                   fontSize: context.read<NoteViewFontCubit>().state.toDouble(),
                   color: Theme.of(context).brightness == Brightness.dark

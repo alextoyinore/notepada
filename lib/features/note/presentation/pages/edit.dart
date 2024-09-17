@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notepada/common/bloc/settings/settings_cubit.dart';
+import 'package:notepada/common/widgets/app_snack.dart';
 import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/config/theme/styles.dart';
 
@@ -34,22 +39,35 @@ class _EditNoteState extends State<EditNote> {
 
     _title.dispose();
     _note.dispose();
+
+    _editorFocusNode.dispose();
+    _editorScrollController.dispose();
+    _quillController.dispose();
     super.dispose();
   }
 
   void _submit() {
+    // setState(() {
+    //   _sendingData = true;
+    // });
     if (widget.note == null) {
+      final noteText = jsonEncode(_quillController.document.toDelta().toJson());
       context.read<NoteCubit>().newNote(
             title: _title.text.toString(),
-            text: _note.text.toString(),
+            // text: _note.text.toString(),
+            formattedText: noteText,
+            plainText: _quillController.document.toPlainText(),
             color: '0x${_currentColor.toHexString()}',
           );
     } else {
+      final noteText = jsonEncode(_quillController.document.toDelta().toJson());
       context.read<NoteCubit>().editNote(
             dateModified: DateTime.now().toIso8601String(),
             documentID: widget.note!.id,
             title: _title.text.toString(),
-            text: _note.text.toString(),
+            // text: _note.text.toString(),
+            plainText: _quillController.document.toPlainText(),
+            formattedText: noteText,
             color: '0x${_currentColor.toHexString()}',
           );
     }
@@ -81,9 +99,15 @@ class _EditNoteState extends State<EditNote> {
 
     if (widget.note != null) {
       _title.text = widget.note!.title;
-      _note.text = widget.note!.text!;
+      // _note.text = widget.note!.text!;
+      _quillController.document =
+          Document.fromJson(jsonDecode(widget.note!.formattedText!));
     }
   }
+
+  final _quillController = QuillController.basic();
+  final _editorFocusNode = FocusNode();
+  final _editorScrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -91,30 +115,24 @@ class _EditNoteState extends State<EditNote> {
       appBar: AppBar(
         titleSpacing: 0,
         automaticallyImplyLeading: false,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: _title,
-              style: const TextStyle(
-                fontWeight: FontWeight.w500,
-                fontSize: 20.0,
-                // color: _currentColor,
-              ),
-              decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
-                hintText: AppStrings.titleHintText,
-                hintStyle: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  // color: _currentColor,
-                ),
-              ),
-              minLines: 1,
-              maxLines: 1,
+        title: TextField(
+          controller: _title,
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            fontSize: (context.read<NoteViewFontCubit>().state.toDouble()),
+            // color: _currentColor,
+          ),
+          decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
+            hintText: AppStrings.titleHintText,
+            hintStyle: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+              // color: _currentColor,
             ),
-          ],
+          ),
+          minLines: 1,
+          maxLines: 1,
         ),
-
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
@@ -158,34 +176,30 @@ class _EditNoteState extends State<EditNote> {
             ),
           ),
         ],
-        // leading: IconButton(
-        //   padding: const EdgeInsets.only(left: 20, right: 0),
-        //   onPressed: () => context.pop(),
-        //   icon: const Icon(
-        //     Icons.arrow_back_ios,
-        //     color: AppColors.darkGrey,
-        //   ),
-        // ),
+        leading: IconButton(
+          padding: const EdgeInsets.only(left: 20, right: 0),
+          onPressed: () => context.goNamed(RouteNames.home),
+          icon: const Icon(
+            Icons.arrow_back_ios,
+            color: AppColors.darkGrey,
+          ),
+        ),
       ),
       body: BlocConsumer<NoteCubit, NoteState>(
         listener: (context, state) {
           if (state is NoteNewEditDeleteLoading) {
-            _sendingData = true;
+            setState(() {
+              _sendingData = true;
+            });
           } else if (state is NoteNewEditDeleteError) {
-            _sendingData = false;
-            var snackBar = SnackBar(
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: AppColors.darkGrey,
-              showCloseIcon: true,
-              closeIconColor: AppColors.bright,
-              content: Text(
-                state.error,
-                style: const TextStyle(color: Colors.white),
-              ),
-            );
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            setState(() {
+              _sendingData = true;
+            });
+            appSnackBar(text: state.error, context: context);
           } else if (state is NoteNewEditDeleteSuccess) {
-            _sendingData = false; // Remove circular progress indicator
+            setState(() {
+              _sendingData = true;
+            }); // Remove circular progress indicator
             // Show snackbar message
             var snackBar = const SnackBar(
               behavior: SnackBarBehavior.floating,
@@ -198,15 +212,7 @@ class _EditNoteState extends State<EditNote> {
               ),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            // Back to previous page
-            // if (widget.note != null) {
-            //   context.goNamed(
-            //     RouteNames.viewNote,
-            //     extra: widget.note,
-            //   );
-            // } else {
             context.goNamed(RouteNames.home);
-            // }
           }
         },
         builder: (context, state) => SingleChildScrollView(
@@ -216,58 +222,91 @@ class _EditNoteState extends State<EditNote> {
           ),
           child: Column(
             children: [
-              TextField(
-                controller: _note,
-                decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
-                  hintText: AppStrings.noteHintText,
-                  // hintStyle: TextStyle(
-                  //   color: _currentColor,
-                  // ),
-                  border: const UnderlineInputBorder(
-                    borderSide: BorderSide.none,
+              QuillSimpleToolbar(
+                controller: _quillController,
+                configurations: QuillSimpleToolbarConfigurations(
+                  toolbarIconAlignment: WrapAlignment.start,
+                  multiRowsDisplay: false,
+                  showSmallButton: true,
+                  showLineHeightButton: true,
+                  showAlignmentButtons: true,
+                  showDirection: true,
+                  decoration: BoxDecoration(
+                    color: _currentColor.withOpacity(.08),
+                  ),
+                  toolbarSize: 35,
+                  color: _currentColor,
+                  dialogTheme: QuillDialogTheme(
+                    dialogBackgroundColor: _currentColor,
                   ),
                 ),
-                // style: TextStyle(color: _currentColor),
-                minLines: 26,
-                maxLines: 1000,
               ),
-              AppGaps.v30,
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        _submit();
-                      },
-                      child: _sendingData
-                          ? const CircularProgressIndicator(
-                              strokeWidth: 3,
-                              color: AppColors.bright,
-                            )
-                          : const Text(AppStrings.saveNote),
-                    ),
-                    AppGaps.v10,
-                    TextButton(
-                      onPressed: () {
-                        if (widget.note == null) {
-                          // _submit();
-                          context.goNamed(RouteNames.home);
-                        } else {
-                          context.goNamed(
-                            RouteNames.viewNote,
-                            extra: widget.note,
-                          );
-                        }
-                      },
-                      child: const Text(AppStrings.cancel),
-                    ),
-                    AppGaps.v10,
-                  ],
+              // TextField(
+              //   style: TextStyle(
+              //     fontSize: context.read<NoteViewFontCubit>().state.toDouble(),
+              //   ),
+              //   controller: _note,
+              //   decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
+              //     hintText: AppStrings.noteHintText,
+              //     border: const UnderlineInputBorder(
+              //       borderSide: BorderSide.none,
+              //     ),
+              //   ),
+              //   minLines: 26,
+              //   maxLines: 1000,
+              // ),
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height * .70,
+                child: QuillEditor.basic(
+                  controller: _quillController,
+                  focusNode: _editorFocusNode,
+                  scrollController: _editorScrollController,
+                  configurations: QuillEditorConfigurations(
+                      placeholder: AppStrings.noteHintText,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      scrollBottomInset: 20,
+                      keyboardAppearance:
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Brightness.dark
+                              : Brightness.light),
                 ),
               ),
+              AppGaps.v10,
             ],
           ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        elevation: 0,
+        onPressed: () {
+          _submit();
+        },
+        label: Row(
+          children: [
+            const Text(
+              AppStrings.saveNote,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+              ),
+            ),
+            AppGaps.h15,
+            _sendingData
+                ? const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 3,
+                      color: AppColors.bright,
+                    ),
+                  )
+                : const Icon(Icons.send),
+          ],
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
         ),
       ),
     );

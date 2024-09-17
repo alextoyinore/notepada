@@ -45,8 +45,9 @@ class AppStrings {
   static const confirmDelete = 'Confirm Delete';
   static const confirm = 'Confirm';
   static const delete = 'Delete';
+  static const deleted = 'Note has been deleted';
   static const deleteDescription =
-      'Are you sure you want to delete this note? Note that this action cannot be reversed.';
+      'Are you sure you want to delete this note? This action cannot be reversed.';
   static const chooseNoteColor = 'Choose note color';
   static const welcome = 'Welcome';
   static const welcomeDescription =
@@ -57,6 +58,10 @@ class AppStrings {
   static const setTheme = 'Theme';
   static const defaultColor = 'Default Note Color';
   static const logout = 'Logout';
+  static const confirmLogout = 'Confirm Logout?';
+  static const logoutDescription =
+      'Are you sure you want to logout? Note: This will not log you out on other devices. To do that select all devices.';
+  static const allDevices = 'All Devices';
   static const about = 'About Notepada';
   static const loggingout = 'Logging out...';
   static const oauthDescription = 'Or sign in with your socials';

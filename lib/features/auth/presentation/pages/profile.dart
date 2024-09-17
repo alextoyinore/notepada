@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 import 'package:notepada/common/bloc/theme/theme_cubit.dart';
+import 'package:notepada/common/widgets/app_alert.dart';
 import 'package:notepada/config/assets/images.dart';
 import 'package:notepada/config/assets/vectors.dart';
 import 'package:notepada/config/strings/strings.dart';
@@ -511,13 +512,22 @@ class _ProfileState extends State<Profile> {
 
                     // LOGOUT
 
-                    AppGaps.v10,
+                    AppGaps.v40,
                     GestureDetector(
                       onTap: () {
-                        context.read<UserCubit>().logout();
-                        _storageService.clear(StorageKeys.sessionID);
-                        _storageService.clear(StorageKeys.userID);
-                        context.goNamed(RouteNames.auth);
+                        appAlert(
+                            context: context,
+                            title: AppStrings.confirmLogout,
+                            message: AppStrings.logoutDescription,
+                            continue_: () {
+                              context.read<UserCubit>().logout();
+                              _storageService.clear(StorageKeys.sessionID);
+                              _storageService.clear(StorageKeys.userID);
+                              context.goNamed(RouteNames.auth);
+                            },
+                            yesText: AppStrings.logout,
+                            extraButtonText: AppStrings.allDevices,
+                            extraButtonCallback: () {});
                       },
                       child: Container(
                         padding: const EdgeInsets.all(10),

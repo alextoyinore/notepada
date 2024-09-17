@@ -7,10 +7,10 @@ abstract class INoteRepository {
   Future<Either<Failure, Document>> newNote({
     required String userID,
     required String title,
-    required String text,
+    required String formattedText,
     required String color,
-    required String audio,
-    required String image,
+    required String plainText,
+    required bool isSecret,
     required String date,
     required String dateModified,
   });
@@ -18,10 +18,10 @@ abstract class INoteRepository {
   Future<Either<Failure, Document>> editNote({
     required String documentID,
     required String title,
-    required String text,
+    required String formattedText,
     required String color,
-    required String audio,
-    required String image,
+    required String plainText,
+    required bool isSecret,
     required String dateModified,
   });
 

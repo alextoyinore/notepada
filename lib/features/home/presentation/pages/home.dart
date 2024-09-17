@@ -5,13 +5,14 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 import 'package:notepada/common/helpers/extensions.dart';
+import 'package:notepada/common/widgets/app_alert.dart';
+import 'package:notepada/common/widgets/app_snack.dart';
 import 'package:notepada/config/assets/images.dart';
 import 'package:notepada/config/assets/vectors.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/config/theme/styles.dart';
 import 'package:notepada/core/routes/names.dart';
-import 'package:notepada/core/util/storage/storage_keys.dart';
 import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
 import 'package:notepada/features/note/presentation/bloc/note_state.dart';
@@ -136,10 +137,11 @@ class _HomeState extends State<Home> {
             if (state.notes.isEmpty) {
               return Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
                       AppImages.empty,
-                      height: 200,
+                      height: 150,
                     ),
                     AppGaps.v10,
                     const Text(
@@ -151,11 +153,11 @@ class _HomeState extends State<Home> {
                 ),
               );
             } else {
-              return ListView.separated(
+              return ListView.builder(
                 itemBuilder: (_, index) {
                   return GestureDetector(
                     onTap: () => context.goNamed(
-                      RouteNames.viewNote,
+                      RouteNames.editNote,
                       extra: state.notes[index],
                     ),
                     child: Padding(
@@ -180,39 +182,23 @@ class _HomeState extends State<Home> {
                         //   color: AppColors.primary,
                         // ),
                         confirmDismiss: (DismissDirection direction) async {
-                          showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              title: const Text(
-                                AppStrings.confirmDelete,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              content: const Text(AppStrings.deleteDescription),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => context.pop(false),
-                                  child: const Text(AppStrings.cancel),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    context.read<NoteCubit>().deleteNote(
-                                        documentID: state.notes[index].id);
-                                    context
-                                        .read<NoteCubit>()
-                                        .getNotes(userID: userID);
-                                    context.pop(true);
-                                  },
-                                  child: const Text(AppStrings.continue_),
-                                )
-                              ],
-                            ),
-                          );
+                          // deleteAlert(context, state, index);
+                          appAlert(
+                              context: context,
+                              title: AppStrings.delete,
+                              message: AppStrings.deleteDescription,
+                              // cancel: () => context.pop(false),
+                              continue_: () {
+                                context.read<NoteCubit>().deleteNote(
+                                    documentID: state.notes[index].id);
+                                appSnackBar(
+                                    text: AppStrings.deleted, context: context);
+                                setState(() {
+                                  context
+                                      .read<NoteCubit>()
+                                      .getNotes(userID: userID);
+                                });
+                              });
                           return null;
                         },
                         onDismissed: (DismissDirection direction) async {},
@@ -226,6 +212,7 @@ class _HomeState extends State<Home> {
                             vertical: 15,
                             horizontal: 20,
                           ),
+                          margin: const EdgeInsets.only(bottom: 15),
                           width: MediaQuery.of(context).size.width,
                           decoration: BoxDecoration(
                             color: state.notes[index].color != null
@@ -247,13 +234,13 @@ class _HomeState extends State<Home> {
                                             state.notes[index].color!)!))
                                         : AppColors.darkGrey),
                               ),
-                              state.notes[index].text! != ''
-                                  ? state.notes[index].text!.length >= 96
+                              state.notes[index].plainText! != ''
+                                  ? state.notes[index].plainText!.length >= 61
                                       ? Column(
                                           children: [
                                             AppGaps.v10,
                                             Text(
-                                              '${state.notes[index].text!.substring(0, 95)}...',
+                                              '${state.notes[index].plainText!.substring(0, 60)}...',
                                               style: TextStyle(
                                                 fontSize: _listFontSize,
                                                 color: state.notes[index]
@@ -273,8 +260,9 @@ class _HomeState extends State<Home> {
                                           children: [
                                             AppGaps.v10,
                                             Text(
-                                              state.notes[index].text!,
+                                              state.notes[index].plainText!,
                                               style: TextStyle(
+                                                fontSize: _listFontSize,
                                                 color:
                                                     state.notes[index].color !=
                                                             null
@@ -311,7 +299,7 @@ class _HomeState extends State<Home> {
                     ),
                   );
                 },
-                separatorBuilder: (context, index) => AppGaps.v15,
+                // separatorBuilder: (context, index) => AppGaps.v15,
                 itemCount: state.notes.length,
               );
             }

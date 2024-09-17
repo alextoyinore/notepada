@@ -68,6 +68,8 @@ dependencies:
 
   flutter_colorpicker: ^1.1.0
 
+  flutter_quill: ^10.5.14
+
   # just_audio: ^0.9.37
 
   # just_audio_windows: ^0.2.1

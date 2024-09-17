@@ -12,10 +12,10 @@ class NoteCubit extends Cubit<NoteState> {
 
   void newNote({
     required String title,
-    String? text,
+    String? formattedText,
+    String? plainText,
     String? color,
-    String? audio,
-    String? image,
+    bool? isSecret,
   }) async {
     emit(NoteNewEditDeleteLoading());
     final response = await _noteRepository.newNote(
@@ -23,10 +23,10 @@ class NoteCubit extends Cubit<NoteState> {
         title: title,
         date: DateTime.now().toIso8601String(),
         dateModified: DateTime.now().toIso8601String(),
-        text: text,
+        formattedText: formattedText,
         color: color,
-        audio: audio,
-        image: image);
+        plainText: plainText,
+        isSecret: isSecret);
     response.fold(
       (error) => emit(NoteNewEditDeleteError(error: error.message)),
       (note) => emit(NoteNewEditDeleteSuccess(note: note)),
@@ -36,19 +36,19 @@ class NoteCubit extends Cubit<NoteState> {
   void editNote({
     String? title,
     required String documentID,
-    String? text,
+    String? formattedText,
     String? color,
-    String? audio,
-    String? image,
+    String? plainText,
+    bool? isSecret,
     required String dateModified,
   }) async {
     emit(NoteNewEditDeleteLoading());
     final response = await _noteRepository.editNote(
       title: title!,
-      text: text,
+      formattedText: formattedText,
       color: color,
-      audio: audio,
-      image: image,
+      plainText: plainText,
+      isSecret: isSecret,
       dateModified: dateModified,
       documentID: documentID,
     );

@@ -1,3 +1,4 @@
+import 'package:flutter_quill/translations.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 import 'package:notepada/common/bloc/theme/theme_cubit.dart';
@@ -53,6 +54,10 @@ class App extends StatelessWidget {
         builder: (context, mode) => MaterialApp.router(
           title: AppStrings.appName,
           debugShowCheckedModeBanner: false,
+          localizationsDelegates: const [
+            FlutterQuillLocalizations.delegate,
+          ],
+          supportedLocales: FlutterQuillLocalizations.supportedLocales,
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: mode,

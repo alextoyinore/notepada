@@ -4,12 +4,12 @@ class NoteModel {
   String id;
   String userID;
   String title;
-  String? text;
+  String? formattedText;
   String? color;
-  String? audio;
-  String? image;
+  String? plainText;
   String date;
   String dateModified;
+  bool? isSecret;
 
   NoteModel({
     required this.id,
@@ -18,18 +18,18 @@ class NoteModel {
     required this.title,
     required this.dateModified,
     this.color,
-    this.text,
-    this.audio,
-    this.image,
+    this.formattedText,
+    this.plainText,
+    this.isSecret,
   });
 
   NoteModel copyWith({
     String? id,
     String? userID,
-    String? text,
+    String? formattedText,
     String? color,
-    String? audio,
-    String? image,
+    String? plainText,
+    bool? isSecret,
     String? date,
     String? dateModified,
     String? title,
@@ -38,10 +38,10 @@ class NoteModel {
       id: id ?? this.id,
       userID: userID ?? this.userID,
       title: title ?? this.title,
-      text: text ?? this.text,
+      formattedText: formattedText ?? this.formattedText,
       color: color ?? this.color,
-      audio: audio ?? this.audio,
-      image: image ?? this.image,
+      plainText: plainText ?? this.plainText,
+      isSecret: isSecret ?? this.isSecret,
       date: date ?? this.date,
       dateModified: dateModified ?? this.dateModified,
     );
@@ -52,10 +52,10 @@ class NoteModel {
       'id': id,
       'userID': userID,
       'title': title,
-      'text': text,
+      'formattedText': formattedText,
       'color': color,
-      'audio': audio,
-      'image': image,
+      'isSecret': isSecret,
+      'plainText': plainText,
       'date': date,
       'dateModified': dateModified,
     };
@@ -66,10 +66,11 @@ class NoteModel {
       id: map['id'] as String,
       userID: map['userID'] as String,
       title: map['title'] as String,
-      text: map['text'] != null ? map['text'] as String : '',
+      formattedText:
+          map['formattedText'] != null ? map['formattedText'] as String : '',
       color: map['color'] != null ? map['color'] as String : '',
-      audio: map['audio'] != null ? map['audio'] as String : '',
-      image: map['image'] != null ? map['image'] as String : '',
+      isSecret: map['isSecret'] != null ? map['isSecret'] as bool : false,
+      plainText: map['plainText'] != null ? map['plainText'] as String : '',
       date: map['date'] as String,
       dateModified: map['dateModified'] as String,
     );
