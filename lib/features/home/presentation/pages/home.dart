@@ -26,7 +26,6 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final userID = StorageService().getValue('userID');
-  final StorageService _storageService = StorageService();
   late double _listFontSize;
 
   @override
@@ -59,7 +58,7 @@ class _HomeState extends State<Home> {
         actions: [
           IconButton(
             onPressed: () {
-              context.goNamed(RouteNames.profile);
+              context.pushNamed(RouteNames.profile);
             },
             padding: const EdgeInsets.only(right: 16),
             icon: Container(
@@ -180,7 +179,7 @@ class _HomeState extends State<Home> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   itemBuilder: (_, index) {
                     return GestureDetector(
-                      onTap: () => context.goNamed(
+                      onTap: () => context.pushNamed(
                         RouteNames.editNote,
                         extra: state.notes[index],
                       ),
@@ -334,15 +333,18 @@ class _HomeState extends State<Home> {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-        ),
-        onPressed: () {
-          context.goNamed(RouteNames.editNote);
-        },
-        child: const Icon(
-          Icons.mode_edit_outline_outlined,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 50.0),
+        child: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+          onPressed: () {
+            context.pushNamed(RouteNames.editNote);
+          },
+          child: const Icon(
+            Icons.mode_edit_outline_outlined,
+          ),
         ),
       ),
     );

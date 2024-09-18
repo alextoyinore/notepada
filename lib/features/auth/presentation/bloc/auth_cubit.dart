@@ -22,4 +22,15 @@ class AuthCubit extends Cubit<AuthState> {
       (session) => emit(OAuth2Success(session: session)),
     );
   }
+
+  void recoverPassword({required String email}) async {
+    emit(RecoverPasswordLoading());
+
+    final response = await _authRepository.recoverPassword(email: email);
+
+    response.fold(
+      (failure) => emit(RecoverPasswordError(error: failure.message)),
+      (response) => emit(RecoverPasswordSuccess(response: response)),
+    );
+  }
 }

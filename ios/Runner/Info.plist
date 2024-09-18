@@ -58,5 +58,9 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Require permission to record audio for speech to text conversion</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Require permission to record audio for speech to text conversion</string>
 </dict>
 </plist>

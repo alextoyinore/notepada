@@ -187,10 +187,10 @@ class _RegisterState extends State<Register> {
   }
 
   _register() {
-    final firstName = _firstName.text.toString();
-    final lastName = _lastName.text.toString();
-    final email = _email.text.toString();
-    final password = _password.text.toString();
+    final firstName = _firstName.text.toString().trim();
+    final lastName = _lastName.text.toString().trim();
+    final email = _email.text.toString().trim();
+    final password = _password.text.toString().trim();
 
     context.read<RegisterCubit>().register(
           firstName: firstName,
@@ -210,7 +210,7 @@ class _RegisterState extends State<Register> {
             text: ' ${AppStrings.login}',
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                context.goNamed(RouteNames.login);
+                context.pushNamed(RouteNames.login);
               },
             style: const TextStyle(color: AppColors.primary),
           ),

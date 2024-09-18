@@ -17,6 +17,7 @@ import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/note/data/models/note.dart';
 import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
 import 'package:notepada/features/note/presentation/bloc/note_state.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class EditNote extends StatefulWidget {
   final NoteModel? note;
@@ -47,25 +48,21 @@ class _EditNoteState extends State<EditNote> {
   }
 
   void _submit() {
-    // setState(() {
-    //   _sendingData = true;
-    // });
+    String bottomPadding = '\n';
+    final noteText = jsonEncode(_quillController.document.toDelta().toJson());
+    noteText.padRight(50, bottomPadding);
     if (widget.note == null) {
-      final noteText = jsonEncode(_quillController.document.toDelta().toJson());
       context.read<NoteCubit>().newNote(
             title: _title.text.toString(),
-            // text: _note.text.toString(),
             formattedText: noteText,
             plainText: _quillController.document.toPlainText(),
             color: '0x${_currentColor.toHexString()}',
           );
     } else {
-      final noteText = jsonEncode(_quillController.document.toDelta().toJson());
       context.read<NoteCubit>().editNote(
             dateModified: DateTime.now().toIso8601String(),
             documentID: widget.note!.id,
             title: _title.text.toString(),
-            // text: _note.text.toString(),
             plainText: _quillController.document.toPlainText(),
             formattedText: noteText,
             color: '0x${_currentColor.toHexString()}',
@@ -86,25 +83,6 @@ class _EditNoteState extends State<EditNote> {
     setState(() => _pickerColor = color);
   }
 
-  @override
-  void initState() {
-    super.initState();
-
-    _defaultColor = Color(
-        int.tryParse(_storedDefaultColor.getValue(StorageKeys.defaultColor)!)!);
-
-    _currentColor = widget.note == null
-        ? _defaultColor
-        : Color(int.tryParse(widget.note!.color!)!);
-
-    if (widget.note != null) {
-      _title.text = widget.note!.title;
-      // _note.text = widget.note!.text!;
-      _quillController.document =
-          Document.fromJson(jsonDecode(widget.note!.formattedText!));
-    }
-  }
-
   final _quillController = QuillController.basic();
   final _editorFocusNode = FocusNode();
   final _editorScrollController = ScrollController();
@@ -119,10 +97,64 @@ class _EditNoteState extends State<EditNote> {
     'Largest': '64',
   };
 
+  late bool _editing;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _editing = false;
+
+    _defaultColor = Color(
+        int.tryParse(_storedDefaultColor.getValue(StorageKeys.defaultColor)!)!);
+
+    _currentColor = widget.note == null
+        ? _defaultColor
+        : Color(int.tryParse(widget.note!.color!)!);
+
+    if (widget.note != null) {
+      _title.text = widget.note!.title;
+      // _note.text = widget.note!.text!;
+      _quillController.document =
+          Document.fromJson(jsonDecode(widget.note!.formattedText!));
+    }
+
+    _speechToText = stt.SpeechToText();
+  }
+
+  bool _listening = false;
+  late stt.SpeechToText _speechToText;
+  String _text = 'Tap the mic icon and start speaking now';
+  double _confidence = 1.0;
+
+  void _captureVoice() async {
+    if (!_listening) {
+      bool listen = await _speechToText.initialize();
+
+      if (listen) {
+        setState(() => _listening = true);
+        _speechToText.listen(
+            onResult: (result) => setState(() {
+                  _text = result.recognizedWords;
+                  if (result.hasConfidenceRating && _confidence > 0) {
+                    _confidence = result.confidence;
+                  }
+                }));
+      } else {
+        setState(() {
+          _listening = false;
+          _speechToText.stop();
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
+        centerTitle: false,
         titleSpacing: 0,
         automaticallyImplyLeading: false,
         title: TextField(
@@ -130,20 +162,23 @@ class _EditNoteState extends State<EditNote> {
           style: TextStyle(
             fontWeight: FontWeight.w500,
             fontSize: (context.read<NoteViewFontCubit>().state.toDouble()),
-            // color: _currentColor,
           ),
           decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
             hintText: AppStrings.titleHintText,
             hintStyle: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w500,
-              // color: _currentColor,
             ),
           ),
           minLines: 1,
           maxLines: 1,
         ),
         actions: [
+          IconButton(
+            onPressed: _captureVoice,
+            icon:
+                _listening ? const Icon(Icons.mic) : const Icon(Icons.mic_none),
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: GestureDetector(
@@ -172,8 +207,8 @@ class _EditNoteState extends State<EditNote> {
                 ),
               ),
               child: Container(
-                width: 25,
-                height: 25,
+                width: 20,
+                height: 20,
                 decoration: BoxDecoration(
                   color: _currentColor,
                   borderRadius: BorderRadius.circular(25),
@@ -225,74 +260,91 @@ class _EditNoteState extends State<EditNote> {
             context.goNamed(RouteNames.home);
           }
         },
-        builder: (context, state) => SingleChildScrollView(
-          padding: const EdgeInsets.only(
-            left: 0,
-            right: 0,
-          ),
-          child: Column(
-            children: [
-              QuillSimpleToolbar(
-                controller: _quillController,
-                configurations: QuillSimpleToolbarConfigurations(
-                  toolbarIconAlignment: WrapAlignment.start,
-                  multiRowsDisplay: false,
-                  showSmallButton: true,
-                  showLineHeightButton: true,
-                  showAlignmentButtons: true,
-                  showDirection: true,
-                  decoration: BoxDecoration(
-                    color: _currentColor.withOpacity(.08),
+        builder: (context, state) => Stack(
+          alignment: AlignmentDirectional.bottomStart,
+          children: [
+            SingleChildScrollView(
+              // reverse: true,
+              padding: const EdgeInsets.only(
+                left: 0,
+                right: 0,
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: QuillEditor.basic(
+                      controller: _quillController,
+                      focusNode: _editorFocusNode,
+                      scrollController: _editorScrollController,
+                      configurations: QuillEditorConfigurations(
+                          customStyles:
+                              const DefaultStyles(color: AppColors.primary),
+                          magnifierConfiguration:
+                              const TextMagnifierConfiguration(),
+                          placeholder: AppStrings.noteHintText,
+                          checkBoxReadOnly: true,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 16),
+                          scrollBottomInset: 20,
+                          keyboardAppearance:
+                              Theme.of(context).brightness == Brightness.dark
+                                  ? Brightness.dark
+                                  : Brightness.light),
+                    ),
                   ),
-                  fontSizesValues: _fontSizeValues,
-                  toolbarSize: 35,
-                  color: _currentColor,
-                  dialogTheme: QuillDialogTheme(
-                    dialogBackgroundColor: _currentColor,
-                  ),
+                  AppGaps.v10,
+                ],
+              ),
+            ),
+            QuillSimpleToolbar(
+              controller: _quillController,
+              configurations: QuillSimpleToolbarConfigurations(
+                toolbarIconAlignment: WrapAlignment.start,
+                multiRowsDisplay: false,
+                showDividers: false,
+                showSmallButton: true,
+                showLineHeightButton: true,
+                showAlignmentButtons: true,
+                showDirection: true,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.backgroundDark
+                      : AppColors.backgroundLight,
+                ),
+                fontSizesValues: _fontSizeValues,
+                toolbarSize: 40,
+                color: _currentColor,
+                dialogTheme: QuillDialogTheme(
+                  dialogBackgroundColor: _currentColor,
                 ),
               ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height * .70,
-                child: QuillEditor.basic(
-                  controller: _quillController,
-                  focusNode: _editorFocusNode,
-                  scrollController: _editorScrollController,
-                  configurations: QuillEditorConfigurations(
-                      placeholder: AppStrings.noteHintText,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      scrollBottomInset: 20,
-                      keyboardAppearance:
-                          Theme.of(context).brightness == Brightness.dark
-                              ? Brightness.dark
-                              : Brightness.light),
-                ),
-              ),
-              AppGaps.v10,
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        elevation: 0,
-        onPressed: () {
-          _submit();
-        },
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 50.0),
+        child: FloatingActionButton(
+          elevation: 0,
+          onPressed: () {
+            _submit();
+          },
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+          child: _sendingData
+              ? const SizedBox(
+                  height: 25,
+                  width: 25,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 3,
+                    color: AppColors.bright,
+                  ),
+                )
+              : const Icon(Icons.save),
         ),
-        child: _sendingData
-            ? const SizedBox(
-                height: 25,
-                width: 25,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  color: AppColors.bright,
-                ),
-              )
-            : const Icon(Icons.save),
       ),
     );
   }

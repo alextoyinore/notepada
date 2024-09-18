@@ -65,3 +65,15 @@ class OAuth2Success extends AuthState {
   final Session? session;
   OAuth2Success({this.session});
 }
+
+class RecoverPasswordLoading extends AuthState {}
+
+class RecoverPasswordError extends AuthState {
+  final String error;
+  RecoverPasswordError({required this.error});
+}
+
+class RecoverPasswordSuccess extends AuthState {
+  final dynamic response;
+  RecoverPasswordSuccess({this.response});
+}

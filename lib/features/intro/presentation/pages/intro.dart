@@ -51,7 +51,7 @@ class _IntroState extends State<Intro> {
             child: Text(
               AppStrings.welcomeDescription,
               style: TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 color: AppColors.midGrey,
               ),
               textAlign: TextAlign.center,
@@ -136,8 +136,8 @@ class _IntroState extends State<Intro> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 80,
-        height: 80,
+        width: 100,
+        height: 100,
         decoration: BoxDecoration(
           // borderRadius: BorderRadius.circular(20),
           color: isSelected ? color : color.withOpacity(.02),
@@ -150,7 +150,7 @@ class _IntroState extends State<Intro> {
             Icon(
               icon,
               color: isSelected ? AppColors.bright : color,
-              size: 20,
+              size: 30,
             ),
             AppGaps.v10,
             Text(

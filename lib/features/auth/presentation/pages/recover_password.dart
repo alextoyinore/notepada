@@ -17,16 +17,15 @@ import 'package:notepada/features/auth/presentation/bloc/login_cubit.dart';
 import 'package:notepada/features/auth/presentation/bloc/login_state.dart';
 import 'package:notepada/service_locator.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class RecoverPassword extends StatefulWidget {
+  const RecoverPassword({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<RecoverPassword> createState() => _RecoverPasswordState();
 }
 
-class _LoginState extends State<Login> {
+class _RecoverPasswordState extends State<RecoverPassword> {
   final TextEditingController _email = TextEditingController();
-  final TextEditingController _password = TextEditingController();
 
   final StorageService _storageService = sl<StorageService>();
 
@@ -36,10 +35,8 @@ class _LoginState extends State<Login> {
   void dispose() {
     // Clear texts from the textfields
     _email.clear();
-    _password.clear();
     // Dispose the controllers
     _email.dispose();
-    _password.dispose();
     super.dispose();
   }
 
@@ -50,7 +47,7 @@ class _LoginState extends State<Login> {
         backgroundColor: Colors.transparent,
         leading: GestureDetector(
           onTap: () {
-            context.pushNamed(RouteNames.auth);
+            context.pushNamed(RouteNames.login);
           },
           child: const Padding(
             padding: EdgeInsets.only(left: 32.0),
@@ -61,11 +58,11 @@ class _LoginState extends State<Login> {
           ),
         ),
       ),
-      body: BlocConsumer<LoginCubit, AuthState>(
+      body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
-          if (state is LoginLoading) {
+          if (state is RecoverPasswordLoading) {
             _sendingData = true;
-          } else if (state is LoginError) {
+          } else if (state is RecoverPasswordError) {
             _sendingData = false;
             var snackBar = SnackBar(
               behavior: SnackBarBehavior.floating,
@@ -78,10 +75,8 @@ class _LoginState extends State<Login> {
               ),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          } else if (state is LoginSuccess) {
+          } else if (state is RecoverPasswordSuccess) {
             _sendingData = false; // Remove circular progress indicator
-            _storageService.setValue(StorageKeys.userID, state.session.userId);
-            _storageService.setValue(StorageKeys.sessionID, state.session.$id);
 
             // Show snackbar message
             var snackBar = const SnackBar(
@@ -97,7 +92,7 @@ class _LoginState extends State<Login> {
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
             // Redirect to home
-            context.goNamed(RouteNames.home);
+            context.goNamed(RouteNames.login);
           }
         },
         builder: (context, state) => SingleChildScrollView(
@@ -106,9 +101,9 @@ class _LoginState extends State<Login> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppGaps.v20,
+                AppGaps.v50,
                 Text(
-                  AppStrings.login,
+                  AppStrings.recoverPassword,
                   style: AppStyles.headerStyle,
                 ),
                 AppGaps.v10,
@@ -121,12 +116,10 @@ class _LoginState extends State<Login> {
                 ),
                 AppGaps.v40,
                 email(),
-                AppGaps.v20,
-                password(),
                 AppGaps.v40,
                 ElevatedButton(
                   onPressed: () {
-                    _login();
+                    _recoverPassword();
                   },
                   child: _sendingData
                       ? const CircularProgressIndicator(
@@ -136,60 +129,6 @@ class _LoginState extends State<Login> {
                       : const Text(AppStrings.continue_),
                 ),
                 AppGaps.v20,
-                forgotPassword(),
-                AppGaps.v20,
-                registerLinkQuestion(),
-                AppGaps.v20,
-                const Divider(),
-                AppGaps.v20,
-                const Text(
-                  AppStrings.oauthDescription,
-                  textAlign: TextAlign.center,
-                ),
-                AppGaps.v20,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        context
-                            .read<AuthCubit>()
-                            .oauth2(provider: OAuthProvider.google);
-                      },
-                      icon: SvgPicture.asset(
-                        AppVectors.google,
-                        height: 30,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: SvgPicture.asset(
-                        AppVectors.apple,
-                        height: 30,
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).brightness == Brightness.dark
-                              ? AppColors.bright
-                              : AppColors.backgroundDark,
-                          BlendMode.srcATop,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: SvgPicture.asset(
-                        AppVectors.facebook,
-                        height: 30,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: SvgPicture.asset(
-                        AppVectors.twitter,
-                        height: 30,
-                      ),
-                    ),
-                  ],
-                )
               ],
             ),
           ),
@@ -198,15 +137,10 @@ class _LoginState extends State<Login> {
     );
   }
 
-  void _login() {
+  void _recoverPassword() {
     final email = _email.text.toString().trim();
-    final password = _password.text.toString().trim();
-
-    // print(email);
-
-    context.read<LoginCubit>().login(
+    context.read<AuthCubit>().recoverPassword(
           email: email,
-          password: password,
         );
   }
 
@@ -220,7 +154,7 @@ class _LoginState extends State<Login> {
             text: ' ${AppStrings.forgotPasswordLinkQuestion}',
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                context.pushNamed(RouteNames.recoverPassword);
+                context.goNamed(RouteNames.register);
               },
             style: const TextStyle(color: AppColors.primary),
           ),
@@ -239,7 +173,7 @@ class _LoginState extends State<Login> {
             text: ' ${AppStrings.register}',
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                context.pushNamed(RouteNames.register);
+                context.goNamed(RouteNames.register);
               },
             style: const TextStyle(color: AppColors.primary),
           ),
@@ -253,21 +187,6 @@ class _LoginState extends State<Login> {
       controller: _email,
       decoration: const InputDecoration(
         hintText: AppStrings.email,
-      ),
-    );
-  }
-
-  Widget password() {
-    return TextField(
-      controller: _password,
-      // obscureText: false,
-      decoration: InputDecoration(
-        hintText: AppStrings.password,
-        // contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        suffix: GestureDetector(
-          onTap: () {},
-          child: const Icon(Icons.remove_red_eye_outlined),
-        ),
       ),
     );
   }

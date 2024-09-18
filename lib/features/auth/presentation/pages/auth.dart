@@ -59,14 +59,14 @@ class Auth extends StatelessWidget {
                   AppGaps.v30,
                   ElevatedButton(
                     onPressed: () {
-                      context.goNamed(RouteNames.register);
+                      context.pushNamed(RouteNames.register);
                     },
                     child: const Text(AppStrings.register),
                   ),
                   AppGaps.v10,
                   TextButton(
                     onPressed: () {
-                      context.goNamed(RouteNames.login);
+                      context.pushNamed(RouteNames.login);
                     },
                     child: const Text(
                       AppStrings.login,

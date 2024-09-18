@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/features/auth/presentation/pages/auth.dart';
+import 'package:notepada/features/auth/presentation/pages/recover_password.dart';
 import 'package:notepada/features/home/presentation/pages/home.dart';
 import 'package:notepada/features/note/data/models/note.dart';
 import 'package:notepada/features/note/presentation/pages/edit.dart';
@@ -39,9 +41,16 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const Register(),
     ),
     GoRoute(
+      path: '/recoverPassword',
+      name: RouteNames.recoverPassword,
+      builder: (context, state) => const RecoverPassword(),
+    ),
+    GoRoute(
       path: '/home',
       name: RouteNames.home,
-      builder: (context, state) => const Home(),
+      builder: (context, state) => Home(
+        key: UniqueKey(),
+      ),
     ),
     GoRoute(
       path: '/editNote',

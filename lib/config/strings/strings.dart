@@ -18,8 +18,13 @@ class AppStrings {
       'Fill out the form below to create your Notepada account.';
   static const loginDescription =
       'Fill out the form below to login to your Notepada account.';
+  static const recoverPasswordDescription =
+      'Fill in your email to recover your Notepada account password.';
   static const loginLinkQuestion = 'Already have an account?';
   static const registerLinkQuestion = "Don't have an account?";
+  static const forgotPasswordLinkQuestion = "Forgot your password?";
+  static const recover = "Recover";
+  static const recoverPassword = "Recover Password";
   static const internalServerError = "An error has occurred";
   static const noInternetConnection =
       "No internet connection. Kindly check and ensure that you are connected to the internet";

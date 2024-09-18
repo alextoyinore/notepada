@@ -5,6 +5,7 @@ class AppTheme {
   // LIGHT THEME
 
   static final lightTheme = ThemeData(
+    visualDensity: VisualDensity.adaptivePlatformDensity,
     primaryColor: AppColors.primary,
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.primary,
@@ -51,6 +52,7 @@ class AppTheme {
   // DARK THEME
 
   static final darkTheme = ThemeData(
+    visualDensity: VisualDensity.adaptivePlatformDensity,
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.primary,
       brightness: Brightness.dark,

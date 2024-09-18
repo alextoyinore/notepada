@@ -175,4 +175,24 @@ class AuthRepository extends IAuthRepository {
       return Left(Failure(message: e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, dynamic>> recoverPassword(
+      {required String email}) async {
+    try {
+      if (await _internetConnectionChecker.hasConnection) {
+        await _appwriteProvider.account!.createRecovery(
+            email: email, url: 'https://notepada.com/account/passwordRecovery');
+        return const Right(1);
+      } else {
+        return Left(
+          Failure(message: AppStrings.noInternetConnection),
+        );
+      }
+    } on AppwriteException catch (e) {
+      return Left(Failure(message: e.message!));
+    } on ServerException catch (e) {
+      return Left(Failure(message: e.message));
+    }
+  }
 }

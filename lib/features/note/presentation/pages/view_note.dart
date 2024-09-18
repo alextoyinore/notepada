@@ -40,7 +40,7 @@ class _ViewNoteState extends State<ViewNote> {
   }
 
   final _quillController = QuillController.basic();
-  // final _editorFocusNode = FocusNode();
+  final _editorFocusNode = FocusNode(canRequestFocus: false);
   final _editorScrollController = ScrollController();
 
   // final StorageService _storageService = StorageService();
@@ -188,32 +188,32 @@ class _ViewNoteState extends State<ViewNote> {
               ),
               AppGaps.v10,
 
-              // SizedBox(
-              //   width: MediaQuery.of(context).size.width,
-              //   // height: MediaQuery.of(context).size.height * .70,
-              //   child: QuillEditor.basic(
-              //     controller: _quillController,
-              //     // focusNode: _editorFocusNode,
-              //     scrollController: _editorScrollController,
-              //     configurations: QuillEditorConfigurations(
-              //       checkBoxReadOnly: false,
-              //       keyboardAppearance:
-              //           Theme.of(context).brightness == Brightness.dark
-              //               ? Brightness.dark
-              //               : Brightness.light,
-              //     ),
-              //   ),
-              // ),
-
-              Text(
-                _quillController.document.toPlainText(),
-                style: TextStyle(
-                  fontSize: context.read<NoteViewFontCubit>().state.toDouble(),
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Color(int.tryParse(widget.note.color!)!)
-                      : AppColors.darkGrey,
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                // height: MediaQuery.of(context).size.height * .70,
+                child: QuillEditor.basic(
+                  controller: _quillController,
+                  // focusNode: _editorFocusNode,
+                  scrollController: _editorScrollController,
+                  configurations: QuillEditorConfigurations(
+                    checkBoxReadOnly: false,
+                    keyboardAppearance:
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Brightness.dark
+                            : Brightness.light,
+                  ),
                 ),
               ),
+
+              // Text(
+              //   _quillController.document.toPlainText(),
+              //   style: TextStyle(
+              //     fontSize: context.read<NoteViewFontCubit>().state.toDouble(),
+              //     color: Theme.of(context).brightness == Brightness.dark
+              //         ? Color(int.tryParse(widget.note.color!)!)
+              //         : AppColors.darkGrey,
+              //   ),
+              // ),
               AppGaps.v20,
             ],
           ),

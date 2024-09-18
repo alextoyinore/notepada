@@ -17,6 +17,10 @@ abstract class IAuthRepository {
     required String password,
   });
 
+  Future<Either<Failure, dynamic>> recoverPassword({
+    required String email,
+  });
+
   Future<Either<Failure, Session>> checkSession();
 
   Future<Either<Failure, UserModel>> getUser({

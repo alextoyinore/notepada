@@ -5,6 +5,7 @@ import 'package:notepada/common/bloc/theme/theme_cubit.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/theme.dart';
 import 'package:notepada/core/routes/routes.dart';
+import 'package:notepada/features/auth/presentation/bloc/auth_cubit.dart';
 import 'package:notepada/features/auth/presentation/bloc/login_cubit.dart';
 import 'package:notepada/features/auth/presentation/bloc/register_cubit.dart';
 import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
@@ -49,6 +50,7 @@ class App extends StatelessWidget {
         BlocProvider(create: (_) => NoteCubit()),
         BlocProvider(create: (_) => NoteListFontCubit()),
         BlocProvider(create: (_) => NoteViewFontCubit()),
+        BlocProvider(create: (_) => AuthCubit()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, mode) => MaterialApp.router(
