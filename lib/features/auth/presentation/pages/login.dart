@@ -1,9 +1,6 @@
-import 'package:appwrite/enums.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:notepada/config/assets/vectors.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:notepada/config/theme/styles.dart';
@@ -11,10 +8,8 @@ import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/core/util/storage/storage_keys.dart';
 import 'package:notepada/core/util/storage/storage_service.dart';
-import 'package:notepada/features/auth/presentation/bloc/auth_cubit.dart';
 import 'package:notepada/features/auth/presentation/bloc/auth_state.dart';
 import 'package:notepada/features/auth/presentation/bloc/login_cubit.dart';
-import 'package:notepada/features/auth/presentation/bloc/login_state.dart';
 import 'package:notepada/service_locator.dart';
 
 class Login extends StatefulWidget {
@@ -50,7 +45,7 @@ class _LoginState extends State<Login> {
         backgroundColor: Colors.transparent,
         leading: GestureDetector(
           onTap: () {
-            context.pushNamed(RouteNames.auth);
+            context.pop();
           },
           child: const Padding(
             padding: EdgeInsets.only(left: 32.0),
@@ -140,56 +135,6 @@ class _LoginState extends State<Login> {
                 AppGaps.v20,
                 registerLinkQuestion(),
                 AppGaps.v20,
-                const Divider(),
-                AppGaps.v20,
-                const Text(
-                  AppStrings.oauthDescription,
-                  textAlign: TextAlign.center,
-                ),
-                AppGaps.v20,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        context
-                            .read<AuthCubit>()
-                            .oauth2(provider: OAuthProvider.google);
-                      },
-                      icon: SvgPicture.asset(
-                        AppVectors.google,
-                        height: 30,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: SvgPicture.asset(
-                        AppVectors.apple,
-                        height: 30,
-                        colorFilter: ColorFilter.mode(
-                          Theme.of(context).brightness == Brightness.dark
-                              ? AppColors.bright
-                              : AppColors.backgroundDark,
-                          BlendMode.srcATop,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: SvgPicture.asset(
-                        AppVectors.facebook,
-                        height: 30,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: SvgPicture.asset(
-                        AppVectors.twitter,
-                        height: 30,
-                      ),
-                    ),
-                  ],
-                )
               ],
             ),
           ),

@@ -1,4 +1,6 @@
+import 'package:appwrite/enums.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/config/assets/images.dart';
@@ -7,76 +9,165 @@ import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/styles.dart';
 import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/config/theme/colors.dart';
+import 'package:notepada/core/util/storage/storage_keys.dart';
+import 'package:notepada/core/util/storage/storage_service.dart';
+import 'package:notepada/features/auth/presentation/bloc/auth_cubit.dart';
+import 'package:notepada/features/auth/presentation/bloc/auth_state.dart';
 
 class Auth extends StatelessWidget {
-  const Auth({super.key});
+  Auth({super.key});
+
+  final StorageService _storageService = StorageService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(32.0),
-        child: Column(
-          children: [
-            AppGaps.v40,
-            SvgPicture.asset(
-              AppVectors.icon,
-              colorFilter: const ColorFilter.mode(
-                AppColors.primary,
-                BlendMode.srcATop,
-              ),
-              height: 50,
-            ),
-            AppGaps.v40,
-            Text(
-              AppStrings.introTitle,
-              style: AppStyles.headerStyle,
-            ),
-            // AppGaps.v10,
-            Text(
-              AppStrings.introDescription,
-              style: TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? AppColors.midGrey
-                    : AppColors.darkGrey,
-                height: 1.6,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            AppGaps.v40,
-            Image.asset(
-              AppImages.tree,
-              height: 250,
-              fit: BoxFit.cover,
-            ),
-            AppGaps.v20,
-            Align(
-              alignment: Alignment.bottomCenter,
+      body: BlocConsumer<AuthCubit, AuthState>(
+        listener: (context, state) {
+          if (state is OAuthSuccess) {
+            _storageService.setValue(StorageKeys.userID, state.user.$id);
+            context.goNamed(RouteNames.home);
+          } else if (state is OAuth2Loading) {
+            const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  AppGaps.v30,
-                  ElevatedButton(
-                    onPressed: () {
-                      context.pushNamed(RouteNames.register);
-                    },
-                    child: const Text(AppStrings.register),
+                  SizedBox(
+                    height: 10,
+                    width: 10,
+                    child: CircularProgressIndicator(
+                      color: AppColors.primary,
+                    ),
                   ),
                   AppGaps.v10,
-                  TextButton(
-                    onPressed: () {
-                      context.pushNamed(RouteNames.login);
-                    },
-                    child: const Text(
-                      AppStrings.login,
-                      style: TextStyle(fontSize: 16),
+                  Text(
+                    AppStrings.gettingNotes,
+                    style: TextStyle(
+                      fontSize: 16,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
-            ),
-          ],
+            );
+          }
+        },
+        builder: (context, state) => SingleChildScrollView(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            children: [
+              AppGaps.v40,
+              SvgPicture.asset(
+                AppVectors.icon,
+                colorFilter: const ColorFilter.mode(
+                  AppColors.primary,
+                  BlendMode.srcATop,
+                ),
+                height: 50,
+              ),
+              AppGaps.v20,
+              Text(
+                AppStrings.introTitle,
+                style: AppStyles.headerStyle.copyWith(fontSize: 30),
+                textAlign: TextAlign.center,
+              ),
+              // AppGaps.v10,
+              Text(
+                AppStrings.introDescription,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.midGrey
+                      : AppColors.darkGrey,
+                  height: 1.3,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              AppGaps.v20,
+              Image.asset(
+                AppImages.tree,
+                height: 220,
+                fit: BoxFit.cover,
+              ),
+              AppGaps.v10,
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AppGaps.v20,
+                    ElevatedButton(
+                      onPressed: () {
+                        context.pushNamed(RouteNames.register);
+                      },
+                      child: const Text(AppStrings.register),
+                    ),
+                    AppGaps.v10,
+                    TextButton(
+                      onPressed: () {
+                        context.pushNamed(RouteNames.login);
+                      },
+                      child: const Text(
+                        AppStrings.login,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                    AppGaps.v10,
+                    const Divider(),
+                    AppGaps.v10,
+                    const Text(
+                      AppStrings.oauthDescription,
+                      textAlign: TextAlign.center,
+                    ),
+                    AppGaps.v10,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            context
+                                .read<AuthCubit>()
+                                .oauth2(provider: OAuthProvider.google);
+                          },
+                          icon: SvgPicture.asset(
+                            AppVectors.google,
+                            height: 30,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: SvgPicture.asset(
+                            AppVectors.apple,
+                            height: 30,
+                            colorFilter: ColorFilter.mode(
+                              Theme.of(context).brightness == Brightness.dark
+                                  ? AppColors.bright
+                                  : AppColors.backgroundDark,
+                              BlendMode.srcATop,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: SvgPicture.asset(
+                            AppVectors.facebook,
+                            height: 30,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: SvgPicture.asset(
+                            AppVectors.twitter,
+                            height: 30,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

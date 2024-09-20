@@ -56,7 +56,7 @@ class AppStrings {
   static const chooseNoteColor = 'Choose note color';
   static const welcome = 'Welcome';
   static const welcomeDescription =
-      'Ideas are gems, in them holds the power to rule, to govern, to possess gold, silver, and diamonds but they are fickle and fleeting. The person who keeps, explores and bring ideas to life will have more of them. A good idea is a precious gift.\nThey are worth protecting.';
+      'Ideas are gems, in them holds the power to rule, to govern, to possess gold, silver, and diamonds but they are fickle and fleeting. The person who keeps, explores and bring ideas to life will have more of them. A good idea is a precious gift. They are worth protecting.';
   static const userLoading = 'Getting your data...';
   static const userError =
       'We are having trouble getting your data. It may help if you refresh your internet connection.';
@@ -83,4 +83,7 @@ class AppStrings {
   static const termsAndConditions = 'Terms and Conditions';
   static const termsAndConditionsDescription = 'Terms and Conditions';
   static const information = 'Information';
+  static const doubleTapDescription = 'Double tap to edit!';
+  static const copyToEditor = 'Copy to Editor';
+  static const close = 'Close';
 }

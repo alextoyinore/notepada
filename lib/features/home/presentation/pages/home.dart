@@ -1,10 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/common/bloc/settings/settings_cubit.dart';
-import 'package:notepada/common/helpers/extensions.dart';
+import 'package:notepada/common/helpers/helpers.dart';
 import 'package:notepada/common/widgets/app_alert.dart';
 import 'package:notepada/common/widgets/app_snack.dart';
 import 'package:notepada/config/assets/images.dart';
@@ -39,11 +41,14 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
+          ),
+        ),
         automaticallyImplyLeading: false,
         title: Padding(
-          padding: Theme.of(context).brightness == Brightness.dark
-              ? const EdgeInsets.only(left: 16.0)
-              : EdgeInsets.zero,
+          padding: const EdgeInsets.only(left: 16.0),
           child: Text(
             AppStrings.notes,
             style: TextStyle(
@@ -180,7 +185,7 @@ class _HomeState extends State<Home> {
                   itemBuilder: (_, index) {
                     return GestureDetector(
                       onTap: () => context.pushNamed(
-                        RouteNames.editNote,
+                        RouteNames.viewNote,
                         extra: state.notes[index],
                       ),
                       child: Padding(
@@ -242,7 +247,7 @@ class _HomeState extends State<Home> {
                               color: state.notes[index].color != null
                                   ? Color(int.tryParse(
                                           state.notes[index].color!)!)
-                                      .withOpacity(.07)
+                                      .withOpacity(.1)
                                   : AppColors.grey,
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -334,7 +339,7 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 50.0),
+        padding: const EdgeInsets.only(bottom: 10.0, right: 10),
         child: FloatingActionButton(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50),

@@ -24,3 +24,17 @@ Color lighten(Color c, [int percent = 10]) {
       c.green + ((255 - c.green) * p).round(),
       c.blue + ((255 - c.blue) * p).round());
 }
+
+/// Prevent Keyboard from appearing
+
+class FirstTapDisableFocusNode extends FocusNode {
+  @override
+  bool consumeKeyboardToken() {
+    return false;
+  }
+}
+
+class AlwaysDisabledFocusNode extends FocusNode {
+  @override
+  bool get hasFocus => false;
+}

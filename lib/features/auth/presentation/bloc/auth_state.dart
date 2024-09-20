@@ -61,9 +61,11 @@ class UserError extends AuthState {
 
 class LoggingOut extends AuthState {}
 
+class OAuth2Loading extends AuthState {}
+
 class OAuth2Success extends AuthState {
-  final Session? session;
-  OAuth2Success({this.session});
+  final bool? success;
+  OAuth2Success({this.success});
 }
 
 class RecoverPasswordLoading extends AuthState {}

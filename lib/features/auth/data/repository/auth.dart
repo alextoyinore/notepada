@@ -147,8 +147,11 @@ class AuthRepository extends IAuthRepository {
       {required OAuthProvider provider}) async {
     try {
       if (await _internetConnectionChecker.hasConnection) {
-        Session session = await _appwriteProvider.account!
+        await _appwriteProvider.account!
             .createOAuth2Session(provider: provider);
+
+        Future<Session> session =
+            _appwriteProvider.account!.getSession(sessionId: 'current');
 
         // await _appwriteProvider.database?.createDocument(
         //   databaseId: AppConstants.appwriteDatabaseID,
@@ -163,7 +166,7 @@ class AuthRepository extends IAuthRepository {
         //   },
         // );
 
-        return Right(session);
+        return const Right(1);
       } else {
         return Left(
           Failure(message: AppStrings.noInternetConnection),

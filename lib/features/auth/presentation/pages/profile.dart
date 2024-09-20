@@ -287,7 +287,7 @@ class _ProfileState extends State<Profile> {
                                         : AppColors.grey.withOpacity(.2),
                                   ),
                                   child: Icon(
-                                    Icons.computer,
+                                    Icons.brightness_6,
                                     size: 18,
                                     color: context.read<ThemeCubit>().state ==
                                             ThemeMode.system
@@ -638,6 +638,7 @@ class _ProfileState extends State<Profile> {
                         ),
                       ),
                     ),
+                    AppGaps.v40,
                   ],
                 ),
               );

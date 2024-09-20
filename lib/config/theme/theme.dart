@@ -8,7 +8,7 @@ class AppTheme {
     visualDensity: VisualDensity.adaptivePlatformDensity,
     primaryColor: AppColors.primary,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: AppColors.primary,
+      seedColor: AppColors.backgroundLight,
       brightness: Brightness.light,
     ),
     useMaterial3: true,
@@ -46,6 +46,10 @@ class AppTheme {
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.backgroundLight,
+      centerTitle: false,
+      elevation: 0,
+      titleSpacing: 0,
+      surfaceTintColor: Colors.transparent,
     ),
   );
 
@@ -54,7 +58,7 @@ class AppTheme {
   static final darkTheme = ThemeData(
     visualDensity: VisualDensity.adaptivePlatformDensity,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: AppColors.primary,
+      seedColor: AppColors.backgroundDark,
       brightness: Brightness.dark,
     ),
     useMaterial3: true,
@@ -93,7 +97,10 @@ class AppTheme {
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.backgroundDark,
+      centerTitle: false,
+      elevation: 0,
       titleSpacing: 0,
+      surfaceTintColor: Colors.transparent,
     ),
   );
 }

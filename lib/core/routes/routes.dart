@@ -28,7 +28,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/auth',
       name: RouteNames.auth,
-      builder: (context, state) => const Auth(),
+      builder: (context, state) => Auth(),
     ),
     GoRoute(
       path: '/login',

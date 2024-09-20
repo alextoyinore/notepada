@@ -88,7 +88,7 @@ class _IntroState extends State<Intro> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           _themeChooser(
-              icon: Icons.sunny,
+              icon: Icons.wb_sunny,
               label: AppStrings.light,
               isSelected: context.read<ThemeCubit>().state == ThemeMode.light
                   ? true
@@ -110,7 +110,7 @@ class _IntroState extends State<Intro> {
                 });
               }),
           _themeChooser(
-            icon: Icons.computer,
+            icon: Icons.brightness_6,
             label: AppStrings.system,
             isSelected: context.read<ThemeCubit>().state == ThemeMode.system
                 ? true
@@ -136,8 +136,8 @@ class _IntroState extends State<Intro> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 100,
-        height: 100,
+        width: 80,
+        height: 80,
         decoration: BoxDecoration(
           // borderRadius: BorderRadius.circular(20),
           color: isSelected ? color : color.withOpacity(.02),
@@ -150,9 +150,9 @@ class _IntroState extends State<Intro> {
             Icon(
               icon,
               color: isSelected ? AppColors.bright : color,
-              size: 30,
+              size: 25,
             ),
-            AppGaps.v10,
+            // AppGaps.v10,
             Text(
               label,
               style: TextStyle(

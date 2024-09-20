@@ -34,8 +34,7 @@ class _SplashState extends State<Splash> {
             StorageKeys.defaultColor, '0x${AppColors.darkGrey.toHexString()}')
         : null;
 
-    // Check FontSizes
-
+    /// Check FontSizes
     // Note View
     context.read<NoteViewFontCubit>().state;
     // Note View

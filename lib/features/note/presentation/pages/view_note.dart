@@ -1,10 +1,12 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/common/bloc/settings/settings_cubit.dart';
+import 'package:notepada/common/helpers/helpers.dart';
+import 'package:notepada/common/widgets/app_snack.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/config/theme/styles.dart';
@@ -24,26 +26,66 @@ class _ViewNoteState extends State<ViewNote> {
   @override
   void initState() {
     super.initState();
-    var originalText = widget.note.formattedText!;
-    final truncatedText = originalText.substring(1, originalText.length - 1);
-
     _quillController.document =
         Document.fromJson(jsonDecode(widget.note.formattedText!));
+    // _quillController.readOnly = true;
+    // _quillController.skipRequestKeyboard = true;
   }
 
   @override
   void dispose() {
-    // _editorFocusNode.dispose();
+    _editorFocusNode.dispose();
     _editorScrollController.dispose();
     _quillController.dispose();
     super.dispose();
   }
 
   final _quillController = QuillController.basic();
-  final _editorFocusNode = FocusNode(canRequestFocus: false);
+  final _editorFocusNode = AlwaysDisabledFocusNode();
   final _editorScrollController = ScrollController();
 
   // final StorageService _storageService = StorageService();
+
+  /// Text to Speech
+  double volume = 1.0;
+  double pitch = 1.0;
+  double rate = 0.5;
+
+  String? _voiceText;
+  bool _playing = false;
+  bool _paused = false;
+
+  final FlutterTts flutterTts = FlutterTts();
+
+  Future<void> _speak() async {
+    await flutterTts.setLanguage('en-US');
+    await flutterTts.setVolume(volume);
+    await flutterTts.setSpeechRate(rate);
+    await flutterTts.setPitch(pitch);
+    _voiceText =
+        '${widget.note.title}\n${_quillController.document.getPlainText(0, _quillController.document.length)}';
+    await flutterTts.speak(_voiceText!);
+    setState(() {
+      _playing = true;
+      _paused = false;
+    });
+  }
+
+  Future<void> _pause() async {
+    await flutterTts.pause();
+    setState(() {
+      _paused = true;
+      _playing = false;
+    });
+  }
+
+  Future<void> _stop() async {
+    await flutterTts.stop();
+    setState(() {
+      _playing = false;
+      _paused = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +105,7 @@ class _ViewNoteState extends State<ViewNote> {
         ),
         leading: IconButton(
           padding: const EdgeInsets.only(left: 20),
-          onPressed: () => context.goNamed(RouteNames.home),
+          onPressed: () => context.pushNamed(RouteNames.home),
           icon: Icon(
             Icons.arrow_back_ios,
             color: Color(
@@ -72,45 +114,66 @@ class _ViewNoteState extends State<ViewNote> {
           ),
         ),
         actions: [
-          Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    context.read<NoteViewFontCubit>().decrement();
-                  });
-                },
-                icon: Icon(
-                  Icons.remove,
-                  color: Color(
-                    int.tryParse(widget.note.color!)!,
+          !_playing
+              ? IconButton(
+                  onPressed: _speak,
+                  icon: Icon(
+                    Icons.play_circle_outline,
+                    size: 25,
+                    color: Color(
+                      int.tryParse(widget.note.color!)!,
+                    ),
+                  ),
+                )
+              : IconButton(
+                  onPressed: _stop,
+                  icon: Icon(
+                    Icons.stop_circle,
+                    color: Color(
+                      int.tryParse(widget.note.color!)!,
+                    ),
+                    size: 30,
                   ),
                 ),
-              ),
-              Text(
-                context.read<NoteViewFontCubit>().state.toString(),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Color(
-                    int.tryParse(widget.note.color!)!,
-                  ),
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    context.read<NoteViewFontCubit>().increment();
-                  });
-                },
-                icon: Icon(
-                  Icons.add,
-                  color: Color(
-                    int.tryParse(widget.note.color!)!,
-                  ),
-                ),
-              ),
-            ],
-          ),
+          // Row(
+          //   children: [
+          //     IconButton(
+          //       onPressed: () {
+          //         setState(() {
+          //           context.read<NoteViewFontCubit>().decrement();
+          //         });
+          //       },
+          //       icon: Icon(
+          //         Icons.remove,
+          //         color: Color(
+          //           int.tryParse(widget.note.color!)!,
+          //         ),
+          //       ),
+          //     ),
+          //     Text(
+          //       context.read<NoteViewFontCubit>().state.toString(),
+          //       style: TextStyle(
+          //         fontWeight: FontWeight.bold,
+          //         color: Color(
+          //           int.tryParse(widget.note.color!)!,
+          //         ),
+          //       ),
+          //     ),
+          //     IconButton(
+          //       onPressed: () {
+          //         setState(() {
+          //           context.read<NoteViewFontCubit>().increment();
+          //         });
+          //       },
+          //       icon: Icon(
+          //         Icons.add,
+          //         color: Color(
+          //           int.tryParse(widget.note.color!)!,
+          //         ),
+          //       ),
+          //     ),
+          //   ],
+          // ),
           IconButton(
             padding: const EdgeInsets.only(right: 20),
             onPressed: () =>
@@ -120,7 +183,7 @@ class _ViewNoteState extends State<ViewNote> {
               color: Color(
                 int.tryParse(widget.note.color!)!,
               ),
-              size: 16,
+              size: 20,
             ),
           ),
           IconButton(
@@ -150,7 +213,7 @@ class _ViewNoteState extends State<ViewNote> {
                           .read<NoteCubit>()
                           .deleteNote(documentID: widget.note.id);
 
-                      context.goNamed(RouteNames.home);
+                      context.pushNamed(RouteNames.home);
                     },
                     child: const Text(AppStrings.continue_),
                   )
@@ -162,16 +225,18 @@ class _ViewNoteState extends State<ViewNote> {
               color: Color(
                 int.tryParse(widget.note.color!)!,
               ),
-              size: 16,
+              size: 20,
             ),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: GestureDetector(
-          onDoubleTap: () =>
-              context.pushNamed(RouteNames.editNote, extra: widget.note),
+      body: GestureDetector(
+        onTap: () => appSnackBar(
+            text: AppStrings.doubleTapDescription, context: context),
+        onDoubleTap: () =>
+            context.pushNamed(RouteNames.editNote, extra: widget.note),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -187,13 +252,12 @@ class _ViewNoteState extends State<ViewNote> {
                 ),
               ),
               AppGaps.v10,
-
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 // height: MediaQuery.of(context).size.height * .70,
                 child: QuillEditor.basic(
                   controller: _quillController,
-                  // focusNode: _editorFocusNode,
+                  focusNode: _editorFocusNode,
                   scrollController: _editorScrollController,
                   configurations: QuillEditorConfigurations(
                     checkBoxReadOnly: false,
@@ -204,16 +268,6 @@ class _ViewNoteState extends State<ViewNote> {
                   ),
                 ),
               ),
-
-              // Text(
-              //   _quillController.document.toPlainText(),
-              //   style: TextStyle(
-              //     fontSize: context.read<NoteViewFontCubit>().state.toDouble(),
-              //     color: Theme.of(context).brightness == Brightness.dark
-              //         ? Color(int.tryParse(widget.note.color!)!)
-              //         : AppColors.darkGrey,
-              //   ),
-              // ),
               AppGaps.v20,
             ],
           ),

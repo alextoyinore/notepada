@@ -18,6 +18,7 @@ import 'package:notepada/features/note/data/models/note.dart';
 import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
 import 'package:notepada/features/note/presentation/bloc/note_state.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:avatar_glow/avatar_glow.dart';
 
 class EditNote extends StatefulWidget {
   final NoteModel? note;
@@ -48,9 +49,7 @@ class _EditNoteState extends State<EditNote> {
   }
 
   void _submit() {
-    String bottomPadding = '\n';
     final noteText = jsonEncode(_quillController.document.toDelta().toJson());
-    noteText.padRight(50, bottomPadding);
     if (widget.note == null) {
       context.read<NoteCubit>().newNote(
             title: _title.text.toString(),
@@ -89,21 +88,17 @@ class _EditNoteState extends State<EditNote> {
 
   final _fontSizeValues = {
     'Smallest': '16',
-    'Smaller': '24',
-    'Small': '32',
-    'Medium': '40',
-    'Large': '48',
-    'Larger': '56',
-    'Largest': '64',
+    'Smaller': '20',
+    'Small': '24',
+    'Medium': '28',
+    'Large': '32',
+    'Larger': '36',
+    'Largest': '40',
   };
-
-  late bool _editing;
 
   @override
   void initState() {
     super.initState();
-
-    _editing = false;
 
     _defaultColor = Color(
         int.tryParse(_storedDefaultColor.getValue(StorageKeys.defaultColor)!)!);
@@ -114,7 +109,6 @@ class _EditNoteState extends State<EditNote> {
 
     if (widget.note != null) {
       _title.text = widget.note!.title;
-      // _note.text = widget.note!.text!;
       _quillController.document =
           Document.fromJson(jsonDecode(widget.note!.formattedText!));
     }
@@ -124,16 +118,22 @@ class _EditNoteState extends State<EditNote> {
 
   bool _listening = false;
   late stt.SpeechToText _speechToText;
-  String _text = 'Tap the mic icon and start speaking now';
+  String _text = 'Spoken words will appear here';
   double _confidence = 1.0;
+  bool _talkBoard = false;
 
-  void _captureVoice() async {
+  /// Speech to Text
+  void captureVoice() async {
     if (!_listening) {
       bool listen = await _speechToText.initialize();
 
       if (listen) {
-        setState(() => _listening = true);
+        setState(() {
+          _listening = true;
+          _talkBoard = true;
+        });
         _speechToText.listen(
+            listenFor: const Duration(minutes: 1),
             onResult: (result) => setState(() {
                   _text = result.recognizedWords;
                   if (result.hasConfidenceRating && _confidence > 0) {
@@ -147,6 +147,20 @@ class _EditNoteState extends State<EditNote> {
         });
       }
     }
+  }
+
+  void copyToEditor() {
+    setState(() {
+      var editorDoc = _quillController.document;
+
+      if (editorDoc.length == 0) {
+        _quillController.document.insert(0, '\n$_text');
+      } else {
+        // Append speech to text to editor
+        _quillController.document
+            .insert(_quillController.document.length - 1, '\n$_text');
+      }
+    });
   }
 
   @override
@@ -174,11 +188,30 @@ class _EditNoteState extends State<EditNote> {
           maxLines: 1,
         ),
         actions: [
-          IconButton(
-            onPressed: _captureVoice,
-            icon:
-                _listening ? const Icon(Icons.mic) : const Icon(Icons.mic_none),
-          ),
+          !_listening
+              ? IconButton(
+                  onPressed: captureVoice,
+                  icon: const Icon(Icons.mic_none),
+                )
+              : AvatarGlow(
+                  animate: _listening,
+                  glowColor: _currentColor,
+                  startDelay: const Duration(milliseconds: 2000),
+                  // glowShape: BoxShape.rectangle,
+                  repeat: true,
+                  glowCount: 3,
+                  // glowRadiusFactor: .35,
+                  child: IconButton(
+                    onPressed: () => setState(() {
+                      _listening = false;
+                      _speechToText.stop();
+                    }),
+                    icon: Icon(
+                      Icons.mic,
+                      color: _currentColor,
+                    ),
+                  ),
+                ),
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: GestureDetector(
@@ -223,7 +256,7 @@ class _EditNoteState extends State<EditNote> {
         ],
         leading: IconButton(
           padding: const EdgeInsets.only(left: 20, right: 0),
-          onPressed: () => context.goNamed(RouteNames.home),
+          onPressed: () => context.pop(),
           icon: const Icon(
             Icons.arrow_back_ios,
             color: AppColors.darkGrey,
@@ -263,40 +296,74 @@ class _EditNoteState extends State<EditNote> {
         builder: (context, state) => Stack(
           alignment: AlignmentDirectional.bottomStart,
           children: [
-            SingleChildScrollView(
-              // reverse: true,
-              padding: const EdgeInsets.only(
-                left: 0,
-                right: 0,
-              ),
-              child: Column(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    child: QuillEditor.basic(
-                      controller: _quillController,
-                      focusNode: _editorFocusNode,
-                      scrollController: _editorScrollController,
-                      configurations: QuillEditorConfigurations(
-                          customStyles:
-                              const DefaultStyles(color: AppColors.primary),
-                          magnifierConfiguration:
-                              const TextMagnifierConfiguration(),
-                          placeholder: AppStrings.noteHintText,
-                          checkBoxReadOnly: true,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24, vertical: 16),
-                          scrollBottomInset: 20,
-                          keyboardAppearance:
-                              Theme.of(context).brightness == Brightness.dark
-                                  ? Brightness.dark
-                                  : Brightness.light),
-                    ),
+            Column(
+              children: [
+                _talkBoard == true
+                    ? Container(
+                        height: MediaQuery.of(context).size.height / 5,
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: SingleChildScrollView(
+                          reverse: true,
+                          child: Column(
+                            children: [
+                              Text(
+                                _text,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: _currentColor),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    'Confidence: ${(_confidence * 100).toStringAsFixed(1)}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  TextButton(
+                                      onPressed: (() => setState(() {
+                                            _talkBoard = false;
+                                          })),
+                                      child: const Text(AppStrings.close)),
+                                  TextButton(
+                                      onPressed: copyToEditor,
+                                      child:
+                                          const Text(AppStrings.copyToEditor)),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    : AppGaps.v0,
+                Expanded(
+                  child: QuillEditor.basic(
+                    controller: _quillController,
+                    focusNode: _editorFocusNode,
+                    scrollController: _editorScrollController,
+                    configurations: QuillEditorConfigurations(
+                        floatingCursorDisabled: true,
+                        customStyles:
+                            const DefaultStyles(color: AppColors.primary),
+                        magnifierConfiguration:
+                            const TextMagnifierConfiguration(),
+                        placeholder: AppStrings.noteHintText,
+                        checkBoxReadOnly: true,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 16),
+                        scrollBottomInset: 20,
+                        keyboardAppearance:
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Brightness.dark
+                                : Brightness.light),
                   ),
-                  AppGaps.v10,
-                ],
-              ),
+                ),
+                AppGaps.v10,
+              ],
             ),
             QuillSimpleToolbar(
               controller: _quillController,

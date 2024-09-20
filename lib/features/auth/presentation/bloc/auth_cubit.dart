@@ -12,14 +12,14 @@ class AuthCubit extends Cubit<AuthState> {
   void oauth2({
     required OAuthProvider provider,
   }) async {
-    emit(RegisterLoading());
+    emit(OAuth2Loading());
 
     final response = await _authRepository.oauth2(provider: provider);
     await Future.delayed(const Duration(microseconds: 500));
 
     response.fold(
       (failure) => emit(RegisterError(error: failure.message)),
-      (session) => emit(OAuth2Success(session: session)),
+      (session) => emit(OAuth2Success()),
     );
   }
 
