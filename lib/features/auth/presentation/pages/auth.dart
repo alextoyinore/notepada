@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notepada/common/widgets/app_toast.dart';
 import 'package:notepada/config/assets/images.dart';
 import 'package:notepada/config/assets/vectors.dart';
 import 'package:notepada/config/strings/strings.dart';
@@ -14,19 +15,33 @@ import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/auth/presentation/bloc/auth_cubit.dart';
 import 'package:notepada/features/auth/presentation/bloc/auth_state.dart';
 
-class Auth extends StatelessWidget {
-  Auth({super.key});
+class Auth extends StatefulWidget {
+  const Auth({super.key});
 
+  @override
+  State<Auth> createState() => _AuthState();
+}
+
+class _AuthState extends State<Auth> {
   final StorageService _storageService = StorageService();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
-          if (state is OAuthSuccess) {
-            _storageService.setValue(StorageKeys.userID, state.user.$id);
-            context.goNamed(RouteNames.home);
+          if (state is OAuth2Success) {
+            // _storageService.setValue(
+            //     StorageKeys.userID, state.success.toString());
+            appToast(context: context, message: AppStrings.loginSuccess);
+            context.pushNamed(RouteNames.login);
+          } else if (state is OAuth2Error) {
+            appToast(context: context, message: state.error);
           } else if (state is OAuth2Loading) {
             const Center(
               child: Column(

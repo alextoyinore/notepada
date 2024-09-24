@@ -1,5 +1,6 @@
 class AppStrings {
   static const appName = 'Notepada';
+  static const refresh = 'Refresh';
   static const home = 'Home';
   static const login = 'Login';
   static const auth = 'Auth';
@@ -9,6 +10,12 @@ class AppStrings {
   static const lastName = 'Last Name';
   static const email = 'Email';
   static const password = 'Password';
+  static const changePassword = 'Change Password';
+  static const passwordChanged = 'Password changed successfully';
+  static const changePasswordDescription =
+      'Change your password to secure your account.';
+  static const oldPassword = 'Old Password';
+  static const newPassword = 'New Password';
   static const introTitle = 'Ideas rule the world.';
   static const introDescription =
       'Ideas are seeds, the moment you store them, you have planted them. Never loose an idea again. Store it, keep it, make it happen!';
@@ -47,6 +54,7 @@ class AppStrings {
   static const getNoteError =
       'We are having trouble getting your notes.\nTry closing and reopening the app. Thank you!';
   static const noNotes = 'You have no notes';
+  static const noSecretNotes = 'You have no secret notes';
   static const confirmDelete = 'Confirm Delete';
   static const confirm = 'Confirm';
   static const delete = 'Delete';
@@ -70,7 +78,21 @@ class AppStrings {
   static const about = 'About Notepada';
   static const loggingout = 'Logging out...';
   static const oauthDescription = 'Or sign in with your socials';
+  static const loginSuccess = 'Successfully logged in';
   static const fontSettings = 'Text Settings';
+  static const secretKey = 'Secret Key';
+  static const enterSecretKey = 'Enter Secret Key';
+  static const secretKeyPIN = 'Secret Key PIN';
+  static const secretKeyMustBe4Digits = 'Secret Key must be 4 digits';
+  static const secretKeyPINErrorNumeric = 'Secret Key PIN must be numeric';
+  static const secretNotes = 'Secret Notes';
+  static const createSecretKey = 'Create Secret Key';
+  static const createSecretKeyDescription =
+      'Create a secret key to secure your private notes. This secret key will be used to secure notes that you want to keep private.';
+  static const secretViewKeyDescription =
+      'Enter your secret key to view your private notes.';
+  static const secretKeyCreated = 'Secret Key Created Successfully';
+  static const secretKeyEmpty = 'Secret Key cannot be empty';
   static const listTextSize = 'List Text';
   static const viewTextSize = 'View Text';
   static const noEmptyTitle = 'Title cannot be empty';
@@ -86,4 +108,11 @@ class AppStrings {
   static const doubleTapDescription = 'Double tap to edit!';
   static const copyToEditor = 'Copy to Editor';
   static const close = 'Close';
+  static const tts = 'Text To Speech';
+  static const search = 'Search';
+  static const pitch = 'Pitch';
+  static const rate = 'Rate';
+  static const volume = 'Volume';
+  static const tryAgain = 'Try Again';
+  static const speakDescription = 'Spoken words will appear here';
 }

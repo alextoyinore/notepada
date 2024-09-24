@@ -41,7 +41,7 @@ class _RecoverPasswordState extends State<RecoverPassword> {
         backgroundColor: Colors.transparent,
         leading: GestureDetector(
           onTap: () {
-            context.pushNamed(RouteNames.login);
+            context.pop();
           },
           child: const Padding(
             padding: EdgeInsets.only(left: 32.0),

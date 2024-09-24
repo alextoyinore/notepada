@@ -20,14 +20,14 @@ import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
 import 'package:notepada/features/note/presentation/bloc/note_state.dart';
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class SecretNotes extends StatefulWidget {
+  const SecretNotes({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<SecretNotes> createState() => _SecretNotesState();
 }
 
-class _HomeState extends State<Home> {
+class _SecretNotesState extends State<SecretNotes> {
   final _storageService = StorageService();
   late double _listFontSize;
   late Color _defaultColor;
@@ -37,7 +37,7 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     userID = _storageService.getValue(StorageKeys.userID);
-    context.read<NoteCubit>().getNotes(userID: userID, isSecret: false);
+    context.read<NoteCubit>().getNotes(userID: userID, isSecret: true);
     _listFontSize = context.read<NoteListFontCubit>().state.toDouble();
 
     // Default Color
@@ -55,23 +55,17 @@ class _HomeState extends State<Home> {
           ),
         ),
         automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: () {
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back_ios_new),
+        ),
         title: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 16.0),
-              child: Text(
-                AppStrings.notes,
-                style: TextStyle(
-                  color: AppColors.midGrey,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-            ),
-            AppGaps.h10,
             SizedBox(
-              width: 250,
+              width: 350,
               child: TextField(
                 decoration: Theme.of(context).brightness == Brightness.dark
                     ? AppStyles.darkTextFieldThemeBorderless.copyWith(
@@ -92,29 +86,7 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.pushNamed(RouteNames.profile);
-            },
-            padding: const EdgeInsets.only(right: 16),
-            icon: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: _defaultColor.withOpacity(.1),
-                shape: BoxShape.circle,
-              ),
-              child: SvgPicture.asset(
-                AppVectors.profile,
-                colorFilter: ColorFilter.mode(
-                  _defaultColor,
-                  BlendMode.srcATop,
-                ),
-                height: 16,
-              ),
-            ),
-          )
-        ],
+        // actions: [],
       ),
       body: BlocBuilder<NoteCubit, NoteState>(
         builder: (context, state) {
@@ -147,7 +119,7 @@ class _HomeState extends State<Home> {
                 setState(() {
                   context
                       .read<NoteCubit>()
-                      .getNotes(userID: userID, isSecret: false);
+                      .getNotes(userID: userID, isSecret: true);
                 });
               },
               child: Center(
@@ -177,7 +149,7 @@ class _HomeState extends State<Home> {
                         onPressed: () {
                           context
                               .read<NoteCubit>()
-                              .getNotes(userID: userID, isSecret: false);
+                              .getNotes(userID: userID, isSecret: true);
                         },
                         child: const Text(AppStrings.tryAgain),
                       ),
@@ -194,9 +166,7 @@ class _HomeState extends State<Home> {
                 color: AppColors.primary,
                 onRefresh: () async {
                   setState(() {
-                    context
-                        .read<NoteCubit>()
-                        .getNotes(userID: userID, isSecret: false);
+                    context.read<NoteCubit>().getNotes(userID: userID);
                   });
                 },
                 child: Center(
@@ -209,7 +179,7 @@ class _HomeState extends State<Home> {
                       ),
                       AppGaps.v10,
                       const Text(
-                        AppStrings.noNotes,
+                        AppStrings.noSecretNotes,
                         style: TextStyle(),
                         textAlign: TextAlign.center,
                       ),
@@ -217,7 +187,7 @@ class _HomeState extends State<Home> {
                         onPressed: () {
                           context
                               .read<NoteCubit>()
-                              .getNotes(userID: userID, isSecret: false);
+                              .getNotes(userID: userID, isSecret: true);
                         },
                         child: const Text(AppStrings.refresh),
                       ),
@@ -230,9 +200,7 @@ class _HomeState extends State<Home> {
                 color: AppColors.primary,
                 onRefresh: () async {
                   setState(() {
-                    context
-                        .read<NoteCubit>()
-                        .getNotes(userID: userID, isSecret: false);
+                    context.read<NoteCubit>().getNotes(userID: userID);
                   });
                 },
                 child: ListView.builder(

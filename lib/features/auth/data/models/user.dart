@@ -6,6 +6,7 @@ class UserModel {
   String lastName;
   String fullName;
   String? profileImage;
+  String? secretKey;
 
   UserModel({
     required this.email,
@@ -13,6 +14,7 @@ class UserModel {
     required this.lastName,
     required this.fullName,
     this.profileImage,
+    this.secretKey,
   });
 
   UserModel copyWith({
@@ -21,12 +23,15 @@ class UserModel {
     String? lastName,
     String? fullName,
     String? profileImage,
+    String? secretKey,
   }) {
     return UserModel(
       email: email ?? this.email,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
       fullName: fullName ?? this.fullName,
+      profileImage: profileImage ?? this.profileImage,
+      secretKey: secretKey ?? this.secretKey,
     );
   }
 
@@ -37,6 +42,7 @@ class UserModel {
       'lastName': lastName,
       'fullName': fullName,
       'profileImage': profileImage,
+      'secretKey': secretKey,
     };
   }
 
@@ -47,12 +53,13 @@ class UserModel {
       lastName: map['lastName'] as String,
       fullName: map['fullName'] as String,
       profileImage:
-          map['profileImage'] != null ? map['profileImage'] as String : null,
+          map['profileImage'] != null ? map['profileImage'] as String : '',
+      secretKey: map['secretKey'] != null ? map['secretKey'] as String : '',
     );
   }
 
   String toJson() => jsonEncode(toMap());
 
-  factory UserModel.fromJson(String source) => UserModel.fromMap(jsonDecode(source) as Map<String, dynamic>);
-
+  factory UserModel.fromJson(String source) =>
+      UserModel.fromMap(jsonDecode(source) as Map<String, dynamic>);
 }

@@ -6,4 +6,5 @@ class StorageKeys {
   static const firstName = 'firstName';
   static const viewFontSize = 'viewFontSize';
   static const listFontSize = 'listFontSize';
+  static const secretKeyPIN = 'secretKeyPIN';
 }

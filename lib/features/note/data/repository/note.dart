@@ -101,9 +101,8 @@ class NoteRepository extends INoteRepository {
   }
 
   @override
-  Future<Either<Failure, List<NoteModel>>> getNotes({
-    required String userID,
-  }) async {
+  Future<Either<Failure, List<NoteModel>>> getNotes(
+      {required String userID, bool? isSecret}) async {
     final appwriteProvider = sl<AppwriteProvider>();
     final internetConnectionChecker = sl<InternetConnectionChecker>();
 
@@ -115,6 +114,7 @@ class NoteRepository extends INoteRepository {
                 collectionId: AppConstants.notesCollectionID,
                 queries: [
               Query.equal('userID', userID),
+              Query.equal('isSecret', isSecret),
               Query.orderDesc('dateModified'),
             ]);
         Map<String, dynamic> data = documents!.toMap();

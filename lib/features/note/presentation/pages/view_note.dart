@@ -28,14 +28,17 @@ class _ViewNoteState extends State<ViewNote> {
     super.initState();
     _quillController.document =
         Document.fromJson(jsonDecode(widget.note.formattedText!));
-    // _quillController.readOnly = true;
-    // _quillController.skipRequestKeyboard = true;
+
+    // Text to Speech Settings
+    pitch = context.read<VoicePitchCubit>().state / 100;
+    rate = context.read<VoiceRateCubit>().state / 100;
+    volume = context.read<VoiceVolumeCubit>().state / 100;
   }
 
   @override
   void dispose() {
     _editorFocusNode.dispose();
-    _editorScrollController.dispose();
+    _editorScrollController.keepScrollOffset;
     _quillController.dispose();
     super.dispose();
   }
@@ -44,12 +47,10 @@ class _ViewNoteState extends State<ViewNote> {
   final _editorFocusNode = AlwaysDisabledFocusNode();
   final _editorScrollController = ScrollController();
 
-  // final StorageService _storageService = StorageService();
-
   /// Text to Speech
-  double volume = 1.0;
-  double pitch = 1.0;
-  double rate = 0.5;
+  late double volume;
+  late double pitch;
+  late double rate;
 
   String? _voiceText;
   bool _playing = false;
@@ -135,45 +136,6 @@ class _ViewNoteState extends State<ViewNote> {
                     size: 30,
                   ),
                 ),
-          // Row(
-          //   children: [
-          //     IconButton(
-          //       onPressed: () {
-          //         setState(() {
-          //           context.read<NoteViewFontCubit>().decrement();
-          //         });
-          //       },
-          //       icon: Icon(
-          //         Icons.remove,
-          //         color: Color(
-          //           int.tryParse(widget.note.color!)!,
-          //         ),
-          //       ),
-          //     ),
-          //     Text(
-          //       context.read<NoteViewFontCubit>().state.toString(),
-          //       style: TextStyle(
-          //         fontWeight: FontWeight.bold,
-          //         color: Color(
-          //           int.tryParse(widget.note.color!)!,
-          //         ),
-          //       ),
-          //     ),
-          //     IconButton(
-          //       onPressed: () {
-          //         setState(() {
-          //           context.read<NoteViewFontCubit>().increment();
-          //         });
-          //       },
-          //       icon: Icon(
-          //         Icons.add,
-          //         color: Color(
-          //           int.tryParse(widget.note.color!)!,
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          // ),
           IconButton(
             padding: const EdgeInsets.only(right: 20),
             onPressed: () =>
@@ -232,7 +194,7 @@ class _ViewNoteState extends State<ViewNote> {
       ),
       body: GestureDetector(
         onTap: () => appSnackBar(
-            text: AppStrings.doubleTapDescription, context: context),
+            message: AppStrings.doubleTapDescription, context: context),
         onDoubleTap: () =>
             context.pushNamed(RouteNames.editNote, extra: widget.note),
         child: SingleChildScrollView(
@@ -254,7 +216,6 @@ class _ViewNoteState extends State<ViewNote> {
               AppGaps.v10,
               SizedBox(
                 width: MediaQuery.of(context).size.width,
-                // height: MediaQuery.of(context).size.height * .70,
                 child: QuillEditor.basic(
                   controller: _quillController,
                   focusNode: _editorFocusNode,

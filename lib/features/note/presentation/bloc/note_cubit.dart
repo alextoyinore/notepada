@@ -64,11 +64,12 @@ class NoteCubit extends Cubit<NoteState> {
     );
   }
 
-  void getNotes({required String userID}) async {
+  void getNotes({required String userID, bool? isSecret}) async {
     emit(NoteFetchLoading());
 
     final response = await _noteRepository.getNotes(
-        userID: _storageService.getValue('userID'));
+        userID: _storageService.getValue('userID'), isSecret: isSecret);
+
     response.fold(
       (error) => emit(NoteFetchError(error: error.message)),
       (notes) => emit(NoteFetchSuccess(notes: notes)),

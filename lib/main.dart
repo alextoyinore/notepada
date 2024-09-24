@@ -51,6 +51,9 @@ class App extends StatelessWidget {
         BlocProvider(create: (_) => NoteListFontCubit()),
         BlocProvider(create: (_) => NoteViewFontCubit()),
         BlocProvider(create: (_) => AuthCubit()),
+        BlocProvider(create: (_) => VoicePitchCubit()),
+        BlocProvider(create: (_) => VoiceRateCubit()),
+        BlocProvider(create: (_) => VoiceVolumeCubit()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, mode) => MaterialApp.router(

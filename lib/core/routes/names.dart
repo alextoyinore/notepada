@@ -9,4 +9,7 @@ class RouteNames {
   static const editNote = 'editNote';
   static const viewNote = 'viewNote';
   static const profile = 'profile';
+  static const changePassword = 'changePassword';
+  static const secretKey = 'secretKey';
+  static const secretNotes = 'secretNotes';
 }

@@ -8,6 +8,8 @@ import 'package:notepada/config/constants/constants.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/core/error/failure.dart';
 import 'package:notepada/core/error/server_exception.dart';
+import 'package:notepada/core/util/storage/storage_keys.dart';
+import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/auth/data/models/user.dart';
 import 'package:notepada/service_locator.dart';
 import 'package:notepada/features/auth/domain/repositories/iauth.dart';
@@ -15,6 +17,8 @@ import 'package:notepada/features/auth/domain/repositories/iauth.dart';
 class AuthRepository extends IAuthRepository {
   final _appwriteProvider = sl<AppwriteProvider>();
   final _internetConnectionChecker = sl<InternetConnectionChecker>();
+
+  final _storageService = StorageService();
 
   @override
   Future<Either<Failure, User>> register({
@@ -42,6 +46,58 @@ class AuthRepository extends IAuthRepository {
           },
         );
         return Right(user);
+      } else {
+        return Left(
+          Failure(message: AppStrings.noInternetConnection),
+        );
+      }
+    } on AppwriteException catch (e) {
+      return Left(Failure(message: e.message!));
+    } on ServerException catch (e) {
+      return Left(Failure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, User>> changePassword({
+    required String? oldPassword,
+    required String newPassword,
+  }) async {
+    try {
+      if (await _internetConnectionChecker.hasConnection) {
+        User user = await _appwriteProvider.account!.updatePassword(
+          password: newPassword,
+          oldPassword: oldPassword!,
+        );
+        return Right(user);
+      } else {
+        return Left(
+          Failure(message: AppStrings.noInternetConnection),
+        );
+      }
+    } on AppwriteException catch (e) {
+      return Left(Failure(message: e.message!));
+    } on ServerException catch (e) {
+      return Left(Failure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Document>> createSecretKeyPIN({
+    required String userID,
+    required String secretKeyPIN,
+  }) async {
+    try {
+      if (await _internetConnectionChecker.hasConnection) {
+        Document secretKey = await _appwriteProvider.database!.updateDocument(
+          databaseId: AppConstants.appwriteDatabaseID,
+          collectionId: AppConstants.usersCollectionID,
+          documentId: userID,
+          data: {
+            'secretKey': secretKeyPIN,
+          },
+        );
+        return Right(secretKey);
       } else {
         return Left(
           Failure(message: AppStrings.noInternetConnection),

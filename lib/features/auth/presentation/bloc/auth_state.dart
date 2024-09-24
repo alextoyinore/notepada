@@ -5,18 +5,6 @@ abstract class AuthState {}
 
 class AuthInitial extends AuthState {}
 
-class OAuthLoading extends AuthState {}
-
-class OAuthSuccess extends AuthState {
-  final User user;
-  OAuthSuccess({required this.user});
-}
-
-class OAuthError extends AuthState {
-  final String error;
-  OAuthError({required this.error});
-}
-
 // REGISTER STATES
 
 class RegisterLoading extends AuthState {}
@@ -63,6 +51,11 @@ class LoggingOut extends AuthState {}
 
 class OAuth2Loading extends AuthState {}
 
+class OAuth2Error extends AuthState {
+  final String error;
+  OAuth2Error({required this.error});
+}
+
 class OAuth2Success extends AuthState {
   final bool? success;
   OAuth2Success({this.success});
@@ -78,4 +71,28 @@ class RecoverPasswordError extends AuthState {
 class RecoverPasswordSuccess extends AuthState {
   final dynamic response;
   RecoverPasswordSuccess({this.response});
+}
+
+class ChangePasswordLoading extends AuthState {}
+
+class ChangePasswordError extends AuthState {
+  final String error;
+  ChangePasswordError({required this.error});
+}
+
+class ChangePasswordSuccess extends AuthState {
+  final dynamic response;
+  ChangePasswordSuccess({this.response});
+}
+
+class CreateSecretKeyLoading extends AuthState {}
+
+class CreateSecretKeyError extends AuthState {
+  final String error;
+  CreateSecretKeyError({required this.error});
+}
+
+class CreateSecretKeySuccess extends AuthState {
+  final dynamic response;
+  CreateSecretKeySuccess({this.response});
 }

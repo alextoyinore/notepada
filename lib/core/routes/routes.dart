@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/features/auth/presentation/pages/auth.dart';
+import 'package:notepada/features/auth/presentation/pages/change_password.dart';
 import 'package:notepada/features/auth/presentation/pages/recover_password.dart';
+import 'package:notepada/features/auth/presentation/pages/secret_key.dart';
 import 'package:notepada/features/home/presentation/pages/home.dart';
 import 'package:notepada/features/note/data/models/note.dart';
 import 'package:notepada/features/note/presentation/pages/edit.dart';
 import 'package:notepada/features/note/presentation/pages/view_note.dart';
 import 'package:notepada/features/auth/presentation/pages/profile.dart';
+import 'package:notepada/features/secret/presentation/secret_note.dart';
 import 'package:notepada/features/splash/presentation/pages/splash.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/features/auth/presentation/pages/login.dart';
@@ -46,11 +49,28 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const RecoverPassword(),
     ),
     GoRoute(
+      path: '/changePassword',
+      name: RouteNames.changePassword,
+      builder: (context, state) => const ChangePassword(),
+    ),
+    GoRoute(
       path: '/home',
       name: RouteNames.home,
       builder: (context, state) => Home(
         key: UniqueKey(),
       ),
+    ),
+    GoRoute(
+      path: '/secretNotes',
+      name: RouteNames.secretNotes,
+      builder: (context, state) => SecretNotes(
+        key: UniqueKey(),
+      ),
+    ),
+    GoRoute(
+      path: '/secretKey',
+      name: RouteNames.secretKey,
+      builder: (context, state) => const SecretKey(),
     ),
     GoRoute(
       path: '/editNote',

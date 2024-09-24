@@ -25,7 +25,8 @@ abstract class INoteRepository {
     required String dateModified,
   });
 
-  Future<Either<Failure, List<NoteModel>>> getNotes({required String userID});
+  Future<Either<Failure, List<NoteModel>>> getNotes(
+      {required String userID, bool? isSecret});
 
   Future<Either<Failure, dynamic>> deleteNote({
     required String documentID,

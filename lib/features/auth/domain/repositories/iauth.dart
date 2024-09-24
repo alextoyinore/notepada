@@ -12,6 +12,16 @@ abstract class IAuthRepository {
     required String password,
   });
 
+  Future<Either<Failure, Document>> createSecretKeyPIN({
+    required String userID,
+    required String secretKeyPIN,
+  });
+
+  Future<Either<Failure, User>> changePassword({
+    required String? oldPassword,
+    required String newPassword,
+  });
+
   Future<Either<Failure, Session>> login({
     required String email,
     required String password,
