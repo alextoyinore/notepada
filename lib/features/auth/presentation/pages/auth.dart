@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notepada/common/widgets/app_snack.dart';
 import 'package:notepada/common/widgets/app_toast.dart';
 import 'package:notepada/config/assets/images.dart';
 import 'package:notepada/config/assets/vectors.dart';
@@ -38,10 +39,10 @@ class _AuthState extends State<Auth> {
           if (state is OAuth2Success) {
             // _storageService.setValue(
             //     StorageKeys.userID, state.success.toString());
-            appToast(context: context, message: AppStrings.loginSuccess);
+            appSnackBar(context: context, message: AppStrings.loginSuccess);
             context.pushNamed(RouteNames.login);
           } else if (state is OAuth2Error) {
-            appToast(context: context, message: state.error);
+            appSnackBar(context: context, message: state.error);
           } else if (state is OAuth2Loading) {
             const Center(
               child: Column(

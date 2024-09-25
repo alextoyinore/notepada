@@ -65,7 +65,7 @@ class _SecretNotesState extends State<SecretNotes> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-              width: 350,
+              width: MediaQuery.of(context).size.width * .8,
               child: TextField(
                 decoration: Theme.of(context).brightness == Brightness.dark
                     ? AppStyles.darkTextFieldThemeBorderless.copyWith(
@@ -151,7 +151,7 @@ class _SecretNotesState extends State<SecretNotes> {
                               .read<NoteCubit>()
                               .getNotes(userID: userID, isSecret: true);
                         },
-                        child: const Text(AppStrings.tryAgain),
+                        child: const Text(AppStrings.refresh),
                       ),
                     ],
                   ),
@@ -166,7 +166,9 @@ class _SecretNotesState extends State<SecretNotes> {
                 color: AppColors.primary,
                 onRefresh: () async {
                   setState(() {
-                    context.read<NoteCubit>().getNotes(userID: userID);
+                    context
+                        .read<NoteCubit>()
+                        .getNotes(userID: userID, isSecret: true);
                   });
                 },
                 child: Center(
@@ -200,7 +202,9 @@ class _SecretNotesState extends State<SecretNotes> {
                 color: AppColors.primary,
                 onRefresh: () async {
                   setState(() {
-                    context.read<NoteCubit>().getNotes(userID: userID);
+                    context
+                        .read<NoteCubit>()
+                        .getNotes(userID: userID, isSecret: true);
                   });
                 },
                 child: ListView.builder(
@@ -244,9 +248,8 @@ class _SecretNotesState extends State<SecretNotes> {
                                       message: AppStrings.deleted,
                                       context: context);
                                   setState(() {
-                                    context
-                                        .read<NoteCubit>()
-                                        .getNotes(userID: userID);
+                                    context.read<NoteCubit>().getNotes(
+                                        userID: userID, isSecret: true);
                                   });
                                 });
                             return null;
@@ -332,7 +335,8 @@ class _SecretNotesState extends State<SecretNotes> {
                                       ),
                                 AppGaps.v10,
                                 Text(
-                                  state.notes[index].date.toString(),
+                                  toHumanReadableDate(
+                                      state.notes[index].date.toString()),
                                   style: TextStyle(
                                     color: state.notes[index].color != null
                                         ? Color(

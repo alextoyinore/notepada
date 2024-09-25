@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+import 'package:intl/intl.dart';
+import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 
 /// Darken a color by [percent] amount (100 = black)
 
@@ -37,4 +41,26 @@ class FirstTapDisableFocusNode extends FocusNode {
 class AlwaysDisabledFocusNode extends FocusNode {
   @override
   bool get hasFocus => false;
+}
+
+String toHumanReadableDate(String isoString) {
+  DateTime dateTime = DateTime.parse(isoString);
+  // Format date
+  String formattedDate = DateFormat.yMMMd().add_jm().format(dateTime);
+  return formattedDate;
+}
+
+final FlutterTts flutterTts = FlutterTts();
+
+Future<void> ttsSpeak(
+    {required String text, required BuildContext context}) async {
+  await flutterTts.setLanguage('en-US');
+  await flutterTts.setVolume(context.read<VoiceVolumeCubit>().state / 100);
+  await flutterTts.setSpeechRate(context.read<VoiceRateCubit>().state / 100);
+  await flutterTts.setPitch(context.read<VoicePitchCubit>().state / 100);
+  await flutterTts.speak(text);
+}
+
+Future<void> ttsStop() async {
+  await flutterTts.stop();
 }

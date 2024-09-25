@@ -106,7 +106,7 @@ class _ViewNoteState extends State<ViewNote> {
         ),
         leading: IconButton(
           padding: const EdgeInsets.only(left: 20),
-          onPressed: () => context.pushNamed(RouteNames.home),
+          onPressed: () => context.pop(),
           icon: Icon(
             Icons.arrow_back_ios,
             color: Color(

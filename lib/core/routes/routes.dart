@@ -4,12 +4,15 @@ import 'package:notepada/features/auth/presentation/pages/auth.dart';
 import 'package:notepada/features/auth/presentation/pages/change_password.dart';
 import 'package:notepada/features/auth/presentation/pages/recover_password.dart';
 import 'package:notepada/features/auth/presentation/pages/secret_key.dart';
+import 'package:notepada/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:notepada/features/favourites/presentation/pages/favourite.dart';
 import 'package:notepada/features/home/presentation/pages/home.dart';
+import 'package:notepada/features/listen/presentation/listen.dart';
 import 'package:notepada/features/note/data/models/note.dart';
 import 'package:notepada/features/note/presentation/pages/edit.dart';
 import 'package:notepada/features/note/presentation/pages/view_note.dart';
 import 'package:notepada/features/auth/presentation/pages/profile.dart';
-import 'package:notepada/features/secret/presentation/secret_note.dart';
+import 'package:notepada/features/secret/presentation/pages/secret_note.dart';
 import 'package:notepada/features/splash/presentation/pages/splash.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/features/auth/presentation/pages/login.dart';
@@ -54,11 +57,16 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const ChangePassword(),
     ),
     GoRoute(
-      path: '/home',
-      name: RouteNames.home,
-      builder: (context, state) => Home(
-        key: UniqueKey(),
-      ),
+      path: '/dashboard',
+      name: RouteNames.dashboard,
+      builder: (context, state) => Dashboard(),
+    ),
+    GoRoute(
+      path: '/notes',
+      name: RouteNames.notes,
+      builder: (context, state) => Notes(
+          // key: UniqueKey(),
+          ),
     ),
     GoRoute(
       path: '/secretNotes',
@@ -90,6 +98,16 @@ final GoRouter router = GoRouter(
       path: '/profile',
       name: RouteNames.profile,
       builder: (context, state) => const Profile(),
+    ),
+    GoRoute(
+      path: '/favourites',
+      name: RouteNames.favourites,
+      builder: (context, state) => const Favourites(),
+    ),
+    GoRoute(
+      path: '/listen',
+      name: RouteNames.listen,
+      builder: (context, state) => const Listen(),
     ),
   ],
 );

@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notepada/common/bloc/dash/dash_cubit.dart';
 import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 import 'package:notepada/common/widgets/app_snack.dart';
-import 'package:notepada/common/widgets/app_toast.dart';
 import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/config/theme/styles.dart';
 
@@ -309,13 +308,14 @@ class _EditNoteState extends State<EditNote> {
               setState(() {
                 _sendingData = false;
               });
-              fToast.showToast(child: Text(state.error));
+              appSnackBar(context: context, message: state.error);
             } else if (state is NoteNewEditDeleteSuccess) {
               setState(() {
                 _sendingData = false;
               }); // Remove circular progress indicator
-              appToast(context: context, message: AppStrings.noteSaved);
-              context.goNamed(RouteNames.home);
+              appSnackBar(context: context, message: AppStrings.noteSaved);
+              context.read<DashBoardCubit>().updateSelectedIndex(0);
+              context.goNamed(RouteNames.dashboard);
             }
           },
           builder: (context, state) => Stack(

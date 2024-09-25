@@ -12,4 +12,8 @@ class RouteNames {
   static const changePassword = 'changePassword';
   static const secretKey = 'secretKey';
   static const secretNotes = 'secretNotes';
+  static const dashboard = 'dashboard';
+  static const notes = 'notes';
+  static const favourites = 'favourites';
+  static const listen = 'listen';
 }

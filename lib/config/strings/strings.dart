@@ -115,4 +115,10 @@ class AppStrings {
   static const volume = 'Volume';
   static const tryAgain = 'Try Again';
   static const speakDescription = 'Spoken words will appear here';
+  static const star = 'Star';
+  static const download = 'Download';
+  static const share = 'Share';
+  static const listen = 'Listen';
+  static const edit = 'Edit';
+  static const addToVN = 'Add to VN';
 }

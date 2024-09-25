@@ -1,8 +1,6 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
-import 'package:notepada/common/widgets/app_toast.dart';
+import 'package:notepada/common/widgets/app_snack.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:notepada/config/theme/styles.dart';
@@ -40,12 +38,9 @@ class _ChangePasswordState extends State<ChangePassword> {
     super.dispose();
   }
 
-  FToast fToast = FToast();
-
   @override
   void initState() {
     super.initState();
-    fToast.init(context);
   }
 
   @override
@@ -77,9 +72,7 @@ class _ChangePasswordState extends State<ChangePassword> {
             setState(() {
               _sendingData = false;
             });
-            fToast.showToast(
-              child: Text(state.error),
-            );
+            appSnackBar(context: context, message: state.error);
           } else if (state is ChangePasswordSuccess) {
             // Remove circular progress indicator
             setState(() {
@@ -91,7 +84,7 @@ class _ChangePasswordState extends State<ChangePassword> {
             _storageService.clear(StorageKeys.userID);
 
             // Show toast message
-            appToast(context: context, message: AppStrings.passwordChanged);
+            appSnackBar(context: context, message: AppStrings.passwordChanged);
 
             // Logout the user
             context.read<AuthCubit>().logout();

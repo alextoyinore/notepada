@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 import 'package:notepada/common/bloc/theme/theme_cubit.dart';
 import 'package:notepada/common/widgets/app_alert.dart';
-import 'package:notepada/common/widgets/app_snack.dart';
 import 'package:notepada/common/widgets/single_digit_field.dart';
 import 'package:notepada/config/assets/images.dart';
 import 'package:notepada/config/assets/vectors.dart';
@@ -58,20 +56,6 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        titleSpacing: 0,
-        leading: IconButton(
-          padding: const EdgeInsets.only(left: 20),
-          onPressed: () => context.goNamed(RouteNames.home),
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? AppColors.grey
-                : AppColors.darkGrey,
-          ),
-        ),
-      ),
       body: BlocProvider(
         create: (context) => AuthCubit()..getUser(userID: userID),
         child: BlocBuilder<AuthCubit, AuthState>(
@@ -127,6 +111,13 @@ class _ProfileState extends State<Profile> {
                         ),
                         textAlign: TextAlign.center,
                       ),
+                      // AppGaps.v10,
+                      TextButton(
+                        child: const Text(AppStrings.tryAgain),
+                        onPressed: () {
+                          context.read<AuthCubit>().getUser(userID: userID);
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -164,18 +155,17 @@ class _ProfileState extends State<Profile> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    AppGaps.v10,
-
+                    AppGaps.v50,
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: _currentColor.withOpacity(.1),
+                        color: AppColors.primary.withOpacity(.1),
                         shape: BoxShape.circle,
                       ),
                       child: SvgPicture.asset(
                         AppVectors.profile,
-                        colorFilter: ColorFilter.mode(
-                          _currentColor,
+                        colorFilter: const ColorFilter.mode(
+                          AppColors.primary,
                           BlendMode.srcATop,
                         ),
                         height: 50,
@@ -226,7 +216,7 @@ class _ProfileState extends State<Profile> {
                                     shape: BoxShape.circle,
                                     color: context.read<ThemeCubit>().state ==
                                             ThemeMode.light
-                                        ? _currentColor
+                                        ? AppColors.primary
                                         : AppColors.grey.withOpacity(.2),
                                   ),
                                   child: Icon(
@@ -259,7 +249,7 @@ class _ProfileState extends State<Profile> {
                                     shape: BoxShape.circle,
                                     color: context.read<ThemeCubit>().state ==
                                             ThemeMode.dark
-                                        ? _currentColor
+                                        ? AppColors.primary
                                         : AppColors.grey.withOpacity(.2),
                                   ),
                                   child: Icon(
@@ -292,7 +282,7 @@ class _ProfileState extends State<Profile> {
                                     shape: BoxShape.circle,
                                     color: context.read<ThemeCubit>().state ==
                                             ThemeMode.system
-                                        ? _currentColor
+                                        ? AppColors.primary
                                         : AppColors.grey.withOpacity(.2),
                                   ),
                                   child: Icon(

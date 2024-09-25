@@ -31,6 +31,8 @@
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>Require permission to record audio for speech to text conversion</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Require permission to record audio for speech to text conversion</string>
+	<string>Require permission to record audio and use recorded audio for speech to text conversion</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Require permission to use bluetooth for audio output</string>
 </dict>
 </plist>

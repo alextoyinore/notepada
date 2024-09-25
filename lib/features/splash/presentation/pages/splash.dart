@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notepada/common/bloc/dash/dash_cubit.dart';
 import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/core/util/storage/storage_keys.dart';
@@ -51,7 +52,8 @@ class _SplashState extends State<Splash> {
       body: BlocConsumer<SplashCubit, SplashState>(
         listener: (context, state) {
           if (state is SplashSuccess) {
-            context.goNamed(RouteNames.home);
+            context.read<DashBoardCubit>().updateSelectedIndex(2);
+            context.goNamed(RouteNames.dashboard);
           } else if (state is SplashError) {
             final storedUserID = _storageService.getValue(StorageKeys.userID);
             if (storedUserID == null) {

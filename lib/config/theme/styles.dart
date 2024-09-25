@@ -163,6 +163,8 @@ class AppStyles {
       fontWeight: FontWeight.w500,
     ),
   );
+
+  static body1(BuildContext context) {}
 }
 
 class AppGaps {
@@ -175,6 +177,7 @@ class AppGaps {
   static const v50 = SizedBox(height: 50);
 
   static const h0 = SizedBox(width: 0);
+  static const h5 = SizedBox(width: 5);
   static const h10 = SizedBox(width: 10);
   static const h15 = SizedBox(width: 15);
   static const h20 = SizedBox(width: 20);
