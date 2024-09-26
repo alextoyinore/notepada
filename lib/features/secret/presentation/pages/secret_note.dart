@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:notepada/common/bloc/dash/dash_cubit.dart';
 import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 import 'package:notepada/common/helpers/helpers.dart';
 import 'package:notepada/common/widgets/app_alert.dart';
 import 'package:notepada/common/widgets/app_snack.dart';
+import 'package:notepada/common/widgets/appbar.dart';
 import 'package:notepada/config/assets/images.dart';
 import 'package:notepada/config/assets/vectors.dart';
 import 'package:notepada/config/strings/strings.dart';
@@ -17,6 +19,7 @@ import 'package:notepada/config/theme/styles.dart';
 import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/core/util/storage/storage_keys.dart';
 import 'package:notepada/core/util/storage/storage_service.dart';
+import 'package:notepada/features/note/presentation/widgets/note_list_item.dart';
 import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
 import 'package:notepada/features/note/presentation/bloc/note_state.dart';
 
@@ -45,49 +48,18 @@ class _SecretNotesState extends State<SecretNotes> {
         int.tryParse(_storageService.getValue(StorageKeys.defaultColor)!)!);
   }
 
+  final _searchController = TextEditingController();
+
+  bool playing = false;
+  int playingIndex = -1;
+
+  bool isFavourite = false;
+  int favouriteIndex = -1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        flexibleSpace: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
-          ),
-        ),
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          onPressed: () {
-            context.pop();
-          },
-          icon: const Icon(Icons.arrow_back_ios_new),
-        ),
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * .8,
-              child: TextField(
-                decoration: Theme.of(context).brightness == Brightness.dark
-                    ? AppStyles.darkTextFieldThemeBorderless.copyWith(
-                        hintText: '${AppStrings.search} ${AppStrings.notes}',
-                        hintStyle: const TextStyle(color: AppColors.midGrey),
-                        suffixIcon: const Icon(
-                          Icons.search,
-                          color: AppColors.midGrey,
-                        ))
-                    : AppStyles.lightTextFieldThemeBorderless.copyWith(
-                        hintText: '${AppStrings.search} ${AppStrings.notes}',
-                        hintStyle: const TextStyle(color: AppColors.grey),
-                        suffixIcon: const Icon(
-                          Icons.search,
-                          color: AppColors.grey,
-                        )),
-              ),
-            ),
-          ],
-        ),
-        // actions: [],
-      ),
+      appBar: appBar(context: context, searchController: _searchController),
       body: BlocBuilder<NoteCubit, NoteState>(
         builder: (context, state) {
           if (state is NoteFetchLoading) {
@@ -208,149 +180,83 @@ class _SecretNotesState extends State<SecretNotes> {
                   });
                 },
                 child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   physics: const AlwaysScrollableScrollPhysics(),
                   itemBuilder: (_, index) {
-                    return GestureDetector(
-                      onTap: () => context.pushNamed(
+                    return NoteListItem(
+                      view: () => context.pushNamed(
                         RouteNames.viewNote,
                         extra: state.notes[index],
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Dismissible(
-                          key: UniqueKey(),
-                          background: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.primary,
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            alignment: Alignment.centerRight,
-                            padding: const EdgeInsets.only(right: 20),
-                            child: const Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                              size: 36,
-                            ),
-                          ),
-                          // secondaryBackground: const Icon(
-                          //   Icons.delete,
-                          //   color: AppColors.primary,
-                          // ),
-                          confirmDismiss: (DismissDirection direction) async {
-                            appAlert(
-                                context: context,
-                                title: AppStrings.delete,
-                                message: AppStrings.deleteDescription,
-                                continue_: () {
-                                  context.read<NoteCubit>().deleteNote(
-                                      documentID: state.notes[index].id);
-                                  appSnackBar(
-                                      message: AppStrings.deleted,
-                                      context: context);
-                                  setState(() {
-                                    context.read<NoteCubit>().getNotes(
-                                        userID: userID, isSecret: true);
-                                  });
-                                });
-                            return null;
+                      isFavourite: isFavourite,
+                      isFavouriteIndex: favouriteIndex,
+                      context: context,
+                      note: state.notes[index],
+                      index: index,
+                      listFontSize: _listFontSize,
+                      playing: playing,
+                      playingIndex: playingIndex,
+                      addToVN: () {},
+                      play: () {
+                        ttsSpeak(
+                            text: state.notes[index].plainText!,
+                            context: context);
+                        setState(() {
+                          playing = true;
+                          playingIndex = index;
+                        });
+                      },
+                      stop: () {
+                        ttsStop();
+                        setState(() {
+                          playing = false;
+                          playingIndex = -1;
+                        });
+                      },
+                      favourite: () {
+                        context.read<NoteCubit>().editNote(
+                            documentID: state.notes[index].id,
+                            title: state.notes[index].title,
+                            formattedText: state.notes[index].formattedText,
+                            plainText: state.notes[index].plainText,
+                            color: state.notes[index].color,
+                            isSecret: state.notes[index].isSecret,
+                            isFavourite:
+                                state.notes[index].isFavourite == null ||
+                                        state.notes[index].isFavourite == false
+                                    ? true
+                                    : false,
+                            dateModified: DateTime.now().toString());
+                        context.read<DashBoardCubit>().updateSelectedIndex(0);
+                        context.pushNamed(RouteNames.secretNotes);
+                      },
+                      edit: () {
+                        context.pushNamed(
+                          RouteNames.editNote,
+                          extra: state.notes[index],
+                        );
+                      },
+                      delete: () {
+                        appAlert(
+                          context: context,
+                          title: AppStrings.delete,
+                          message: AppStrings.deleteDescription,
+                          continue_: () {
+                            context
+                                .read<NoteCubit>()
+                                .deleteNote(documentID: state.notes[index].id);
+                            appSnackBar(
+                                message: AppStrings.deleted, context: context);
+                            setState(
+                              () {
+                                context
+                                    .read<NoteCubit>()
+                                    .getNotes(userID: userID);
+                              },
+                            );
                           },
-                          onDismissed: (DismissDirection direction) async {},
-                          onResize: () {},
-                          direction: DismissDirection.endToStart,
-                          dragStartBehavior: DragStartBehavior.start,
-
-                          // Note List Container Widget
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 15,
-                              horizontal: 20,
-                            ),
-                            margin: const EdgeInsets.only(bottom: 15),
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                              color: state.notes[index].color != null
-                                  ? Color(int.tryParse(
-                                          state.notes[index].color!)!)
-                                      .withOpacity(.1)
-                                  : AppColors.grey,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  state.notes[index].title,
-                                  style: AppStyles.noteListHeaderStyle.copyWith(
-                                      fontSize: (_listFontSize * 1.25),
-                                      color: state.notes[index].color != null
-                                          ? darken(Color(int.tryParse(
-                                              state.notes[index].color!)!))
-                                          : AppColors.darkGrey),
-                                ),
-                                state.notes[index].plainText! != ''
-                                    ? state.notes[index].plainText!.length >= 61
-                                        ? Column(
-                                            children: [
-                                              AppGaps.v10,
-                                              Text(
-                                                '${state.notes[index].plainText!.substring(0, 60)}...',
-                                                style: TextStyle(
-                                                  fontSize: _listFontSize,
-                                                  color: state.notes[index]
-                                                              .color !=
-                                                          null
-                                                      ? darken(
-                                                          Color(int.tryParse(
-                                                              state.notes[index]
-                                                                  .color!)!),
-                                                        )
-                                                      : AppColors.darkGrey,
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        : Column(
-                                            children: [
-                                              AppGaps.v10,
-                                              Text(
-                                                state.notes[index].plainText!,
-                                                style: TextStyle(
-                                                  fontSize: _listFontSize,
-                                                  color: state.notes[index]
-                                                              .color !=
-                                                          null
-                                                      ? darken(Color(
-                                                          int.tryParse(state
-                                                              .notes[index]
-                                                              .color!)!,
-                                                        ))
-                                                      : AppColors.darkGrey,
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                    : const SizedBox(
-                                        width: 0,
-                                        height: 0,
-                                      ),
-                                AppGaps.v10,
-                                Text(
-                                  toHumanReadableDate(
-                                      state.notes[index].date.toString()),
-                                  style: TextStyle(
-                                    color: state.notes[index].color != null
-                                        ? Color(
-                                            int.tryParse(
-                                                state.notes[index].color!)!,
-                                          ).withOpacity(.5)
-                                        : AppColors.midGrey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                        );
+                      },
                     );
                   },
                   itemCount: state.notes.length,
@@ -360,21 +266,6 @@ class _SecretNotesState extends State<SecretNotes> {
           }
           return const SizedBox();
         },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: Padding(
-        padding: EdgeInsets.zero,
-        child: FloatingActionButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50),
-          ),
-          onPressed: () {
-            context.pushNamed(RouteNames.editNote);
-          },
-          child: const Icon(
-            Icons.mode_edit_outline_outlined,
-          ),
-        ),
       ),
     );
   }

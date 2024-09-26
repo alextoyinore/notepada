@@ -17,6 +17,7 @@ class NoteCubit extends Cubit<NoteState> {
     String? plainText,
     String? color,
     bool? isSecret,
+    bool? isFavourite,
   }) async {
     emit(NoteNewEditDeleteLoading());
 
@@ -31,7 +32,8 @@ class NoteCubit extends Cubit<NoteState> {
           formattedText: formattedText,
           color: color,
           plainText: plainText,
-          isSecret: isSecret);
+          isSecret: isSecret,
+          isFavourite: isFavourite);
       response.fold(
         (error) => emit(NoteNewEditDeleteError(error: error.message)),
         (note) => emit(NoteNewEditDeleteSuccess(note: note)),
@@ -46,6 +48,7 @@ class NoteCubit extends Cubit<NoteState> {
     String? color,
     String? plainText,
     bool? isSecret,
+    bool? isFavourite,
     required String dateModified,
   }) async {
     emit(NoteNewEditDeleteLoading());
@@ -57,6 +60,7 @@ class NoteCubit extends Cubit<NoteState> {
       isSecret: isSecret,
       dateModified: dateModified,
       documentID: documentID,
+      isFavourite: isFavourite,
     );
     response.fold(
       (error) => emit(NoteNewEditDeleteError(error: error.message)),

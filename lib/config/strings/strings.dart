@@ -50,6 +50,7 @@ class AppStrings {
   static const system = 'System';
   static const notes = 'Notes';
   static const noteSaved = 'Your note has been saved successfully.';
+  static const noteUpdated = 'Your note has been updated successfully.';
   static const gettingNotes = 'Getting your notes...';
   static const getNoteError =
       'We are having trouble getting your notes.\nTry closing and reopening the app. Thank you!';

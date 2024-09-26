@@ -10,7 +10,7 @@ import 'package:notepada/features/auth/presentation/pages/profile.dart';
 import 'package:notepada/features/dashboard/presentation/pages/dash_content.dart';
 import 'package:notepada/features/favourites/presentation/pages/favourite.dart';
 import 'package:notepada/features/home/presentation/pages/home.dart';
-import 'package:notepada/features/listen/presentation/listen.dart';
+import 'package:notepada/features/listen/presentation/pages/listen.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});

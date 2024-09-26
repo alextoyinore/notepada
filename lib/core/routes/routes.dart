@@ -7,7 +7,7 @@ import 'package:notepada/features/auth/presentation/pages/secret_key.dart';
 import 'package:notepada/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:notepada/features/favourites/presentation/pages/favourite.dart';
 import 'package:notepada/features/home/presentation/pages/home.dart';
-import 'package:notepada/features/listen/presentation/listen.dart';
+import 'package:notepada/features/listen/presentation/pages/listen.dart';
 import 'package:notepada/features/note/data/models/note.dart';
 import 'package:notepada/features/note/presentation/pages/edit.dart';
 import 'package:notepada/features/note/presentation/pages/view_note.dart';
@@ -65,8 +65,8 @@ final GoRouter router = GoRouter(
       path: '/notes',
       name: RouteNames.notes,
       builder: (context, state) => Notes(
-          // key: UniqueKey(),
-          ),
+        key: UniqueKey(),
+      ),
     ),
     GoRoute(
       path: '/secretNotes',

@@ -10,6 +10,7 @@ class NoteModel {
   String date;
   String dateModified;
   bool? isSecret;
+  bool? isFavourite;
 
   NoteModel({
     required this.id,
@@ -21,6 +22,7 @@ class NoteModel {
     this.formattedText,
     this.plainText,
     this.isSecret,
+    this.isFavourite,
   });
 
   NoteModel copyWith({
@@ -33,6 +35,7 @@ class NoteModel {
     String? date,
     String? dateModified,
     String? title,
+    bool? isFavourite,
   }) {
     return NoteModel(
       id: id ?? this.id,
@@ -44,6 +47,7 @@ class NoteModel {
       isSecret: isSecret ?? this.isSecret,
       date: date ?? this.date,
       dateModified: dateModified ?? this.dateModified,
+      isFavourite: isFavourite ?? this.isFavourite,
     );
   }
 
@@ -58,6 +62,7 @@ class NoteModel {
       'plainText': plainText,
       'date': date,
       'dateModified': dateModified,
+      'isFavourite': isFavourite,
     };
   }
 
@@ -73,6 +78,8 @@ class NoteModel {
       plainText: map['plainText'] != null ? map['plainText'] as String : '',
       date: map['date'] as String,
       dateModified: map['dateModified'] as String,
+      isFavourite:
+          map['isFavourite'] != null ? map['isFavourite'] as bool : false,
     );
   }
 

@@ -96,11 +96,9 @@ class _ViewNoteState extends State<ViewNote> {
         automaticallyImplyLeading: false,
         title: Text(
           widget.note.title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 13,
-            color: Color(
-              int.tryParse(widget.note.color!)!,
-            ),
+            color: AppColors.primary,
           ),
           softWrap: true,
         ),
@@ -109,30 +107,24 @@ class _ViewNoteState extends State<ViewNote> {
           onPressed: () => context.pop(),
           icon: Icon(
             Icons.arrow_back_ios,
-            color: Color(
-              int.tryParse(widget.note.color!)!,
-            ).withOpacity(.7),
+            color: AppColors.primary.withOpacity(.7),
           ),
         ),
         actions: [
           !_playing
               ? IconButton(
                   onPressed: _speak,
-                  icon: Icon(
-                    Icons.play_circle_outline,
-                    size: 25,
-                    color: Color(
-                      int.tryParse(widget.note.color!)!,
-                    ),
+                  icon: const Icon(
+                    Icons.play_arrow_outlined,
+                    size: 30,
+                    color: AppColors.primary,
                   ),
                 )
               : IconButton(
                   onPressed: _stop,
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.stop_circle,
-                    color: Color(
-                      int.tryParse(widget.note.color!)!,
-                    ),
+                    color: AppColors.primary,
                     size: 30,
                   ),
                 ),
@@ -140,11 +132,9 @@ class _ViewNoteState extends State<ViewNote> {
             padding: const EdgeInsets.only(right: 20),
             onPressed: () =>
                 context.pushNamed(RouteNames.editNote, extra: widget.note),
-            icon: Icon(
+            icon: const Icon(
               Icons.edit_outlined,
-              color: Color(
-                int.tryParse(widget.note.color!)!,
-              ),
+              color: AppColors.primary,
               size: 20,
             ),
           ),
@@ -182,11 +172,9 @@ class _ViewNoteState extends State<ViewNote> {
                 ],
               ),
             ),
-            icon: Icon(
+            icon: const Icon(
               Icons.delete,
-              color: Color(
-                int.tryParse(widget.note.color!)!,
-              ),
+              color: AppColors.primary,
               size: 20,
             ),
           ),
@@ -209,7 +197,7 @@ class _ViewNoteState extends State<ViewNote> {
                       (context.read<NoteViewFontCubit>().state.toDouble() * 2),
                   fontWeight: FontWeight.w500,
                   color: Theme.of(context).brightness == Brightness.dark
-                      ? Color(int.tryParse(widget.note.color!)!)
+                      ? AppColors.primary
                       : AppColors.darkGrey,
                 ),
               ),

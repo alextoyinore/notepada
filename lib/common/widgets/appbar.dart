@@ -8,8 +8,11 @@ import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/core/routes/names.dart';
 
-PreferredSizeWidget appBar(String? title, BuildContext context,
-    TextEditingController searchController) {
+PreferredSizeWidget appBar({
+  String? title,
+  required BuildContext context,
+  required TextEditingController searchController,
+}) {
   return AppBar(
     flexibleSpace: ClipRect(
       child: BackdropFilter(
@@ -52,7 +55,7 @@ PreferredSizeWidget appBar(String? title, BuildContext context,
             elevation: const WidgetStatePropertyAll(0),
             backgroundColor: WidgetStatePropertyAll(
               Theme.of(context).brightness == Brightness.dark
-                  ? AppColors.darkGrey
+                  ? AppColors.darkGrey.withOpacity(.5)
                   : AppColors.grey.withOpacity(.1),
             ),
             shape: const WidgetStatePropertyAll(
@@ -66,7 +69,7 @@ PreferredSizeWidget appBar(String? title, BuildContext context,
             hintText: '${AppStrings.search} ${AppStrings.appName}',
             hintStyle: const WidgetStatePropertyAll(
               TextStyle(
-                color: AppColors.grey,
+                color: AppColors.midGrey,
               ),
             ),
           ),
@@ -75,10 +78,12 @@ PreferredSizeWidget appBar(String? title, BuildContext context,
     ),
     actions: [
       IconButton(
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(RouteNames.editNote);
+        },
         icon: const Icon(
-          Icons.more_vert,
-          color: AppColors.darkGrey,
+          Icons.add,
+          color: AppColors.primary,
         ),
       )
     ],

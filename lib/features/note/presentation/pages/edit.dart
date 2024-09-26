@@ -208,7 +208,7 @@ class _EditNoteState extends State<EditNote> {
                       });
                     },
                     icon: const Icon(
-                      Icons.lock,
+                      Icons.lock_open,
                       size: 25,
                       color: AppColors.midGrey,
                     ))

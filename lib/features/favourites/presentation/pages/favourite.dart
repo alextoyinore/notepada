@@ -14,7 +14,7 @@ class _FavouritesState extends State<Favourites> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(null, context, _searchController),
+      appBar: appBar(context: context, searchController: _searchController),
       body: Center(
         child: Text('Favourites'),
       ),

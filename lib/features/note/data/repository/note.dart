@@ -20,6 +20,7 @@ class NoteRepository extends INoteRepository {
     String? formattedText,
     String? plainText,
     bool? isSecret,
+    bool? isFavourite,
     required String date,
     required String dateModified,
   }) async {
@@ -42,6 +43,7 @@ class NoteRepository extends INoteRepository {
             'color': color,
             'plainText': plainText,
             'isSecret': isSecret,
+            'isFavourite': isFavourite,
             'date': date,
             'dateModified': dateModified,
           },
@@ -67,6 +69,7 @@ class NoteRepository extends INoteRepository {
     String? color,
     String? plainText,
     bool? isSecret,
+    bool? isFavourite,
     required String dateModified,
   }) async {
     final appwriteProvider = sl<AppwriteProvider>();
@@ -84,6 +87,7 @@ class NoteRepository extends INoteRepository {
             'color': color,
             'plainText': plainText,
             'isSecret': isSecret,
+            'isFavourite': isFavourite,
             'dateModified': dateModified,
           },
         );
@@ -150,6 +154,39 @@ class NoteRepository extends INoteRepository {
         );
 
         return const Right(1);
+      } else {
+        return Left(
+          Failure(message: AppStrings.noInternetConnection),
+        );
+      }
+    } on AppwriteException catch (e) {
+      return Left(Failure(message: e.message!));
+    } on ServerException catch (e) {
+      return Left(Failure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, dynamic>> updateFavourite({
+    required String documentID,
+    required bool isFavourite,
+    required String dateModified,
+  }) async {
+    final appwriteProvider = sl<AppwriteProvider>();
+    final internetConnectionChecker = sl<InternetConnectionChecker>();
+
+    try {
+      if (await internetConnectionChecker.hasConnection) {
+        Document? document = await appwriteProvider.database?.updateDocument(
+          databaseId: AppConstants.appwriteDatabaseID,
+          collectionId: AppConstants.notesCollectionID,
+          documentId: documentID,
+          data: {
+            'isFavourite': isFavourite,
+            'dateModified': dateModified,
+          },
+        );
+        return Right(document!);
       } else {
         return Left(
           Failure(message: AppStrings.noInternetConnection),

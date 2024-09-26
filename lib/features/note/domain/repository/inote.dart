@@ -11,6 +11,7 @@ abstract class INoteRepository {
     required String color,
     required String plainText,
     required bool isSecret,
+    required bool isFavourite,
     required String date,
     required String dateModified,
   });
@@ -22,11 +23,18 @@ abstract class INoteRepository {
     required String color,
     required String plainText,
     required bool isSecret,
+    required bool isFavourite,
     required String dateModified,
   });
 
   Future<Either<Failure, List<NoteModel>>> getNotes(
       {required String userID, bool? isSecret});
+
+  Future<Either<Failure, dynamic>> updateFavourite({
+    required String documentID,
+    required bool isFavourite,
+    required String dateModified,
+  });
 
   Future<Either<Failure, dynamic>> deleteNote({
     required String documentID,
