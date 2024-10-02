@@ -42,10 +42,14 @@ class AuthRepository extends IAuthRepository {
             'email': email,
             'firstName': firstName,
             'lastName': lastName,
-            'fullName': user.name,
+            'fullName': '$firstName $lastName',
           },
         );
-        return Right(user);
+        _storageService.setValue(StorageKeys.userID, user.$id);
+        _storageService.setValue(StorageKeys.email, user.email);
+        _storageService.setValue(StorageKeys.firstName, firstName);
+        _storageService.setValue(StorageKeys.lastName, lastName);
+              return Right(user);
       } else {
         return Left(
           Failure(message: AppStrings.noInternetConnection),
@@ -206,23 +210,29 @@ class AuthRepository extends IAuthRepository {
         await _appwriteProvider.account!
             .createOAuth2Session(provider: provider);
 
-        Future<Session> session =
-            _appwriteProvider.account!.getSession(sessionId: 'current');
+        User user = await _appwriteProvider.account!.get();
 
-        // await _appwriteProvider.database?.createDocument(
-        //   databaseId: AppConstants.appwriteDatabaseID,
-        //   collectionId: AppConstants.usersCollectionID,
-        //   documentId: user.$id,
-        //   data: {
-        //     'id': user.$id,
-        //     'email': user.email,
-        //     'firstName': user.name.split(' ')[0],
-        //     'lastName': user.name.split(' ')[1],
-        //     'fullName': user.name,
-        //   },
-        // );
+        await _appwriteProvider.database?.createDocument(
+          databaseId: AppConstants.appwriteDatabaseID,
+          collectionId: AppConstants.usersCollectionID,
+          documentId: user.$id,
+          data: {
+            'id': user.$id,
+            'email': user.email,
+            'firstName': user.name.split(' ')[0] ?? '',
+            'lastName': user.name.split(' ')[1] ?? '',
+            'fullName': user.name ?? '',
+          },
+        );
 
-        return const Right(1);
+        _storageService.setValue(StorageKeys.userID, user.$id);
+        _storageService.setValue(StorageKeys.email, user.email);
+        _storageService.setValue(
+            StorageKeys.firstName, user.name.split(' ')[0] ?? '');
+        _storageService.setValue(
+            StorageKeys.lastName, user.name.split(' ')[1] ?? '');
+      
+        return Right(user);
       } else {
         return Left(
           Failure(message: AppStrings.noInternetConnection),

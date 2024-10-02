@@ -1,6 +1,4 @@
-import 'dart:ui';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -22,6 +20,7 @@ import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/note/presentation/widgets/note_list_item.dart';
 import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
 import 'package:notepada/features/note/presentation/bloc/note_state.dart';
+import 'package:shimmer/shimmer.dart';
 
 class SecretNotes extends StatefulWidget {
   const SecretNotes({super.key});
@@ -63,23 +62,64 @@ class _SecretNotesState extends State<SecretNotes> {
       body: BlocBuilder<NoteCubit, NoteState>(
         builder: (context, state) {
           if (state is NoteFetchLoading) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    AppImages.gettingNotes,
-                    height: 150,
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: ListView.builder(
+                  itemBuilder: (_, __) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * .4,
+                        height: 10.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Container(
+                        width: MediaQuery.of(context).size.width * .65,
+                        height: 15.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Container(
+                        width: double.infinity,
+                        height: 10.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Container(
+                        width: MediaQuery.of(context).size.width * .55,
+                        height: 10.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Container(
+                        width: MediaQuery.of(context).size.width * .9,
+                        height: 10.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 24.0),
+                    ],
                   ),
-                  AppGaps.v10,
-                  const Text(
-                    AppStrings.gettingNotes,
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+                  itemCount: 6,
+                ),
               ),
             );
           }
@@ -227,8 +267,12 @@ class _SecretNotesState extends State<SecretNotes> {
                                     ? true
                                     : false,
                             dateModified: DateTime.now().toString());
-                        context.read<DashBoardCubit>().updateSelectedIndex(0);
+                        context
+                            .read<SelectedIndexCubit>()
+                            .updateSelectedIndex(0);
                         context.pushNamed(RouteNames.secretNotes);
+                        appSnackBar(
+                            message: AppStrings.noteUpdated, context: context);
                       },
                       edit: () {
                         context.pushNamed(

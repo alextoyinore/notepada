@@ -105,8 +105,10 @@ class NoteRepository extends INoteRepository {
   }
 
   @override
-  Future<Either<Failure, List<NoteModel>>> getNotes(
-      {required String userID, bool? isSecret}) async {
+  Future<Either<Failure, List<NoteModel>>> getNotes({
+    required String userID,
+    bool? isSecret,
+  }) async {
     final appwriteProvider = sl<AppwriteProvider>();
     final internetConnectionChecker = sl<InternetConnectionChecker>();
 
@@ -119,6 +121,44 @@ class NoteRepository extends INoteRepository {
                 queries: [
               Query.equal('userID', userID),
               Query.equal('isSecret', isSecret),
+              Query.orderDesc('dateModified'),
+            ]);
+        Map<String, dynamic> data = documents!.toMap();
+        List documentList = data['documents'].toList();
+        List<NoteModel> noteList =
+            documentList.map((e) => NoteModel.fromMap(e['data'])).toList();
+        return Right(noteList);
+      } else {
+        return Left(
+          Failure(message: AppStrings.noInternetConnection),
+        );
+      }
+    } on AppwriteException catch (e) {
+      return Left(Failure(message: e.message!));
+    } on ServerException catch (e) {
+      return Left(Failure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<NoteModel>>> getFavouriteNotes({
+    required String userID,
+    bool? isSecret,
+    bool? isFavourite,
+  }) async {
+    final appwriteProvider = sl<AppwriteProvider>();
+    final internetConnectionChecker = sl<InternetConnectionChecker>();
+
+    try {
+      if (await internetConnectionChecker.hasConnection) {
+        DocumentList? documents = await appwriteProvider.database
+            ?.listDocuments(
+                databaseId: AppConstants.appwriteDatabaseID,
+                collectionId: AppConstants.notesCollectionID,
+                queries: [
+              Query.equal('userID', userID),
+              Query.equal('isSecret', isSecret),
+              Query.equal('isFavourite', isFavourite),
               Query.orderDesc('dateModified'),
             ]);
         Map<String, dynamic> data = documents!.toMap();

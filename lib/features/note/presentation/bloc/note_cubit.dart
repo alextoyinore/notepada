@@ -68,11 +68,35 @@ class NoteCubit extends Cubit<NoteState> {
     );
   }
 
-  void getNotes({required String userID, bool? isSecret}) async {
+  void getNotes({
+    required String userID,
+    bool? isSecret,
+  }) async {
     emit(NoteFetchLoading());
 
     final response = await _noteRepository.getNotes(
-        userID: _storageService.getValue('userID'), isSecret: isSecret);
+      userID: _storageService.getValue('userID'),
+      isSecret: isSecret,
+    );
+
+    response.fold(
+      (error) => emit(NoteFetchError(error: error.message)),
+      (notes) => emit(NoteFetchSuccess(notes: notes)),
+    );
+  }
+
+  void getFavouriteNotes({
+    required String userID,
+    bool? isSecret,
+    bool? isFavourite,
+  }) async {
+    emit(NoteFetchLoading());
+
+    final response = await _noteRepository.getFavouriteNotes(
+      userID: _storageService.getValue('userID'),
+      isSecret: isSecret,
+      isFavourite: isFavourite,
+    );
 
     response.fold(
       (error) => emit(NoteFetchError(error: error.message)),

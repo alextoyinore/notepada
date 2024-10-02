@@ -1,6 +1,7 @@
 import 'package:flutter_quill/translations.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:notepada/common/bloc/dash/dash_cubit.dart';
+import 'package:notepada/common/bloc/input/input_pin_cubit.dart';
 import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 import 'package:notepada/common/bloc/theme/theme_cubit.dart';
 import 'package:notepada/config/strings/strings.dart';
@@ -55,7 +56,10 @@ class App extends StatelessWidget {
         BlocProvider(create: (_) => VoicePitchCubit()),
         BlocProvider(create: (_) => VoiceRateCubit()),
         BlocProvider(create: (_) => VoiceVolumeCubit()),
-        BlocProvider(create: (_) => DashBoardCubit()),
+        BlocProvider(create: (_) => SelectedIndexCubit()),
+        BlocProvider(create: (_) => InputPinCubit()),
+        BlocProvider(create: (_) => DashboardAppsCubit()),
+        BlocProvider(create: (_) => DashPagesCubit()),
       ],
       child: BlocBuilder<ThemeCubit, ThemeMode>(
         builder: (context, mode) => MaterialApp.router(

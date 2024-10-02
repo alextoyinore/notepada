@@ -73,7 +73,7 @@ Widget NoteListItem({
                       children: [
                         AppGaps.v10,
                         Text(
-                          note.plainText!,
+                          note.plainText!.replaceAll('\n', ' '),
                           style: TextStyle(
                             fontSize: listFontSize,
                             color: AppColors.midGrey,

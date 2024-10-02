@@ -8,34 +8,29 @@ Widget singleDigitTextField(
     double? width,
     double? height,
     double? fontSize,
+    VoidCallback? onChange,
     required BuildContext context}) {
   return Container(
     padding: const EdgeInsets.all(5),
     width: width ?? 80,
     height: height ?? 80,
     child: TextField(
-      onEditingComplete: () {
-        if (controller.text.length == 1) {
-          FocusScope.of(context).nextFocus();
-        } else {
-          FocusScope.of(context).previousFocus();
-        }
-      },
       textInputAction: TextInputAction.next,
       controller: controller,
       textAlign: TextAlign.center,
       keyboardType: TextInputType.number,
       style: TextStyle(
-        fontSize: fontSize ?? 32,
+        fontSize: fontSize ?? 25,
         fontWeight: FontWeight.w300,
       ),
+      onChanged: (value) => onChange,
       decoration: AppStyles.lightTextFieldTheme.copyWith(
         counter: AppGaps.v0,
-        contentPadding: EdgeInsets.zero,
+        contentPadding: const EdgeInsets.all(10),
         hintText: '',
         hintStyle: TextStyle(
           color: AppColors.grey,
-          fontSize: fontSize ?? 32,
+          fontSize: fontSize ?? 25,
           fontWeight: FontWeight.w300,
         ),
         border: InputBorder.none,

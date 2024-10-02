@@ -4,14 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/common/widgets/app_snack.dart';
-import 'package:notepada/common/widgets/app_toast.dart';
 import 'package:notepada/config/assets/images.dart';
 import 'package:notepada/config/assets/vectors.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/styles.dart';
 import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/config/theme/colors.dart';
-import 'package:notepada/core/util/storage/storage_keys.dart';
 import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/auth/presentation/bloc/auth_cubit.dart';
 import 'package:notepada/features/auth/presentation/bloc/auth_state.dart';
@@ -99,13 +97,13 @@ class _AuthState extends State<Auth> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              AppGaps.v20,
+              AppGaps.v30,
               Image.asset(
                 AppImages.tree,
                 height: 220,
                 fit: BoxFit.cover,
               ),
-              AppGaps.v10,
+              AppGaps.v20,
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Column(
@@ -137,7 +135,7 @@ class _AuthState extends State<Auth> {
                     ),
                     AppGaps.v10,
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         IconButton(
                           onPressed: () {
@@ -147,14 +145,14 @@ class _AuthState extends State<Auth> {
                           },
                           icon: SvgPicture.asset(
                             AppVectors.google,
-                            height: 30,
+                            height: 40,
                           ),
                         ),
                         IconButton(
                           onPressed: () {},
                           icon: SvgPicture.asset(
                             AppVectors.apple,
-                            height: 30,
+                            height: 40,
                             colorFilter: ColorFilter.mode(
                               Theme.of(context).brightness == Brightness.dark
                                   ? AppColors.bright
@@ -167,14 +165,14 @@ class _AuthState extends State<Auth> {
                           onPressed: () {},
                           icon: SvgPicture.asset(
                             AppVectors.facebook,
-                            height: 30,
+                            height: 40,
                           ),
                         ),
                         IconButton(
                           onPressed: () {},
                           icon: SvgPicture.asset(
                             AppVectors.twitter,
-                            height: 30,
+                            height: 40,
                           ),
                         ),
                       ],

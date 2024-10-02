@@ -53,8 +53,10 @@ String toHumanReadableDate(String isoString) {
 final FlutterTts flutterTts = FlutterTts();
 
 Future<void> ttsSpeak(
-    {required String text, required BuildContext context}) async {
-  await flutterTts.setLanguage('en-US');
+    {required String text,
+    String language = 'en-US',
+    required BuildContext context}) async {
+  await flutterTts.setLanguage(language);
   await flutterTts.setVolume(context.read<VoiceVolumeCubit>().state / 100);
   await flutterTts.setSpeechRate(context.read<VoiceRateCubit>().state / 100);
   await flutterTts.setPitch(context.read<VoicePitchCubit>().state / 100);
@@ -64,3 +66,10 @@ Future<void> ttsSpeak(
 Future<void> ttsStop() async {
   await flutterTts.stop();
 }
+
+// void showKeyboard({bool showKeyboard = true}) {
+//   assert(attached);
+//   if (showKeyboard) {
+//     TextInput._instance._show();
+//   }
+// }

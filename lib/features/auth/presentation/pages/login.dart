@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/common/bloc/dash/dash_cubit.dart';
 import 'package:notepada/common/widgets/app_snack.dart';
-import 'package:notepada/common/widgets/app_toast.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:notepada/config/theme/styles.dart';
@@ -67,14 +66,14 @@ class _LoginState extends State<Login> {
             _sendingData = false;
             appSnackBar(context: context, message: state.error);
           } else if (state is LoginSuccess) {
-            _sendingData = false; // Remove circular progress indicator
+            _sendingData = false;
             _storageService.setValue(StorageKeys.userID, state.session.userId);
             _storageService.setValue(StorageKeys.sessionID, state.session.$id);
 
             // Show snackbar message
             appSnackBar(context: context, message: AppStrings.loginSuccessful);
             // Redirect to home
-            context.read<DashBoardCubit>().updateSelectedIndex(2);
+            context.read<SelectedIndexCubit>().updateSelectedIndex(2);
             context.goNamed(RouteNames.dashboard);
           }
         },

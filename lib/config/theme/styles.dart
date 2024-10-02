@@ -169,6 +169,7 @@ class AppStyles {
 
 class AppGaps {
   static const v0 = SizedBox(height: 0);
+  static const v5 = SizedBox(height: 5);
   static const v10 = SizedBox(height: 10);
   static const v15 = SizedBox(height: 15);
   static const v20 = SizedBox(height: 20);

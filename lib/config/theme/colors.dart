@@ -11,6 +11,7 @@ class AppColors {
   static const darkGrey = Color.fromARGB(255, 35, 35, 35);
   static const blue = Color(0xff288CE9);
   static const green = Color(0xFF01B461);
+  static const voilet = Color(0xFF6A02AE);
   static const orange = Color.fromARGB(255, 230, 105, 2);
   static const red = Color(0xFFB40A01);
 }

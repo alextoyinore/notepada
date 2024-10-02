@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:notepada/config/theme/styles.dart';
 import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/core/routes/names.dart';
+import 'package:notepada/core/util/storage/storage_keys.dart';
+import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/auth/presentation/bloc/auth_state.dart';
 import 'package:notepada/features/auth/presentation/bloc/register_cubit.dart';
 
@@ -23,6 +25,8 @@ class _RegisterState extends State<Register> {
   final TextEditingController _password = TextEditingController();
 
   bool _sendingData = false;
+
+  final _storageService = StorageService();
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +65,13 @@ class _RegisterState extends State<Register> {
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           } else if (state is RegisterSuccess) {
             _sendingData = false;
+
+            /// Save user data to storage
+            _storageService.setValue(StorageKeys.firstName, _firstName.text);
+            _storageService.setValue(StorageKeys.lastName, _lastName.text);
+            _storageService.setValue(StorageKeys.email, _email.text);
+
+            /// Snackbar
             var snackBar = SnackBar(
               behavior: SnackBarBehavior.floating,
               backgroundColor: AppColors.darkGrey,

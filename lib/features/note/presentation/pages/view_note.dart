@@ -59,13 +59,10 @@ class _ViewNoteState extends State<ViewNote> {
   final FlutterTts flutterTts = FlutterTts();
 
   Future<void> _speak() async {
-    await flutterTts.setLanguage('en-US');
-    await flutterTts.setVolume(volume);
-    await flutterTts.setSpeechRate(rate);
-    await flutterTts.setPitch(pitch);
-    _voiceText =
-        '${widget.note.title}\n${_quillController.document.getPlainText(0, _quillController.document.length)}';
-    await flutterTts.speak(_voiceText!);
+    await ttsSpeak(
+        text: _quillController.document
+            .getPlainText(0, _quillController.document.length - 1),
+        context: context);
     setState(() {
       _playing = true;
       _paused = false;
@@ -115,26 +112,24 @@ class _ViewNoteState extends State<ViewNote> {
               ? IconButton(
                   onPressed: _speak,
                   icon: const Icon(
-                    Icons.play_arrow_outlined,
-                    size: 30,
-                    color: AppColors.primary,
+                    Icons.volume_up,
+                    size: 25,
                   ),
                 )
               : IconButton(
                   onPressed: _stop,
                   icon: const Icon(
-                    Icons.stop_circle,
+                    Icons.volume_up,
                     color: AppColors.primary,
-                    size: 30,
+                    size: 25,
                   ),
                 ),
           IconButton(
-            padding: const EdgeInsets.only(right: 20),
+            // padding: const EdgeInsets.only(right: 20),
             onPressed: () =>
                 context.pushNamed(RouteNames.editNote, extra: widget.note),
             icon: const Icon(
               Icons.edit_outlined,
-              color: AppColors.primary,
               size: 20,
             ),
           ),
@@ -173,8 +168,7 @@ class _ViewNoteState extends State<ViewNote> {
               ),
             ),
             icon: const Icon(
-              Icons.delete,
-              color: AppColors.primary,
+              Icons.delete_outline,
               size: 20,
             ),
           ),

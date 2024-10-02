@@ -16,4 +16,9 @@ class RouteNames {
   static const notes = 'notes';
   static const favourites = 'favourites';
   static const listen = 'listen';
+  static const bible = 'bible';
+  static const dictionary = 'dictionary';
+  static const scanToRead = 'scanToRead';
+  static const translate = 'translate';
+  static const voiceNote = 'voiceNote';
 }

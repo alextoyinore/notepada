@@ -6,7 +6,7 @@ import 'package:notepada/features/auth/presentation/pages/recover_password.dart'
 import 'package:notepada/features/auth/presentation/pages/secret_key.dart';
 import 'package:notepada/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:notepada/features/favourites/presentation/pages/favourite.dart';
-import 'package:notepada/features/home/presentation/pages/home.dart';
+import 'package:notepada/features/note/presentation/pages/note_list.dart';
 import 'package:notepada/features/listen/presentation/pages/listen.dart';
 import 'package:notepada/features/note/data/models/note.dart';
 import 'package:notepada/features/note/presentation/pages/edit.dart';
@@ -18,6 +18,7 @@ import 'package:go_router/go_router.dart';
 import 'package:notepada/features/auth/presentation/pages/login.dart';
 import 'package:notepada/features/auth/presentation/pages/register.dart';
 import 'package:notepada/features/intro/presentation/pages/intro.dart';
+import 'package:notepada/features/translate/presentation/pages/translator.dart';
 
 final GoRouter router = GoRouter(
   routes: [
@@ -34,7 +35,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/auth',
       name: RouteNames.auth,
-      builder: (context, state) => Auth(),
+      builder: (context, state) => const Auth(),
     ),
     GoRoute(
       path: '/login',
@@ -59,7 +60,9 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/dashboard',
       name: RouteNames.dashboard,
-      builder: (context, state) => Dashboard(),
+      builder: (context, state) => Dashboard(
+        key: UniqueKey(),
+      ),
     ),
     GoRoute(
       path: '/notes',
@@ -108,6 +111,11 @@ final GoRouter router = GoRouter(
       path: '/listen',
       name: RouteNames.listen,
       builder: (context, state) => const Listen(),
+    ),
+    GoRoute(
+      path: '/translate',
+      name: RouteNames.translate,
+      builder: (context, state) => const Translator(),
     ),
   ],
 );

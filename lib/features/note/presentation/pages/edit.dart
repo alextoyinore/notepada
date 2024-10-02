@@ -7,6 +7,7 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:go_router/go_router.dart';
 import 'package:notepada/common/bloc/dash/dash_cubit.dart';
 import 'package:notepada/common/bloc/settings/settings_cubit.dart';
+import 'package:notepada/common/sources/local/lists.dart';
 import 'package:notepada/common/widgets/app_snack.dart';
 import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/config/theme/styles.dart';
@@ -88,16 +89,6 @@ class _EditNoteState extends State<EditNote> {
   final _quillController = QuillController.basic();
   final _editorFocusNode = FocusNode();
   final _editorScrollController = ScrollController();
-
-  final _fontSizeValues = {
-    'Smallest': '16',
-    'Smaller': '20',
-    'Small': '24',
-    'Medium': '28',
-    'Large': '32',
-    'Larger': '36',
-    'Largest': '40',
-  };
 
   bool _isSecret = false;
 
@@ -191,9 +182,12 @@ class _EditNoteState extends State<EditNote> {
             ),
             decoration: AppStyles.lightTextFieldThemeBorderless.copyWith(
               hintText: AppStrings.titleHintText,
-              hintStyle: const TextStyle(
+              hintStyle: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w500,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.midGrey
+                    : AppColors.grey,
               ),
             ),
             minLines: 1,
@@ -209,8 +203,7 @@ class _EditNoteState extends State<EditNote> {
                     },
                     icon: const Icon(
                       Icons.lock_open,
-                      size: 25,
-                      color: AppColors.midGrey,
+                      size: 20,
                     ))
                 : IconButton(
                     onPressed: () {
@@ -218,10 +211,10 @@ class _EditNoteState extends State<EditNote> {
                         _isSecret = false;
                       });
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.lock,
-                      size: 25,
-                      color: _currentColor,
+                      size: 20,
+                      color: AppColors.blue,
                     )),
             !_listening
                 ? IconButton(
@@ -230,63 +223,34 @@ class _EditNoteState extends State<EditNote> {
                   )
                 : AvatarGlow(
                     animate: _listening,
-                    glowColor: _currentColor,
+                    glowColor: AppColors.primary,
                     startDelay: const Duration(milliseconds: 2000),
-                    // glowShape: BoxShape.rectangle,
                     repeat: true,
                     glowCount: 3,
-                    // glowRadiusFactor: .35,
                     child: IconButton(
                       onPressed: () => setState(() {
                         _listening = false;
                         _speechToText.stop();
                       }),
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.mic,
-                        color: _currentColor,
+                        color: AppColors.primary,
                       ),
                     ),
                   ),
-            Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: GestureDetector(
-                onTap: () => // raise the [showDialog] widget
-                    showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    title: const Text(AppStrings.chooseNoteColor),
-                    content: SingleChildScrollView(
-                      child: BlockPicker(
-                        pickerColor: _currentColor,
-                        onColorChanged: changeColor,
-                        // availableColors: [],
-                      ),
+            IconButton(
+              padding: const EdgeInsets.only(right: 16),
+              onPressed: _submit,
+              icon: _sendingData
+                  ? const Icon(
+                      Icons.save,
+                      size: 25,
+                      color: AppColors.primary,
+                    )
+                  : const Icon(
+                      Icons.save,
+                      size: 25,
                     ),
-                    actions: <Widget>[
-                      ElevatedButton(
-                        child: const Text(AppStrings.confirm),
-                        onPressed: () {
-                          setState(() => _currentColor = _pickerColor);
-                          Navigator.of(context).pop();
-                          // print(_currentColor.toHexString());
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                child: Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: _currentColor,
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(
-                      width: 2,
-                      color: AppColors.darkGrey.withOpacity(.1),
-                    ),
-                  ),
-                ),
-              ),
             ),
           ],
           leading: IconButton(
@@ -294,7 +258,6 @@ class _EditNoteState extends State<EditNote> {
             onPressed: () => context.pop(),
             icon: const Icon(
               Icons.arrow_back_ios,
-              color: AppColors.darkGrey,
             ),
           ),
         ),
@@ -314,8 +277,9 @@ class _EditNoteState extends State<EditNote> {
                 _sendingData = false;
               }); // Remove circular progress indicator
               appSnackBar(context: context, message: AppStrings.noteSaved);
-              context.read<DashBoardCubit>().updateSelectedIndex(0);
-              context.goNamed(RouteNames.dashboard);
+              context.read<SelectedIndexCubit>().updateSelectedIndex(0);
+              context.goNamed(RouteNames.dashboard,
+                  extra: {'selectedApp': 'notes'});
             }
           },
           builder: (context, state) => Stack(
@@ -411,7 +375,7 @@ class _EditNoteState extends State<EditNote> {
                         ? AppColors.backgroundDark
                         : AppColors.backgroundLight,
                   ),
-                  fontSizesValues: _fontSizeValues,
+                  fontSizesValues: AppLists.fontSizeValues,
                   toolbarSize: 40,
                   color: _currentColor,
                   dialogTheme: QuillDialogTheme(
@@ -422,28 +386,28 @@ class _EditNoteState extends State<EditNote> {
             ],
           ),
         ),
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.only(bottom: 50.0),
-          child: FloatingActionButton(
-            elevation: 0,
-            onPressed: () {
-              _submit();
-            },
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50),
-            ),
-            child: _sendingData
-                ? const SizedBox(
-                    height: 25,
-                    width: 25,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3,
-                      color: AppColors.bright,
-                    ),
-                  )
-                : const Icon(Icons.save),
-          ),
-        ),
+        // floatingActionButton: Padding(
+        //   padding: const EdgeInsets.only(bottom: 50.0),
+        //   child: FloatingActionButton(
+        //     elevation: 0,
+        //     onPressed: () {
+        //       _submit();
+        //     },
+        //     shape: RoundedRectangleBorder(
+        //       borderRadius: BorderRadius.circular(50),
+        //     ),
+        //     child: _sendingData
+        //         ? const SizedBox(
+        //             height: 25,
+        //             width: 25,
+        //             child: CircularProgressIndicator(
+        //               strokeWidth: 3,
+        //               color: AppColors.bright,
+        //             ),
+        //           )
+        //         : const Icon(Icons.save),
+        //   ),
+        // ),
       ),
     );
   }

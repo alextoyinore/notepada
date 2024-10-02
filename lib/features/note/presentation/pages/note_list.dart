@@ -1,6 +1,3 @@
-import 'dart:ui';
-
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -22,6 +19,7 @@ import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/note/presentation/widgets/note_list_item.dart';
 import 'package:notepada/features/note/presentation/bloc/note_cubit.dart';
 import 'package:notepada/features/note/presentation/bloc/note_state.dart';
+import 'package:shimmer/shimmer.dart';
 
 class Notes extends StatefulWidget {
   const Notes({super.key});
@@ -42,7 +40,6 @@ class _NotesState extends State<Notes> {
     userID = _storageService.getValue(StorageKeys.userID);
     context.read<NoteCubit>().getNotes(userID: userID, isSecret: false);
     _listFontSize = context.read<NoteListFontCubit>().state.toDouble();
-
     // Default Color
     _defaultColor = Color(
         int.tryParse(_storageService.getValue(StorageKeys.defaultColor)!)!);
@@ -50,10 +47,8 @@ class _NotesState extends State<Notes> {
 
   bool playing = false;
   int playingIndex = -1;
-
   bool isFavourite = false;
   int favouriteIndex = -1;
-
   final _searchController = TextEditingController();
 
   @override
@@ -63,23 +58,64 @@ class _NotesState extends State<Notes> {
       body: BlocBuilder<NoteCubit, NoteState>(
         builder: (context, state) {
           if (state is NoteFetchLoading) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    AppImages.gettingNotes,
-                    height: 150,
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: ListView.builder(
+                  itemBuilder: (_, __) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: MediaQuery.of(context).size.width * .4,
+                        height: 10.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Container(
+                        width: MediaQuery.of(context).size.width * .65,
+                        height: 15.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Container(
+                        width: double.infinity,
+                        height: 10.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Container(
+                        width: MediaQuery.of(context).size.width * .55,
+                        height: 10.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Container(
+                        width: MediaQuery.of(context).size.width * .9,
+                        height: 10.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 24.0),
+                    ],
                   ),
-                  AppGaps.v10,
-                  const Text(
-                    AppStrings.gettingNotes,
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+                  itemCount: 8,
+                ),
               ),
             );
           }
@@ -226,8 +262,12 @@ class _NotesState extends State<Notes> {
                                     ? true
                                     : false,
                             dateModified: DateTime.now().toString());
-                        context.read<DashBoardCubit>().updateSelectedIndex(0);
+                        context
+                            .read<SelectedIndexCubit>()
+                            .updateSelectedIndex(0);
                         context.pushNamed(RouteNames.dashboard);
+                        appSnackBar(
+                            message: AppStrings.noteUpdated, context: context);
                       },
                       addToVN: () {},
                       edit: () {
@@ -238,21 +278,24 @@ class _NotesState extends State<Notes> {
                       },
                       delete: () {
                         appAlert(
-                            context: context,
-                            title: AppStrings.delete,
-                            message: AppStrings.deleteDescription,
-                            continue_: () {
-                              context.read<NoteCubit>().deleteNote(
-                                  documentID: state.notes[index].id);
-                              appSnackBar(
-                                  message: AppStrings.deleted,
-                                  context: context);
-                              setState(() {
+                          context: context,
+                          title: AppStrings.delete,
+                          message: AppStrings.deleteDescription,
+                          continue_: () {
+                            context
+                                .read<NoteCubit>()
+                                .deleteNote(documentID: state.notes[index].id);
+                            appSnackBar(
+                                message: AppStrings.deleted, context: context);
+                            setState(
+                              () {
                                 context
                                     .read<NoteCubit>()
                                     .getNotes(userID: userID);
-                              });
-                            });
+                              },
+                            );
+                          },
+                        );
                       },
                     );
                   },

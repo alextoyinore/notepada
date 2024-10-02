@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:notepada/common/widgets/app_alert.dart';
+import 'package:notepada/common/widgets/app_pin_input.dart';
 import 'package:notepada/common/widgets/app_snack.dart';
-import 'package:notepada/common/widgets/single_digit_field.dart';
 import 'package:notepada/config/strings/strings.dart';
 import 'package:notepada/config/theme/colors.dart';
 import 'package:notepada/config/theme/styles.dart';
+import 'package:notepada/core/routes/names.dart';
 import 'package:notepada/core/util/storage/storage_keys.dart';
 import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/auth/presentation/bloc/auth_cubit.dart';
@@ -20,21 +20,6 @@ class SecretKey extends StatefulWidget {
 }
 
 class _SecretKeyState extends State<SecretKey> {
-  // Secret Key
-  final TextEditingController _secretKeyPINController1 =
-      TextEditingController();
-  final TextEditingController _secretKeyPINController2 =
-      TextEditingController();
-  final TextEditingController _secretKeyPINController3 =
-      TextEditingController();
-  final TextEditingController _secretKeyPINController4 =
-      TextEditingController();
-
-  final FocusNode _focusNode1 = FocusNode();
-  final FocusNode _focusNode2 = FocusNode();
-  final FocusNode _focusNode3 = FocusNode();
-  final FocusNode _focusNode4 = FocusNode();
-
   late String _secretKeyPIN;
 
   final _storageService = StorageService();
@@ -43,41 +28,45 @@ class _SecretKeyState extends State<SecretKey> {
 
   bool _sendingData = false;
 
+  final _secretPINController = TextEditingController();
+
   void _createSecretKey({required BuildContext context}) {
-    _secretKeyPIN = _secretKeyPINController1.text +
-        _secretKeyPINController2.text +
-        _secretKeyPINController3.text +
-        _secretKeyPINController4.text;
+    _secretKeyPIN = _secretPINController.text;
     context
         .read<AuthCubit>()
         .createSecretKey(userID: userID, secretKeyPIN: _secretKeyPIN);
   }
 
+  void _checkSecretKeyPIN({required BuildContext context}) {
+    savedSecretKeyPIN = _storageService.getValue(StorageKeys.secretKeyPIN);
+    if (_secretPINController.text.isNotEmpty &&
+        _secretPINController.text.length == 4) {
+      if (savedSecretKeyPIN == _secretPINController.text) {
+        context.goNamed(RouteNames.secretNotes, extra: {
+          'selectedApp': 'secretKey',
+        });
+      } else {
+        _createSecretKey(context: context);
+      }
+    }
+  }
+
   @override
   void dispose() {
-    // Clear the text fields
-    _secretKeyPINController1.clear();
-    _secretKeyPINController2.clear();
-    _secretKeyPINController3.clear();
-    _secretKeyPINController4.clear();
-
-    _secretKeyPINController1.dispose();
-    _secretKeyPINController2.dispose();
-    _secretKeyPINController3.dispose();
-    _secretKeyPINController4.dispose();
-
-    _focusNode1.dispose();
-    _focusNode2.dispose();
-    _focusNode3.dispose();
-    _focusNode4.dispose();
+    _secretPINController.clear();
+    _secretPINController.dispose();
 
     super.dispose();
   }
+
+  late String savedSecretKeyPIN;
 
   @override
   void initState() {
     super.initState();
     userID = _storageService.getValue('userID');
+    savedSecretKeyPIN =
+        _storageService.getValue(StorageKeys.secretKeyPIN) ?? '0000';
   }
 
   @override
@@ -110,7 +99,9 @@ class _SecretKeyState extends State<SecretKey> {
             });
             appSnackBar(message: AppStrings.secretKeyCreated, context: context);
             _storageService.setValue(StorageKeys.secretKeyPIN, _secretKeyPIN);
-            context.pop();
+            context.goNamed(RouteNames.secretNotes, extra: {
+              'selectedApp': 'secretKey',
+            });
           }
         },
         builder: (context, state) {
@@ -134,30 +125,14 @@ class _SecretKeyState extends State<SecretKey> {
                   ),
                 ),
                 AppGaps.v10,
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    singleDigitTextField(
-                        controller: _secretKeyPINController1,
-                        focusNode: _focusNode1,
-                        context: context),
-                    singleDigitTextField(
-                        controller: _secretKeyPINController2,
-                        focusNode: _focusNode2,
-                        context: context),
-                    singleDigitTextField(
-                        controller: _secretKeyPINController3,
-                        focusNode: _focusNode3,
-                        context: context),
-                    singleDigitTextField(
-                        controller: _secretKeyPINController4,
-                        focusNode: _focusNode4,
-                        context: context),
-                  ],
+                appPinInput(
+                  controller: _secretPINController,
+                  length: 4,
+                  context: context,
                 ),
-                AppGaps.v10,
+                AppGaps.v20,
                 ElevatedButton(
-                  onPressed: () => _createSecretKey(context: context),
+                  onPressed: () => _checkSecretKeyPIN(context: context),
                   child: _sendingData
                       ? const CircularProgressIndicator(
                           color: AppColors.bright,

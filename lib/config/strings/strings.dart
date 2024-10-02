@@ -1,5 +1,9 @@
 class AppStrings {
   static const appName = 'Notepada';
+  static const createNew = 'Create New';
+  static const createSomethingNew =
+      'Put your thoughts and ideas down and watch them come to life';
+  static const apps = 'Apps';
   static const refresh = 'Refresh';
   static const home = 'Home';
   static const login = 'Login';
@@ -52,6 +56,7 @@ class AppStrings {
   static const noteSaved = 'Your note has been saved successfully.';
   static const noteUpdated = 'Your note has been updated successfully.';
   static const gettingNotes = 'Getting your notes...';
+  static const gettingFavouriteNotes = 'Getting your favourite notes...';
   static const getNoteError =
       'We are having trouble getting your notes.\nTry closing and reopening the app. Thank you!';
   static const noNotes = 'You have no notes';
@@ -122,4 +127,37 @@ class AppStrings {
   static const listen = 'Listen';
   static const edit = 'Edit';
   static const addToVN = 'Add to VN';
+  static const hello = 'Hello';
+  static const todayNotes = 'Today\'s Notes';
+  static const translate = 'Translate';
+  static const translateHintText = 'Text to translate...';
+  static const fromLanguage = 'From Language';
+  static const toLanguage = 'To Language';
+  static const translation = 'Translation...';
+  static const translateDescription =
+      'Translate your notes or any text to any language in the world';
+  static const play = 'Play';
+
+  /// Time
+  static const goodmorning = 'Good Morning';
+  static const goodafternoon = 'Good Afternoon';
+  static const goodnight = 'Good Night';
+  static const today = 'Today';
+  static const yesterday = 'Yesterday';
+  static const tomorrow = 'Tomorrow';
+  static const thisWeek = 'This Week';
+  static const thisMonth = 'This Month';
+  static const thisYear = 'This Year';
+  static const allTime = 'All Time';
+  static const searchNotes = 'Search Notes';
+  static const searchNotesDescription = 'Search for notes by title or content';
+  static const searchNotesHintText = 'Search...';
+  static const searchNotesEmpty = 'No notes found';
+  static const searchNotesResults = 'Search Results';
+  static const searchNotesResultCount = 'Showing {count} results';
+  static const searchNotesResultCountSingular = 'Showing {count} result';
+  static const searchNotesResultCountPlural = 'Showing {count} results';
+  static const searchNotesResultCountZero = 'No results found';
+  static const searchNotesResultCountOne = 'Showing {count} result';
+  static const searchNotesResultCountOther = 'Showing {count} results';
 }

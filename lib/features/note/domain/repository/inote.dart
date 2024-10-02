@@ -30,6 +30,9 @@ abstract class INoteRepository {
   Future<Either<Failure, List<NoteModel>>> getNotes(
       {required String userID, bool? isSecret});
 
+  Future<Either<Failure, List<NoteModel>>> getFavouriteNotes(
+      {required String userID, bool? isSecret, bool? isFavourite});
+
   Future<Either<Failure, dynamic>> updateFavourite({
     required String documentID,
     required bool isFavourite,

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:notepada/common/bloc/settings/settings_cubit.dart';
 import 'package:notepada/common/bloc/theme/theme_cubit.dart';
 import 'package:notepada/common/widgets/app_alert.dart';
+import 'package:notepada/common/widgets/app_pin_input.dart';
 import 'package:notepada/common/widgets/single_digit_field.dart';
 import 'package:notepada/config/assets/images.dart';
 import 'package:notepada/config/assets/vectors.dart';
@@ -18,6 +19,7 @@ import 'package:notepada/core/util/storage/storage_service.dart';
 import 'package:notepada/features/auth/presentation/bloc/auth_cubit.dart';
 import 'package:notepada/features/auth/presentation/bloc/auth_state.dart';
 import 'package:notepada/features/auth/presentation/widgets/value_changer_setting.dart';
+import 'package:shimmer/shimmer.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -42,11 +44,13 @@ class _ProfileState extends State<Profile> {
 
   late String savedSecretKeyPIN;
 
+  // Secret Key
+  final TextEditingController _secretKeyPINController = TextEditingController();
+
   @override
   void initState() {
     savedSecretKeyPIN =
         _storageService.getValue(StorageKeys.secretKeyPIN) ?? '0000';
-
     _defaultColor = Color(
         int.tryParse(_storageService.getValue(StorageKeys.defaultColor)!)!);
     _currentColor = _defaultColor;
@@ -61,26 +65,54 @@ class _ProfileState extends State<Profile> {
         child: BlocBuilder<AuthCubit, AuthState>(
           builder: (context, state) {
             if (state is UserLoading) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      AppImages.gettingNotes,
-                      height: 150,
-                    ),
-                    AppGaps.v10,
-                    Text(
-                      AppStrings.userLoading,
-                      style: TextStyle(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? AppColors.grey
-                            : AppColors.darkGrey,
-                        fontSize: 16,
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      AppGaps.v50,
+                      Container(
+                        width: 100,
+                        height: 100.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Colors.white,
+                        ),
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+                      const SizedBox(height: 20.0),
+                      Container(
+                        width: MediaQuery.of(context).size.width * .40,
+                        height: 20.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 30.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: List.generate(
+                          8,
+                          (index) => Column(
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width * .95,
+                                height: 40.0,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.white,
+                                ),
+                              ),
+                              AppGaps.v30,
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             }
@@ -150,6 +182,10 @@ class _ProfileState extends State<Profile> {
             }
 
             if (state is UserSuccess) {
+              // _storageService.setValue(
+              //     StorageKeys.firstName, state.user!.firstName);
+              // _storageService.setValue(
+              //     StorageKeys.firstName, state.user!.lastName);
               return SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
@@ -411,10 +447,7 @@ class _ProfileState extends State<Profile> {
                           title: AppStrings.enterSecretKey,
                           message: AppStrings.secretViewKeyDescription,
                           continue_: () {
-                            final secretKeyPIN = _secretKeyPINController1.text +
-                                _secretKeyPINController2.text +
-                                _secretKeyPINController3.text +
-                                _secretKeyPINController4.text;
+                            final secretKeyPIN = _secretKeyPINController.text;
 
                             if (secretKeyPIN == savedSecretKeyPIN &&
                                 savedSecretKeyPIN != '0000') {
@@ -425,41 +458,11 @@ class _ProfileState extends State<Profile> {
                           },
                           child: (savedSecretKeyPIN.length == 4 &&
                                   savedSecretKeyPIN != '0000')
-                              ? Container(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      singleDigitTextField(
-                                          width: 50,
-                                          height: 50,
-                                          fontSize: 25,
-                                          controller: _secretKeyPINController1,
-                                          focusNode: _focusNode1,
-                                          context: context),
-                                      singleDigitTextField(
-                                          width: 50,
-                                          height: 50,
-                                          fontSize: 25,
-                                          controller: _secretKeyPINController2,
-                                          focusNode: _focusNode2,
-                                          context: context),
-                                      singleDigitTextField(
-                                          width: 50,
-                                          height: 50,
-                                          fontSize: 25,
-                                          controller: _secretKeyPINController3,
-                                          focusNode: _focusNode3,
-                                          context: context),
-                                      singleDigitTextField(
-                                          width: 50,
-                                          height: 50,
-                                          fontSize: 25,
-                                          controller: _secretKeyPINController4,
-                                          focusNode: _focusNode4,
-                                          context: context),
-                                    ],
-                                  ),
+                              ? appPinInput(
+                                  controller: _secretKeyPINController,
+                                  length: 4,
+                                  context: context,
+                                  stretch: 40,
                                 )
                               : const Text(
                                   AppStrings.createSecretKeyDescription,
@@ -753,58 +756,6 @@ class _ProfileState extends State<Profile> {
             return const SizedBox();
           },
         ),
-      ),
-    );
-  }
-
-  // Secret Key
-  final TextEditingController _secretKeyPINController1 =
-      TextEditingController();
-  final TextEditingController _secretKeyPINController2 =
-      TextEditingController();
-  final TextEditingController _secretKeyPINController3 =
-      TextEditingController();
-  final TextEditingController _secretKeyPINController4 =
-      TextEditingController();
-
-  final FocusNode _focusNode1 = FocusNode();
-  final FocusNode _focusNode2 = FocusNode();
-  final FocusNode _focusNode3 = FocusNode();
-  final FocusNode _focusNode4 = FocusNode();
-
-  Future<dynamic> secretKeyAlert() async {
-    return await appWidgetAlert(
-      context: context,
-      title: AppStrings.secretKey,
-      message: AppStrings.secretViewKeyDescription,
-      continue_: () {
-        final secretKey = _storageService.getValue(StorageKeys.secretKeyPIN);
-        if (secretKey == null || secretKey.isEmpty) {
-          context.pushNamed(RouteNames.secretKey);
-        } else {
-          context.pushNamed(RouteNames.secretNotes);
-        }
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          singleDigitTextField(
-              controller: _secretKeyPINController1,
-              focusNode: _focusNode1,
-              context: context),
-          singleDigitTextField(
-              controller: _secretKeyPINController2,
-              focusNode: _focusNode2,
-              context: context),
-          singleDigitTextField(
-              controller: _secretKeyPINController3,
-              focusNode: _focusNode3,
-              context: context),
-          singleDigitTextField(
-              controller: _secretKeyPINController4,
-              focusNode: _focusNode4,
-              context: context),
-        ],
       ),
     );
   }
